@@ -1,0 +1,42 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+.next/
+out/
+build/
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+
+# Temporary files
+*.xlsx
+*.xlsx.xla
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!next.config.mjs
+!extracted_categories.json
+!extracted_seo_data.json

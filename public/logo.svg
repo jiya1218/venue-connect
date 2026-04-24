@@ -1,0 +1,14 @@
+<svg width="240" height="50" viewBox="0 0 240 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- V with location pin icon -->
+  <g>
+    <path d="M20 8 L25 25 L30 8" stroke="#9b1f6b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="25" cy="12" r="6" stroke="#9b1f6b" stroke-width="2" fill="none"/>
+    <circle cx="25" cy="12" r="2" fill="#9b1f6b"/>
+  </g>
+  
+  <!-- Venue text -->
+  <text x="42" y="32" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#9b1f6b">Venue</text>
+  
+  <!-- Connect text -->
+  <text x="130" y="32" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#1c1410">Connect</text>
+</svg>

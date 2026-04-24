@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="#9b1f6b"/>
+  
+  <!-- V shape with location pin -->
+  <path d="M12 10 L16 20 L20 10" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Location pin circle -->
+  <circle cx="16" cy="13" r="3.5" stroke="white" stroke-width="1.5" fill="none"/>
+  <circle cx="16" cy="13" r="1.2" fill="white"/>
+</svg>

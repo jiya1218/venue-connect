@@ -1,0 +1,17 @@
+# VenueConnect Robots.txt - Optimized for SEO & AEO
+User-agent: *
+Allow: /
+Allow: /venues/*
+Allow: /vendors/*
+Allow: /cities
+Allow: /blog/*
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+
+# Sitemap location
+Sitemap: https://venueconnect.in/sitemap.xml
