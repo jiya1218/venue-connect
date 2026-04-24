@@ -27,6 +27,7 @@ import { QuickInfoBar, PricingDetails, AmenitiesGrid, SpacesCapacity, CateringPo
 import { VendorQuickStats, VendorServices, VendorPortfolio, VendorServiceAreas } from "@/components/listing/VendorSections";
 import ReviewsList from "@/components/ReviewsList";
 import GetQuoteModal from "@/components/GetQuoteModal";
+import { enrichListings, getEnrichedImage, cleanName } from '@/lib/imageEnricher';
 
 export const revalidate = 3600;
 
@@ -337,10 +338,13 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
     }
 
     // FETCH BOTH FOR ALL COLLECTIONS (Omni-Discovery)
-    const [venues, vendors] = await Promise.all([
+    const [rawVenues, rawVendors] = await Promise.all([
         fetchVenues(finalCategory, cityForData, sParams, catRow?.id || finalSeoPage?.category_id, forcedArea, forcedSpaceType, forcedFoodType),
         fetchVendors(finalCategory, cityForData, sParams, catRow?.id || finalSeoPage?.category_id, forcedArea)
     ]);
+
+    const venues = enrichListings(rawVenues);
+    const vendors = enrichListings(rawVendors);
 
     // 4. RENDER VENDOR HUB (If exactly [city]/vendors - Skip for 'all' to show directory list)
     if (slugArr.length === 2 && categorySlug.toLowerCase() === 'vendors' && citySlug.toLowerCase() !== 'all') {
@@ -374,7 +378,9 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
 // ─── PARTIAL VIEWS ────────────────────────────────────────────────────────────
 
 function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }) {
-    const images = venue.images && venue.images.length > 0 ? venue.images : [venue.image].filter(Boolean);
+    const enrichedMainImage = getEnrichedImage(venue);
+    const cleanedName = cleanName(venue.name);
+    const images = venue.images && venue.images.length > 0 ? venue.images : [enrichedMainImage].filter(Boolean);
 
     return (
         <div className="min-h-screen bg-white">
@@ -386,7 +392,7 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
                         <span className="text-slate-300">/</span>
                         <Link href={`/${cityParam.toLowerCase()}`} className="hover:text-primary">{unslugify(cityParam)}</Link>
                         <span className="text-slate-300">/</span>
-                        <span className="text-slate-900 font-bold line-clamp-1">{venue.name}</span>
+                        <span className="text-slate-900 font-bold line-clamp-1">{cleanedName}</span>
                     </nav>
                 </div>
             </div>
@@ -397,13 +403,13 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
 
                     {/* LEFT: GALLERY SLIDER */}
                     <div className="lg:col-span-8">
-                        <VenueGallery images={images} name={venue.name} />
+                        <VenueGallery images={images} name={cleanedName} />
 
                         {/* AUTHORITY INFO */}
                         <div className="mt-6 px-4 md:px-0">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
-                                    {venue.name}
+                                    {cleanedName}
                                 </h1>
                                 <div className="flex items-center gap-2">
                                     <div className="flex items-center gap-1 px-2 py-1 rounded bg-amber-500 text-white">
@@ -563,7 +569,9 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
 }
 
 function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: string }) {
-    const images = vendor.images && vendor.images.length > 0 ? vendor.images : [vendor.image].filter(Boolean);
+    const enrichedMainImage = getEnrichedImage(vendor);
+    const cleanedName = cleanName(vendor.name);
+    const images = vendor.images && vendor.images.length > 0 ? vendor.images : [enrichedMainImage].filter(Boolean);
     const isApproved = vendor.is_approved === true || vendor.is_verified === true;
 
     return (
@@ -575,7 +583,7 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                         <Link href="/" className="hover:text-primary">Home</Link><ChevronRight className="w-3 h-3" />
                         <Link href={`/${cityParam}`} className="hover:text-primary">{unslugify(cityParam)}</Link><ChevronRight className="w-3 h-3" />
                         <Link href={`/${cityParam}/vendors`} className="hover:text-primary">Vendors</Link><ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-900 truncate">{vendor.name}</span>
+                        <span className="text-slate-900 truncate">{cleanedName}</span>
                     </nav>
                 </div>
             </div>
@@ -586,11 +594,11 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                     {/* LEFT: GALLERY & INFO */}
                     <div className="lg:col-span-8 space-y-6 md:space-y-10">
                         <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
-                            <VenueGallery images={images} name={vendor.name} />
+                            <VenueGallery images={images} name={cleanedName} />
                             <div className="p-6 md:p-8">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                     <div>
-                                        <h1 className="text-2xl md:text-4xl font-black text-slate-950 leading-tight mb-2">{vendor.name}</h1>
+                                        <h1 className="text-2xl md:text-5xl font-black text-slate-900 leading-tight mb-2 md:mb-4 tracking-tight">{cleanedName}</h1>
                                         <div className="flex items-center gap-3">
                                             <p className="text-[12px] md:text-sm font-bold text-slate-400 flex items-center gap-1.5">
                                                 <MapPin size={14} className="text-primary" /> {vendor.location || vendor.address || vendor.city}
@@ -630,7 +638,7 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                         <div className="space-y-12 bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-sm">
                             <section id="about" className="scroll-mt-24">
                                 <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
-                                    <span className="w-1.5 h-8 bg-primary rounded-full" /> About {vendor.name}
+                                    <span className="w-1.5 h-8 bg-primary rounded-full" /> About {cleanedName}
                                 </h3>
                                 <ListingDescription description={vendor.description || `Professional ${vendor.category || 'vendor'} providing premium services in ${cityParam}.`} />
                             </section>

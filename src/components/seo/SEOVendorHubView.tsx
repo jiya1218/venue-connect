@@ -7,6 +7,7 @@ import {
     Sparkles, Users2, ArrowLeft, Building2, Camera, Utensils, Music, Palette, Quote, Building
 } from "lucide-react";
 import { GUJARAT_CITIES, VENDOR_TYPES } from "@/lib/constants";
+import { cleanName } from "@/lib/imageEnricher";
 
 interface SEOVendorHubViewProps {
     citySlug: string;
@@ -247,14 +248,22 @@ function VendorCard({ v, citySlug, locationLabel }: { v: any, citySlug: string, 
     return (
         <Link href={`/${v.city?.toLowerCase() || citySlug}/vendors/${v.slug}`} className="min-w-[320px] group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col hover:-translate-y-2">
             <div className="relative h-48 overflow-hidden">
-                <img src={v.image || (v.images && v.images[0]) || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={v.name}/>
+                <img 
+                    src={v.image || (v.images && v.images[0]) || "https://images.unsplash.com/photo-1519225421980-715bd0215aed?w=600&q=80"} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    alt={v.name}
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                    }}
+                />
                 <div className="absolute top-4 right-4 bg-white/95 px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
                     <Star size={12} className="fill-yellow-400 text-yellow-400" />
                     <span className="text-[11px] font-black">{v.rating || '4.8'}</span>
                 </div>
             </div>
             <div className="p-6">
-                <h3 className="text-lg font-black text-slate-950 mb-1 group-hover:text-primary transition-colors truncate">{v.name}</h3>
+                <h3 className="text-lg font-black text-slate-950 mb-1 group-hover:text-primary transition-colors truncate">{cleanName(v.name)}</h3>
                 <p className="text-[11px] font-bold text-slate-400 flex items-center gap-1 mb-4 uppercase tracking-wider"><MapPin size={12} className="text-primary"/> {v.location || v.area || locationLabel}</p>
                 <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-[10px] font-black uppercase tracking-[2px] text-primary bg-primary/5 px-3 py-1 rounded-lg">{v.vendor_type || v.category}</span>

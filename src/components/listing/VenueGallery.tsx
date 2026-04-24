@@ -37,6 +37,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
             src={displayImages[0]} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+            }}
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
           
@@ -57,6 +61,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
             src={displayImages[1]} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+            }}
           />
         </div>
         <div 
@@ -67,6 +75,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
             src={displayImages[2]} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+            }}
           />
         </div>
         <div 
@@ -77,6 +89,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
             src={displayImages[3]} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+            }}
           />
         </div>
         
@@ -88,6 +104,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
             src={displayImages[4]} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+            }}
           />
           <div 
             className="absolute inset-x-0 bottom-0 top-0 bg-black/40 flex flex-col items-center justify-center text-white backdrop-blur-[2px] opacity-100 transition-all duration-500"
@@ -105,6 +125,10 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
           src={displayImages[0]} 
           alt={name} 
           className="w-full h-full object-cover" 
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+          }}
         />
         {overlay && (
             <div className="absolute top-3 left-3 z-10 scale-75 origin-top-left">

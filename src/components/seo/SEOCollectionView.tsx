@@ -137,7 +137,9 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
           {/* Background Photo + Cinematic Overlay */}
           <div className="absolute inset-0 z-0">
               <img 
-                src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1600&q=80" 
+                src={isVendorContext 
+                    ? "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1600&q=80" 
+                    : "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1600&q=80"} 
                 className="w-full h-full object-cover opacity-40 scale-105" 
                 alt="Venues Background" 
               />
@@ -243,9 +245,13 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                {/* IMAGE PREVIEW — fixed aspect ratio for consistency */}
                                <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0">
                                    <img 
-                                     src={listing.image || (listing.images && listing.images[0]) || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                     src={listing.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                      alt={listing.name}
+                                     onError={(e) => {
+                                       const target = e.target as HTMLImageElement;
+                                       target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                     }}
                                    />
                                    
                                    <button className="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all">
@@ -334,7 +340,15 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                              {vendors.slice(0, 4).map((v: any, i: number) => (
                                 <Link key={`v-${i}`} href={`/${citySlug}/vendors/${v.slug}`} className="group bg-white p-3 md:p-6 rounded-2xl md:rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500">
                                    <div className="relative w-full aspect-square rounded-xl md:rounded-[2rem] overflow-hidden mb-3 md:mb-6">
-                                      <img src={v.image || (v.images && v.images[0])} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                      <img 
+                                        src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                        alt={v.name} 
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                        }}
+                                      />
                                    </div>
                                    <h4 className="text-[11px] md:text-sm font-black text-slate-900 group-hover:text-primary transition-colors line-clamp-1">{v.name}</h4>
                                    <p className="text-[9px] md:text-[11px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5 md:mt-1">{v.vendor_type}</p>
@@ -362,7 +376,15 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                          <Link key={`top-m-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${v.slug}`} 
                                className="group bg-slate-50/50 rounded-xl p-2 border border-slate-100 hover:bg-white transition-all duration-500">
                              <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-2">
-                                 <img src={v.image || (v.images && v.images[0])} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={v.name} />
+                                 <img 
+                                   src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                   alt={v.name} 
+                                   onError={(e) => {
+                                     const target = e.target as HTMLImageElement;
+                                     target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                   }}
+                                 />
                                  <div className="absolute top-1 right-1 bg-white/95 px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
                                      <Star size={8} className="fill-yellow-400 text-yellow-400" />
                                      <span className="text-[9px] font-black">{v.rating || '4.8'}</span>
@@ -384,7 +406,16 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                      {allListings.slice(0, 4).map((v: any) => (
                          <Link key={`top-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${v.slug}`} className="group bg-slate-50/50 rounded-2xl md:rounded-[2.5rem] p-3 md:p-6 border border-slate-100 hover:bg-white hover:shadow-2xl hover:border-primary/20 transition-all duration-500">
                              <div className="relative w-full aspect-[4/3] rounded-xl md:rounded-[2rem] overflow-hidden mb-2.5 md:mb-6">
-                                 <img src={v.image || (v.images && v.images[0])} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={v.name} />
+                                 
+                                  <img 
+                                    src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                    alt={v.name} 
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                    }}
+                                  />
                                  <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/95 px-1.5 py-0.5 md:px-3 md:py-1 rounded-full flex items-center gap-0.5 md:gap-1 shadow-lg">
                                      <Star size={9} className="fill-yellow-400 text-yellow-400 md:w-3 md:h-3" />
                                      <span className="text-[9px] md:text-xs font-black">{v.rating || '4.8'}</span>

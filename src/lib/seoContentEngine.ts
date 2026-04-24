@@ -156,11 +156,11 @@ export const generateSEOContent = (
     if (isNearMe || (categorySlug && !citySlug)) {
         const nearMeLabel = parseNearMeSlug(categorySlug || "") || category;
         const stateLabel = "Gujarat"; // Near-me pages are Gujarat-level
-        targetKeyword = `${nearMeLabel} Near Me in ${stateLabel}`;
-        title = `${nearMeLabel} Near Me in ${stateLabel} | Find & Book Now - VenueConnect`;
-        description = `Searching for ${nearMeLabel.toLowerCase()} near you in ${stateLabel}? VenueConnect shows top-rated ${nearMeLabel.toLowerCase()}s & spaces nearby. Compare & get instant quotes now.`;
-        h1 = `Best ${nearMeLabel}s Near Me in ${stateLabel}`;
-        heroSubtitle = `Discover top-rated ${nearMeLabel.toLowerCase()}s closest to your location in ${stateLabel}. Verified listings with instant quotes.`;
+        targetKeyword = `${nearMeLabel} Venue Near Me in ${stateLabel}`;
+        title = `${nearMeLabel} Venue Near Me in ${stateLabel} | Find & Book Now - VenueConnect`;
+        description = `Searching for ${nearMeLabel.toLowerCase()} venue near you in ${stateLabel}? VenueConnect shows top-rated ${nearMeLabel.toLowerCase()} spaces nearby. Compare & get instant quotes now.`;
+        h1 = `Best ${nearMeLabel} Venues Near Me in ${stateLabel}`;
+        heroSubtitle = `Discover top-rated ${nearMeLabel.toLowerCase()} venues closest to your location in ${stateLabel}. Verified listings with instant quotes.`;
     }
     // ── 2. Event + City Area: /ahmedabad/bopal/wedding-venues → Issue #4 ─────
     else if (localitySlug && categorySlug && isEvent) {
