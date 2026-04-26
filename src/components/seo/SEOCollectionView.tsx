@@ -330,7 +330,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                        <div className="mt-8 md:mt-24">
                           <div className="flex items-center justify-between mb-5 md:mb-12 pb-4 md:pb-6 border-b border-slate-100">
                              <div>
-                               <h2 className="text-lg md:text-3xl font-black text-slate-900 lowercase first-letter:uppercase mb-1 md:mb-2">Recommended {attributeLabel} in {locationLabel}</h2>
+                               <h2 className="text-lg md:text-3xl font-black text-slate-900 lowercase first-letter:uppercase mb-1 md:mb-2">Recommended Vendors in {locationLabel}</h2>
                                <div className="h-0.5 md:h-1 w-14 md:w-20 bg-primary" />
                              </div>
                              <Link href={`/${citySlug}/vendors`} className="text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:underline shrink-0">View All →</Link>

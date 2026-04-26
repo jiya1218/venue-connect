@@ -94,6 +94,30 @@ const IMAGE_POOLS: Record<string, string[]> = {
     '1533174072545-7a4b6ad7a6c3', // Stage
     '1519225421980-715bd0215aed'  // Modern Decor
   ],
+  'videography': [
+    '1536240478700-b869ad10e2af', // Video Camera
+    '1492691523567-62742545fb4b', // Filming
+    '1589903308914-22b0a9c5dad8', // Video Edit
+    '1536240478700-b869ad10e2af'  // Production
+  ],
+  'bridal-wear': [
+    '1583939003579-730e3918a45a', // Red Lehanga
+    '1511285560929-80b456fea0bc', // Bridal Details
+    '1595152230660-845622384a2b', // Saree
+    '1542314831-068cd1dbfeeb'  // Jewelry
+  ],
+  'groom-wear': [
+    '1593104547489-5cfb3839a3b5', // Sherwani
+    '1507679799987-c7377f3da3b2', // Suit
+    '1593104547489-5cfb3839a3b5', // Ethnic Groom
+    '1555396273-547e1568203d'  // Elegant
+  ],
+  'jewelry': [
+    '1572633423708-20246ce91c49', // Bridal Jewelry
+    '1515934751635-c81c6bc9a2d8', // Gold
+    '1572633423708-20246ce91c49', // Necklace
+    '1601050694270-b01207375a39'  // Rings
+  ],
   'dj': [
     '1516280440614-37939bbacd81', // DJ Setup
     '1470225620780-dba8ba36b745', // Sound/Lights
@@ -178,8 +202,12 @@ function getPoolKey(category: string, type: string, name: string): string {
 
   // Granular matching
   if (n.includes('restaurant') || t.includes('restaurant') || c.includes('restaurant')) return 'restaurant';
+  if (n.includes('video') || c.includes('video') || t.includes('video') || n.includes('film')) return 'videography';
   if (c.includes('photo') || t.includes('photo') || n.includes('photo') || n.includes('studio')) return 'photography';
   if (c.includes('cater') || t.includes('cater') || n.includes('cater') || n.includes('dining')) return 'catering';
+  if (c.includes('bridal') || n.includes('bridal') || n.includes('lehanga') || n.includes('saree')) return 'bridal-wear';
+  if (c.includes('groom') || n.includes('groom') || n.includes('sherwani')) return 'groom-wear';
+  if (c.includes('jewelry') || n.includes('jewelry') || n.includes('jewel')) return 'jewelry';
   if (c.includes('makeup') || t.includes('makeup') || n.includes('makeup') || n.includes('salon') || n.includes('beauty')) return 'makeup';
   if (c.includes('decor') || t.includes('decor') || n.includes('decor') || n.includes('event')) return 'decoration';
   
