@@ -1,18 +1,39 @@
-export const VENUE_TYPES = ['Banquet Hall', 'Farmhouse', 'Hotel', 'Resort', 'Party Plot', 'Lawn', 'Convention Centre', 'Restaurant'];
+export const OCCASIONS = {
+  "🎉 Social / Personal": [
+    "Wedding", "Engagement", "Reception", "Sangeet Ceremony", "Haldi Ceremony",
+    "Mehendi Party (Pre-wedding)", "Anniversary Party", "Birthday Party",
+    "Kids Birthday Party", "First Birthday Party", "Baby Shower", "Bridal Shower",
+    "Bachelor Party", "Kitty Party", "Get Together", "Reunion / Class Reunion",
+    "Family Function", "Naming Ceremony", "Aqueeqa Ceremony", "Christian Communion"
+  ],
+  "🪩 Parties & Celebrations": [
+    "Cocktail Party", "Cocktail Dinner", "Pool Party", "Garba Night", "Holi Party",
+    "Freshers Party", "Farewell Party", "Adventure Party"
+  ],
+  "🏢 Corporate / Professional": [
+    "Corporate Event", "Corporate Party", "Corporate Training", "Corporate Offsite",
+    "Conference", "Seminar", "Meeting", "Training", "Team Outing", "Product Launch",
+    "Brand Promotion", "Exhibition", "Walk-in Interview", "Business Dinner",
+    "Residential Conference", "MICE"
+  ],
+  "🎭 Entertainment / Cultural": [
+    "Musical Concert", "Fashion Show", "Stage Event", "Game Watch", "Annual Fest", "Photo Shoots"
+  ]
+};
+
+export const VENUE_TYPES = [
+  'Banquet Hall', 'Farmhouse', 'Party Plot', 'Hotel', 'Resort', 'Restaurant',
+  'Convention Center', 'Club', 'Rooftop Venue', 'Garden Venue', 'Heritage Venue', 'Luxury Venue'
+];
 
 export const VENDOR_TYPES = [
-    "Accessories", "Anchor", "Astrologers", "Bridal Outfits", "Catering",
-    "Choreography", "Cooking Classes", "Crackers and Fireworks", "Decorators",
-    "Detective Services", "DJ", "Groom's Outfits", "GYM",
-    "Hathi, Ghoda and Car", "Honeymoon Planning", "Invitation/Wedding Card",
-    "Jaan Stay", "Jewellery", "Makeup and Hair", "Mehendi",
-    "Music band", "Pandit", "Photography", "Return Gift",
-    "Sounds, Led and Lights", "Transportation", 
-    "Videography", "Wedding Cake", "Wedding Song Artist and Dance Artist"
+  'Photographers', 'Wedding Photographers', 'Videographers', 'Caterers', 'Decorators',
+  'Mehndi Artists', 'DJs', 'Bands', 'Event Planners', 'Wedding Planners', 'Makeup Artists',
+  'Florists', 'Tent Houses', 'Choreographers', 'Invitation Cards', 'Cake Shops',
+  'Jewellers', 'Astrologers', 'Magicians', 'Entertainers', 'Bridal Wear', 'Groom Wear'
 ];
 
 export const GUJARAT_CITIES = [
-    'Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 
-    'Vapi', 'Anand', 'Nadiad', 'Morbi', 'Mehsana', 
-    'Junagadh', 'Bharuch', 'Navsari', 'Viramgam', 'Palanpur'
+  'Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Bhavnagar', 'Jamnagar',
+  'Junagadh', 'Anand', 'Navsari', 'Morbi', 'Vapi', 'Mehsana', 'Bharuch', 'Palanpur'
 ];

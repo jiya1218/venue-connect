@@ -14,15 +14,15 @@ const vendors = [
   { name: "Event Planners", image: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=400&q=80" },
   { name: "Bridal Wear", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80" },
   { name: "Groom Wear", image: "https://images.unsplash.com/photo-1604531826248-f0eca8eeb896?w=400&q=80" },
-  { name: "Invitations", image: "https://images.unsplash.com/photo-1632610992723-82d7c212f6d7?w=400&q=80" },
-  { name: "DJ", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80" },
+  { name: "Invitation Cards", image: "https://images.unsplash.com/photo-1632610992723-82d7c212f6d7?w=400&q=80" },
+  { name: "DJs", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80" },
   { name: "Florists", image: "https://images.unsplash.com/photo-1587317996237-eddd7e834d84?w=400&q=80" },
   { name: "Wedding Photographers", image: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&q=80" },
   { name: "Jewellers", image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80" },
   { name: "Choreographers", image: "https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=400&q=80" },
   { name: "Tent Houses", image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&q=80" },
   { name: "Astrologers", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&q=80" },
-  { name: "Cakes", image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=400&q=80" },
+  { name: "Cake Shops", image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=400&q=80" },
   { name: "Entertainers", image: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80" },
   { name: "Gifts", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" },
   { name: "Magicians", image: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?w=400&q=80" },
@@ -41,11 +41,11 @@ const VendorCategories = () => {
   }, []);
 
   const VendorCard = ({ name, image }: { name: string; image: string }) => {
-    const typeSlug = name.toLowerCase().replace(/[\s/]+/g, '-').replace(/s$/, '');
+    const typeSlug = name.toLowerCase().replace(/[\s/]+/g, '-');
     
     return (
       <Link
-        href={`/${typeSlug}`}
+        href={`/ahmedabad/vendors/${typeSlug}/`}
         className="flex-shrink-0 w-[160px] cursor-pointer group block"
       >
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-border/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300">

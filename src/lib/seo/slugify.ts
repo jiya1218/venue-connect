@@ -21,10 +21,17 @@ export function slugify(text: string): string {
 export function buildSEOSlug(
   categorySlug: string,
   citySlug: string,
-  areaSlug?: string
+  areaSlug?: string,
+  isVendor?: boolean
 ): string {
-  const location = areaSlug ? slugify(areaSlug) : slugify(citySlug);
-  return `${slugify(categorySlug)}-in-${location}`;
+  const cSlug = slugify(categorySlug);
+  const lSlug = slugify(citySlug);
+  const aSlug = areaSlug ? slugify(areaSlug) : '';
+
+  if (isVendor) {
+    return aSlug ? `${lSlug}/${aSlug}/${cSlug}` : `${lSlug}/vendors/${cSlug}`;
+  }
+  return aSlug ? `${lSlug}/${aSlug}/${cSlug}` : `${lSlug}/${cSlug}`;
 }
 
 /**

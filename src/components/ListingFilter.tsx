@@ -5,17 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { VENUE_TYPES, VENDOR_TYPES } from "@/lib/constants";
+import { OCCASIONS, VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES } from "@/lib/constants";
 
 interface ListingFilterProps {
     type: 'venues' | 'vendors';
 }
 
-// Constants now imported from @/lib/constants
-
 const VENUE_CAPACITIES = ['Under 100', '100 - 500', '500 - 1000', '1000+'];
-
-const VENUE_PRICES = ['Under ₹1000', '₹1000 - ₹2000', '₹2000 - ₹3000', 'Above ₹3000'];
+const VENUE_PRICES = ['Under ₹1000', '₹1000 - ₹1500', '₹1500 - ₹2000', 'Above ₹3000'];
 const VENDOR_PRICES = ['Under ₹20k', '₹20k - ₹50k', '₹50k - ₹1L', 'Above ₹1L'];
 
 const AMENITIES = [
@@ -25,7 +22,6 @@ const AMENITIES = [
     { key: 'alcohol', label: '🍾 Liquor OK' },
 ];
 
-const GUJARAT_CITIES = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Anand', 'Navsari', 'Morbi', 'Vapi'];
 const ListingFilter = ({ type }: ListingFilterProps) => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -33,9 +29,8 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
 
     const pathSegments = pathname.split('/').filter(Boolean);
     const cityFromPath = pathSegments[0];
-    const categoryFromPath = pathSegments[1]; 
     
-    const isCityPath = cityFromPath && cityFromPath !== 'venues' && cityFromPath !== 'vendors';
+    const isCityPath = cityFromPath && !['venues', 'vendors', 'login', 'register', 'profile', 'admin'].includes(cityFromPath);
 
     const [location, setLocation] = useState(searchParams.get("city") || (isCityPath ? cityFromPath : ""));
     const [occasion, setOccasion] = useState(searchParams.get("q") || "");
@@ -43,7 +38,6 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
     const [selectedRegion, setSelectedRegion] = useState(searchParams.get("area") || "");
     const [foodType, setFoodType] = useState(searchParams.get("food") || "Any");
     
-    // New Filters
     const [budget, setBudget] = useState(searchParams.get("budget") || "");
     const [capacity, setCapacity] = useState(searchParams.get("capacity") || "");
     const [rating, setRating] = useState(searchParams.get("rating") || "");
@@ -51,10 +45,8 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
 
     const [showMore, setShowMore] = useState(false);
 
-    // Apply filters whenever state changes
     useEffect(() => {
         const p = new URLSearchParams(searchParams.toString());
-        
         const hasChanged = 
             location !== (p.get("city") || (isCityPath ? cityFromPath : "")) ||
             occasion !== (p.get("q") || "") ||
@@ -66,20 +58,15 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
             rating !== (p.get("rating") || "") ||
             cuisines.join(',') !== (p.get("cuisine") || "");
 
-        if (hasChanged) {
-            applyFilters();
-        }
+        if (hasChanged) applyFilters();
     }, [location, occasion, selectedType, selectedRegion, foodType, budget, capacity, rating, cuisines]);
 
     const applyFilters = () => {
         const p = new URLSearchParams(searchParams.toString());
         
-        // Update query params for standard filters
         if (occasion) p.set("q", occasion); else p.delete("q");
         if (selectedRegion) p.set("area", selectedRegion); else p.delete("area");
         if (foodType && foodType !== 'Any') p.set("food", foodType); else p.delete("food");
-        
-        // Update query params for new filters
         if (budget) p.set("budget", budget); else p.delete("budget");
         if (capacity) p.set("capacity", capacity); else p.delete("capacity");
         if (rating) p.set("rating", rating); else p.delete("rating");
@@ -94,19 +81,20 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         
         let targetPath = "/";
         
-        if (citySlug && typeSlug) {
-            targetPath = `/${citySlug}/${typeSlug}`;
-        } else if (citySlug) {
-            targetPath = `/${citySlug}`;
+        if (citySlug) {
+            if (type === 'vendors') {
+                targetPath = typeSlug ? `/${citySlug}/vendors/${typeSlug}/` : `/${citySlug}/vendors/`;
+            } else {
+                targetPath = typeSlug ? `/${citySlug}/${typeSlug}/` : `/${citySlug}/`;
+            }
         } else if (typeSlug) {
-            targetPath = `/ahmedabad/${typeSlug}`;
+            targetPath = type === 'vendors' ? `/ahmedabad/vendors/${typeSlug}/` : `/ahmedabad/${typeSlug}/`;
         } else {
-            targetPath = type === 'vendors' ? '/vendors' : '/venues';
+            targetPath = type === 'vendors' ? '/vendors/' : '/venues/';
         }
 
         const queryString = p.toString();
         const targetUrl = queryString ? `${targetPath}?${queryString}` : targetPath;
-        
         router.push(targetUrl, { scroll: false });
     };
 
@@ -118,9 +106,8 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         setFoodType("Any");
         setBudget("");
         setCapacity("");
-        setRating("");
         setCuisines([]);
-        router.push(type === 'vendors' ? '/vendors' : '/venues');
+        router.push(type === 'vendors' ? '/vendors/' : '/venues/');
     };
 
     const removeFilter = (filterKey: string, filterValue?: string) => {
@@ -208,22 +195,28 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
                         <select 
                             value={occasion} 
                             onChange={e => setOccasion(e.target.value)}
-                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors"
+                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors max-w-[150px]"
                         >
                             <option value="">Select Occasion</option>
-                            {['Wedding', 'Birthday', 'Engagement', 'Pool Party', 'Cocktail Party', 'Corporate Party', 'Kitty Party', 'Conference', 'Reception', 'Garba Event', 'Anniversary'].map(o => <option key={o} value={o}>{o}</option>)}
+                            {Object.entries(OCCASIONS).map(([group, list]) => (
+                                <optgroup key={group} label={group}>
+                                    {list.map(o => <option key={o} value={o}>{o}</option>)}
+                                </optgroup>
+                            ))}
                         </select>
                     </div>
 
                     <div className="hidden md:flex flex-col gap-1 border-r border-slate-100 pr-6">
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Space Type</label>
+                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">{type === 'vendors' ? 'Vendor Category' : 'Space Type'}</label>
                         <select 
                             value={selectedType} 
                             onChange={e => setSelectedType(e.target.value)}
-                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors"
+                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors max-w-[150px]"
                         >
-                            <option value="">Select Type</option>
-                            {VENUE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                            <option value="">{type === 'vendors' ? 'Select Category' : 'Select Type'}</option>
+                            {(type === 'vendors' ? VENDOR_TYPES : VENUE_TYPES).map(t => (
+                                <option key={t} value={t}>{t}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -232,10 +225,10 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
                         <select 
                             value={selectedRegion} 
                             onChange={e => setSelectedRegion(e.target.value)}
-                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors"
+                            className="bg-transparent text-sm font-bold text-slate-900 focus:outline-none cursor-pointer hover:text-primary transition-colors max-w-[120px]"
                         >
                             <option value="">All Regions</option>
-                            {['SG Highway', 'Satellite', 'Bodakdev', 'Adajan', 'Vesu'].map(r => <option key={r} value={r}>{r}</option>)}
+                            {['SG Highway', 'Satellite', 'Bodakdev', 'Adajan', 'Vesu', 'Prahlad Nagar', 'Girdhar Nagar', 'Pal'].map(r => <option key={r} value={r}>{r}</option>)}
                         </select>
                     </div>
 

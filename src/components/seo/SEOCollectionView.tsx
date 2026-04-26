@@ -97,16 +97,16 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
 
       if (isVendorContext) {
           if (isAllCities) {
-              window.location.href = (category === 'vendors') ? '/all-vendors' : `/${category}`;
+              window.location.href = (category === 'vendors') ? '/all-vendors/' : `/${category}/`;
           } else {
-              window.location.href = `/${city}/vendors/${category}`;
+              window.location.href = `/${city}/vendors/${category}/`;
           }
       } else {
           // Venues search logic
           if (isAllCities) {
-              window.location.href = `/${category === 'venues' ? 'all-venues' : category}`;
+              window.location.href = `/${category === 'venues' ? 'all-venues' : category}/`;
           } else {
-              window.location.href = `/${city}/${category === 'venues' ? 'venues' : category}`;
+              window.location.href = `/${city}/${category === 'venues' ? 'venues' : category}/`;
           }
       }
   };
@@ -175,10 +175,10 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                   {/* Content Constrained to be narrower than search bar */}
                   <div className="max-w-6xl mb-3 md:mb-10">
                       <h1 className="text-xl md:text-5xl font-black text-white uppercase tracking-[3px] md:tracking-[4px] leading-tight md:leading-[1.2] text-center md:text-left break-words">
-                        {seoData?.h1Tag || (seoPage as any)?.h1_tag ? (
-                          seoData?.h1Tag || (seoPage as any)?.h1_tag
+                        {seoData?.h1Tag || (seoPage?.custom_content as any)?.h1Tag || (seoPage?.custom_content as any)?.h1_tag ? (
+                          seoData?.h1Tag || (seoPage?.custom_content as any)?.h1Tag || (seoPage?.custom_content as any)?.h1_tag
                         ) : isVendorContext
-                           ? <>{isNearMe ? 'Top' : 'Best'} <span className="text-primary italic tracking-[1px] md:tracking-[2px]">{attributeLabel}</span> {isNearMe ? '' : 'in '}{locationLabel}</>
+                           ? <>Top <span className="text-primary italic tracking-[1px] md:tracking-[2px]">{attributeLabel}</span> {isNearMe ? '' : 'in '}{locationLabel}</>
                            : <>Best <span className="text-primary italic tracking-[1px] md:tracking-[2px]">{attributeLabel}</span> {isNearMe ? '' : 'in '}{locationLabel}</>}
                       </h1>
                   </div>
@@ -714,19 +714,19 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
               {/* 4-Column Dense Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-1 mb-6 md:mb-8">
                   {(isVendorContext ? [
-                      ['Photography', 'Catering', 'Decorators', 'Makeup'],
-                      ['Choreography', 'DJ', 'Anchor', 'Pandit'],
-                      ['Bridal Outfits', 'Jewellery', 'Invitation', 'Mehendi'],
-                      ['Transportation', 'Sounds', 'Cake', 'Music']
+                      ['Photographers', 'Caterers', 'Decorators', 'Makeup Artists'],
+                      ['Choreographers', 'DJs', 'Wedding Planners', 'Event Planners'],
+                      ['Bridal Wear', 'Jewellers', 'Invitation Cards', 'Mehndi Artists'],
+                      ['Groom Wear', 'Florists', 'Cake Shops', 'Bands']
                   ] : [
                       ['Banquet Hall', 'Party Plot', 'Lawn', 'Resort'],
                       ['Weddings', 'Birthdays', 'Corporate Event', 'Social Mixer'],
-                      ['Catering', 'Decorators', 'Photography', 'Mehendi'],
+                      ['Caterers', 'Decorators', 'Photographers', 'Mehndi Artists'],
                       ['Engagement', 'Reception', 'Cocktail Party', 'Anniversary']
                   ]).map((list, colIdx) => (
                       <div key={colIdx} className="space-y-0.5 md:space-y-1">
                           {list.map(item => (
-                              <Link key={item} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${item.toLowerCase().replace(/\s+/g, '-')}`} className="block text-[11px] md:text-[14px] font-bold text-slate-500 hover:text-black transition-all leading-relaxed">
+                              <Link key={item} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${item.toLowerCase().replace(/\s+/g, '-')}/`} className="block text-[11px] md:text-[14px] font-bold text-slate-500 hover:text-black transition-all leading-relaxed">
                                 {item} {isVendorContext ? '' : `in ${locationLabel}`}
                               </Link>
                           ))}

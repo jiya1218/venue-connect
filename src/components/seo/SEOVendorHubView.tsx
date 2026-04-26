@@ -22,21 +22,21 @@ const REVIEWS = [
 ];
 
 const CATEGORY_ICONS: Record<string, string> = {
-    "Photography": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
-    "Catering": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
+    "Photographers": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
+    "Caterers": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
     "Decorators": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&q=80",
-    "Makeup and Hair": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
-    "Mehendi": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
-    "DJ": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
+    "Makeup Artists": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
+    "Mehndi Artists": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
+    "DJs": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
 };
 
 const HIRE_SERVICES = [
-    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" },
+    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" },
     { title: "Bridal Wear", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80", path: "bridal-wear" },
     { title: "Groom Wear", img: "https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?w=600&q=80", path: "groom-wear" },
     { title: "Decorators", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80", path: "decorators" },
-    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" },
+    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" },
 ];
 
 const BLOGS = [
@@ -57,9 +57,9 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
         const isAllVendors = !searchCategory || searchCategory === 'All Vendors';
 
         if (isAllCities) {
-            window.location.href = isAllVendors ? '/all/vendors' : `/${category}`;
+            window.location.href = isAllVendors ? '/all/vendors/' : `/${category}/`;
         } else {
-            window.location.href = `/${city}/vendors/${isAllVendors ? 'vendors' : category}`;
+            window.location.href = `/${city}/vendors/${isAllVendors ? 'vendors' : category}/`;
         }
     };
 
@@ -152,7 +152,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                             style={{ transform: `translateX(-${catIndex * 160}px)` }}
                         >
                             {displayCategories.map((name, idx) => (
-                                <Link key={`${name}-${idx}`} href={`/${citySlug}/vendors/${name.toLowerCase().replace(/[\s/]+/g, '-')}`} className="flex-shrink-0 flex flex-col items-center gap-2 group">
+                                <Link key={`${name}-${idx}`} href={`/${citySlug}/vendors/${name.toLowerCase().replace(/[\s/]+/g, '-')}/`} className="flex-shrink-0 flex flex-col items-center gap-2 group">
                                     <div className="w-32 h-20 rounded-[1.5rem] overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
                                         <img src={CATEGORY_ICONS[name] || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&q=80"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt=""/>
                                     </div>
@@ -246,7 +246,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
 
 function VendorCard({ v, citySlug, locationLabel }: { v: any, citySlug: string, locationLabel: string }) {
     return (
-        <Link href={`/${v.city?.toLowerCase() || citySlug}/vendors/${v.slug}`} className="min-w-[320px] group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col hover:-translate-y-2">
+        <Link href={`/${v.city?.toLowerCase() || citySlug}/vendors/${v.slug}/`} className="min-w-[320px] group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col hover:-translate-y-2">
             <div className="relative h-48 overflow-hidden">
                 <img 
                     src={v.image || (v.images && v.images[0]) || "https://images.unsplash.com/photo-1519225421980-715bd0215aed?w=600&q=80"} 

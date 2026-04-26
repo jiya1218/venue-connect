@@ -93,8 +93,8 @@ const Footer = () => {
           <Accordion title="Event Planning Services">
             <div className="flex flex-col gap-1.5 pt-1">
               {[
-                { l: "All Event Vendors",  h: "/vendors" },
-                { l: "Catering Services",  h: "/catering" },
+                { l: "All Event Vendors",  h: "/vendors/" },
+                { l: "Caterers",  h: "/ahmedabad/vendors/caterers/" },
                 { l: "Wedding Planning",   h: "/wedding-planning" },
                 { l: "Event Planning",     h: "/event-planning" },
                 { l: "Birthday Planning",  h: "/birthday-planning" },
@@ -161,8 +161,8 @@ const Footer = () => {
             <div>
               <h4 className="text-lg font-black mb-4 tracking-tight">Event Planning Services</h4>
               <div className="flex flex-wrap text-[13px] gap-x-1.5 gap-y-0.5 text-slate-300 font-medium leading-relaxed">
-                <Link href="/vendors" className="hover:text-white transition-colors">All Event Vendors</Link><span>|</span>
-                <Link href="/catering" className="hover:text-white transition-colors">Catering Services</Link><span>|</span>
+                <Link href="/vendors/" className="hover:text-white transition-colors">All Event Vendors</Link><span>|</span>
+                <Link href="/ahmedabad/vendors/caterers/" className="hover:text-white transition-colors">Caterers</Link><span>|</span>
                 <Link href="/wedding-planning" className="hover:text-white transition-colors">Wedding Planning</Link><span>|</span>
                 <Link href="/event-planning" className="hover:text-white transition-colors">Event Planning</Link><span>|</span>
                 <Link href="/birthday-planning" className="hover:text-white transition-colors">Birthday Planning</Link><span>|</span>

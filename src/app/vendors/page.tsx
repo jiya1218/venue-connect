@@ -71,12 +71,12 @@ const ReviewCarousel = () => {
 
 // --- VERIFIED FALLBACK IMAGES ---
 const CATEGORY_ICONS: Record<string, string> = {
-    "Photography": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
-    "Catering": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
+    "Photographers": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
+    "Caterers": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
     "Decorators": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&q=80",
-    "Makeup and Hair": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
-    "Mehendi": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
-    "DJ": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
+    "Makeup Artists": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
+    "Mehndi Artists": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
+    "DJs": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
     "Entertainers": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80",
     "Wedding Planners": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&q=80",
     "Astrologers": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&q=80",
@@ -85,12 +85,12 @@ const CATEGORY_ICONS: Record<string, string> = {
 const DEFAULT_V_IMG = "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80";
 
 const HIRE_SERVICES = [
-    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" },
-    { title: "Caterers", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "catering" },
-    { title: "DJs", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80", path: "dj" },
+    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" },
+    { title: "Caterers", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "caterers" },
+    { title: "DJs", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80", path: "djs" },
     { title: "Decorators", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80", path: "decorators" },
-    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" },
+    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" },
 ];
 
 function VendorsContent() {
@@ -102,10 +102,10 @@ function VendorsContent() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(true);
     const [pricingGuides, setPricingGuides] = useState<any[]>([
-        { title: "Photography Prices", price: "Calculating...", img: CATEGORY_ICONS['Photography'] || DEFAULT_V_IMG, path: "photography" },
-        { title: "Catering Prices", price: "Calculating...", img: CATEGORY_ICONS['Catering'] || DEFAULT_V_IMG, path: "catering" },
-        { title: "Makeup and Hair Prices", price: "Calculating...", img: CATEGORY_ICONS['Makeup and Hair'] || DEFAULT_V_IMG, path: "makeup-and-hair" },
-        { title: "Mehendi Prices", price: "Calculating...", img: CATEGORY_ICONS['Mehendi'] || DEFAULT_V_IMG, path: "mehendi" }
+        { title: "Photographer Prices", price: "Calculating...", img: CATEGORY_ICONS['Photographers'] || DEFAULT_V_IMG, path: "photographers" },
+        { title: "Caterer Prices", price: "Calculating...", img: CATEGORY_ICONS['Caterers'] || DEFAULT_V_IMG, path: "caterers" },
+        { title: "Makeup Artist Prices", price: "Calculating...", img: CATEGORY_ICONS['Makeup Artists'] || DEFAULT_V_IMG, path: "makeup-artists" },
+        { title: "Mehndi Artist Prices", price: "Calculating...", img: CATEGORY_ICONS['Mehndi Artists'] || DEFAULT_V_IMG, path: "mehndi-artists" }
     ]);
     const supabase = createClient();
 
@@ -136,10 +136,10 @@ function VendorsContent() {
         const fetchPricingData = async () => {
             try {
                 const categories = [
-                    { name: 'Photography', label: '/day', defaultPrice: 25000 },
-                    { name: 'Catering', label: '/plate', usePerPlate: true, defaultPrice: 500 },
-                    { name: 'Makeup and Hair', label: '/person', defaultPrice: 5000 },
-                    { name: 'Mehendi', label: '/person', defaultPrice: 8000 }
+                    { name: 'Photographers', label: '/day', defaultPrice: 25000 },
+                    { name: 'Caterers', label: '/plate', usePerPlate: true, defaultPrice: 500 },
+                    { name: 'Makeup Artists', label: '/person', defaultPrice: 5000 },
+                    { name: 'Mehndi Artists', label: '/person', defaultPrice: 8000 }
                 ];
                 const pricingData = [];
 
@@ -271,8 +271,9 @@ function VendorsContent() {
     const handleSearch = () => {
         const citySlug = searchCity.toLowerCase().trim().replace(/\s+/g, '-');
         const categorySlug = searchCategory.toLowerCase().trim().replace(/[\s/]+/g, '-');
-        if (citySlug && categorySlug) router.push(`/${citySlug}/${categorySlug}`);
-        else if (citySlug) router.push(`/${citySlug}`);
+        if (citySlug && categorySlug) router.push(`/${citySlug}/vendors/${categorySlug}`);
+        else if (citySlug) router.push(`/${citySlug}/vendors`);
+        else if (categorySlug) router.push(`/ahmedabad/vendors/${categorySlug}`);
     };
 
     const [mounted, setMounted] = useState(false);
@@ -357,7 +358,7 @@ function VendorsContent() {
                             {displayCategories.map((name, idx) => (
                                 <Link 
                                     key={`${name}-${idx}`} 
-                                    href={mounted ? `/${getCity()}/vendors/${name.toLowerCase().replace(/[\s/]+/g, '-')}` : '#'} 
+                                    href={mounted ? `/${getCity()}/vendors/${name.toLowerCase().replace(/[\s/]+/g, '-')}/` : '#'} 
                                     className="flex-shrink-0 flex flex-col items-center gap-2 group"
                                 >
                                     <div className="w-20 h-20 md:w-32 md:h-32 rounded-2xl overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
@@ -379,12 +380,12 @@ function VendorsContent() {
                     </div>
                      <div className="flex overflow-x-auto pb-6 no-scrollbar snap-x gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8">
                          {[
-                             { title: "Bridal Outfits near me", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80", path: "bridal-outfits" },
-                             { title: "Mehndi Artists near me", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" },
-                             { title: "Grooms Outfits near me", img: "https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?w=600&q=80", path: "grooms-outfits" },
+                             { title: "Bridal Wear near me", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80", path: "bridal-wear" },
+                             { title: "Mehndi Artists near me", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" },
+                             { title: "Groom Wear near me", img: "https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?w=600&q=80", path: "groom-wear" },
                              { title: "Decorators near me", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80", path: "decorators" }
                          ].map((s, i) => (
-                             <Link key={i} href={mounted ? `/${getCity()}/vendors/${s.path}` : '#'} className="min-w-[calc(85%-1rem)] md:min-w-0 snap-start group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center pb-8 border-b-4 border-b-transparent hover:border-b-primary">
+                              <Link key={i} href={mounted ? `/${getCity()}/vendors/${s.path}/` : '#'} className="min-w-[calc(85%-1rem)] md:min-w-0 snap-start group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center pb-8 border-b-4 border-b-transparent hover:border-b-primary">
                                  <div className="w-full h-56 overflow-hidden mb-6">
                                      <img src={s.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={s.title}/>
                                  </div>
@@ -404,7 +405,7 @@ function VendorsContent() {
                                 <h2 className="text-3xl font-black text-slate-950 tracking-tight uppercase">Top Rated Professionals</h2>
                                 <p className="text-primary font-bold tracking-widest text-xs uppercase mt-2">Verified & Highly Recommended in Gujarat</p>
                             </div>
-                            <Link href="/ahmedabad/vendors" className="px-8 py-3 bg-white border-2 border-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-lg">
+                            <Link href="/ahmedabad/vendors/" className="px-8 py-3 bg-white border-2 border-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-lg">
                                 View Full Directory
                             </Link>
                         </div>
@@ -414,7 +415,7 @@ function VendorsContent() {
                             {vendors.map((v, i) => (
                                 <Link 
                                     key={`v-m-${v.id || i}`} 
-                                    href={`/${v.city?.toLowerCase() || 'ahmedabad'}/vendors/${v.slug}`} 
+                                    href={`/${v.city?.toLowerCase() || 'ahmedabad'}/vendors/${v.slug}/`} 
                                     className="min-w-[280px] snap-start group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg flex flex-col"
                                 >
                                     <div className="relative h-44 overflow-hidden">
@@ -443,7 +444,7 @@ function VendorsContent() {
                             {vendors.map((v, i) => (
                                 <Link 
                                     key={v.id || i} 
-                                    href={`/${v.city?.toLowerCase() || 'ahmedabad'}/vendors/${v.slug}`} 
+                                    href={`/${v.city?.toLowerCase() || 'ahmedabad'}/vendors/${v.slug}/`} 
                                     className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col hover:-translate-y-2"
                                 >
                                     <div className="relative h-48 overflow-hidden">
@@ -496,12 +497,12 @@ function VendorsContent() {
                     </div>
                      <div className="flex overflow-x-auto pb-6 no-scrollbar snap-x gap-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8">
                          {(pricingGuides.length > 0 ? pricingGuides : [
-                             { title: "Photography Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-                             { title: "Catering Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "catering" },
-                             { title: "Makeup Artist Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" },
-                             { title: "Mehndi Artist Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" }
+                             { title: "Photographer Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+                             { title: "Caterer Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "caterers" },
+                             { title: "Makeup Artist Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" },
+                             { title: "Mehndi Artist Prices", price: "Loading...", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" }
                          ]).map((p, i) => (
-                             <Link key={i} href={mounted ? `/${getCity()}/vendors/${p.path}` : '#'} className="min-w-[70%] md:min-w-0 snap-start bg-white rounded-xl overflow-hidden shadow-lg border border-slate-100 flex flex-col group cursor-pointer hover:shadow-2xl transition-all duration-500 border-b-4 border-b-transparent hover:border-b-primary">
+                             <Link key={i} href={mounted ? `/${getCity()}/vendors/${p.path}/` : '#'} className="min-w-[70%] md:min-w-0 snap-start bg-white rounded-xl overflow-hidden shadow-lg border border-slate-100 flex flex-col group cursor-pointer hover:shadow-2xl transition-all duration-500 border-b-4 border-b-transparent hover:border-b-primary">
                                  <div className="w-full h-40 md:h-48 overflow-hidden">
                                      <img src={p.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.title}/>
                                  </div>
@@ -524,12 +525,12 @@ function VendorsContent() {
                     {/* Popular Search Grid — Adjusted for 2x2 Mobile View */}
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                         {[
-                            { title: 'Photographers', slug: 'photography' },
-                            { title: 'Makeup Artists', slug: 'makeup-and-hair' },
+                            { title: 'Photographers', slug: 'photographers' },
+                            { title: 'Makeup Artists', slug: 'makeup-artists' },
                             { title: 'Decorators', slug: 'decorators' },
-                            { title: 'DJs', slug: 'dj' }
+                            { title: 'DJs', slug: 'djs' }
                         ].map((s, i) => (
-                             <Link key={i} href={`/${getCity()}/vendors/${s.slug}`} className="aspect-[2.5/1] md:aspect-auto md:h-16 flex items-center justify-center bg-white rounded-xl md:rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] border border-slate-50 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] hover:border-primary/20 transition-all duration-300 px-4 md:px-6 group">
+                             <Link key={i} href={`/${getCity()}/vendors/${s.slug}/`} className="aspect-[2.5/1] md:aspect-auto md:h-16 flex items-center justify-center bg-white rounded-xl md:rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] border border-slate-50 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] hover:border-primary/20 transition-all duration-300 px-4 md:px-6 group">
                                  <span className="font-black text-slate-800 uppercase tracking-tight text-[11px] md:text-sm text-center group-hover:text-primary transition-colors line-clamp-1">{s.title} in {getCity()}</span>
                              </Link>
                          ))}
@@ -705,14 +706,14 @@ function VendorsContent() {
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-1 mb-12">
                         {[
-                            ['Photography', 'Catering', 'Decorators', 'Makeup'],
-                            ['Choreography', 'DJ', 'Anchor', 'Pandit'],
-                            ['Bridal Outfits', 'Jewellery', 'Invitation', 'Mehendi'],
-                            ['Transportation', 'Sounds', 'Cake', 'Music']
+                            ['Photographers', 'Caterers', 'Decorators', 'Makeup Artists'],
+                            ['Choreographers', 'DJs', 'Wedding Planners', 'Event Planners'],
+                            ['Bridal Wear', 'Jewellers', 'Invitation Cards', 'Mehndi Artists'],
+                            ['Groom Wear', 'Florists', 'Cake Shops', 'Bands']
                         ].map((list, colIdx) => (
                             <div key={colIdx} className="space-y-1">
                                 {list.map(item => (
-                                    <Link key={item} href={mounted ? `/${getCity()}/vendors/${item.toLowerCase().replace(/[\s/]+/g, '-')}` : '#'} className="block text-[12px] md:text-[14px] font-bold text-slate-500 hover:text-black transition-all leading-relaxed">{item}</Link>
+                                    <Link key={item} href={mounted ? `/${getCity()}/vendors/${item.toLowerCase().replace(/[\s/]+/g, '-')}/` : '#'} className="block text-[12px] md:text-[14px] font-bold text-slate-500 hover:text-black transition-all leading-relaxed">{item}</Link>
                                 ))}
                             </div>
                         ))}

@@ -271,9 +271,9 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
                 {/* SECTION 3: 3 SERVICE RECOMMENDATIONS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 md:mb-24">
                     {[
-                        { title: 'Need a Caterer?', desc: 'Best Food Experts', color: 'from-sky-50 to-blue-100', text: 'text-blue-600', link: '/ahmedabad/catering' },
-                        { title: 'Looking for a Venue?', desc: 'Premium Locations', color: 'from-amber-50 to-orange-100', text: 'text-orange-600', link: '/venues' },
-                        { title: 'Birthday Planner?', desc: 'Birthday Specialists', color: 'from-pink-50 to-rose-100', text: 'text-rose-600', link: '/ahmedabad/birthday-party-decorators' }
+                        { title: 'Need a Caterer?', desc: 'Best Food Experts', color: 'from-sky-50 to-blue-100', text: 'text-blue-600', link: '/ahmedabad/vendors/caterers/' },
+                        { title: 'Looking for a Venue?', desc: 'Premium Locations', color: 'from-amber-50 to-orange-100', text: 'text-orange-600', link: '/venues/' },
+                        { title: 'Birthday Planner?', desc: 'Birthday Specialists', color: 'from-pink-50 to-rose-100', text: 'text-rose-600', link: '/ahmedabad/vendors/decorators/' }
                     ].map((s) => (
                         <div key={s.title} className={`p-8 rounded-[2rem] md:rounded-[2.5rem] bg-gradient-to-br ${s.color} border border-white/50 group hover:shadow-xl transition-all relative overflow-hidden cursor-pointer`}>
                             <Link href={s.link} className="absolute inset-0 z-20" />
@@ -379,7 +379,7 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
                         {[
                             ['Banquet Hall', 'Party Plot', 'Lawn', 'Resort'],
                             ['Wedding Venues', 'Birthday Party', 'Corporate Event', 'Social Mixer'],
-                            ['Catering', 'Decorators', 'Photography', 'Mehendi Professionals'],
+                            ['Caterers', 'Decorators', 'Photographers', 'Mehndi Artists'],
                             ['Engagement Hall', 'Reception Venue', 'Cocktail Party', 'Anniversary']
                         ].map((list, colIdx) => (
                             <div key={colIdx} className="space-y-1">

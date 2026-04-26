@@ -5,24 +5,10 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES } from "@/lib/constants";
 import { gujaratCities } from "@/lib/cities";
 
-const EVENT_SUGGESTIONS = [
-  "Wedding", "Wedding Reception", "Wedding Anniversary", "Ring Ceremony",
-  "Pre Wedding Mehendi Party", "Sangeet Ceremony", "Bachelor Party", "Bridal Shower",
-  "Birthday Party", "First Birthday Party", "Kids Birthday Party",
-  "Holi Party",
-  "Brand Promotion", "Business Dinner", "Conference", "Corporate Event",
-  "Corporate Offsite", "Corporate Party", "Corporate Training", "Dealers Meet",
-  "Exhibition", "Fashion Show", "Meeting", "Musical Concert", "Product Launch",
-  "Team Building", "Team Outing", "Training", "Walkin Interview", "Annual Fest", "MICE",
-  "Baby Shower", "Childrens Party", "Christian Communion", "Class Reunion",
-  "Cocktail Dinner", "Engagement", "House Party", "Family Function",
-  "Family Get Together", "Farewell", "Freshers Party", "Game Watch", "Get Together",
-  "Group Dining", "Kitty Party", "Naming Ceremony", "Photo Shoots", "Pool Party",
-  "Residential Conference", "Social Mixer", "Stage Event", "Adventure Party",
-  "Aqueeqa Ceremony",
-];
+const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
 
 const HeroSearch = () => {
   const router = useRouter();
@@ -48,20 +34,41 @@ const HeroSearch = () => {
 
   const handleSearch = () => {
     const citySlug = city.trim().toLowerCase().replace(/\s+/g, '-');
-    const typeSlug = serviceType.trim().toLowerCase().replace(/[\s/]+/g, '-').replace('venues', '');
+    const typeSlug = serviceType.trim().toLowerCase().replace(/[\s/]+/g, '-');
 
     // Construct the base SEO path
     let targetPath = "/";
 
-    if (citySlug && typeSlug) {
-      targetPath = `/${citySlug}/${typeSlug}`;
+    // Determine if it's a venue or vendor search based on the selected value
+    const isVenueType = VENUE_TYPES.includes(serviceType) || serviceType === 'venues';
+    const isVendorType = VENDOR_TYPES.includes(serviceType) || serviceType === 'vendors';
+
+    if (citySlug && (isVenueType || isVendorType)) {
+      if (isVenueType) {
+        // Special case for "all venues"
+        if (serviceType === 'venues') {
+          targetPath = `/${citySlug}/`;
+        } else {
+          targetPath = `/${citySlug}/${typeSlug}/`;
+        }
+      } else {
+        // Special case for "all vendors"
+        if (serviceType === 'vendors') {
+          targetPath = `/${citySlug}/vendors/`;
+        } else {
+          targetPath = `/${citySlug}/vendors/${typeSlug}/`;
+        }
+      }
     } else if (citySlug) {
-      targetPath = `/${citySlug}`;
-    } else if (typeSlug) {
-      // If no city, show global venues/vendors for that category
-      targetPath = `/${typeSlug}`;
+      targetPath = `/${citySlug}/`;
+    } else if (isVenueType || isVendorType) {
+      if (isVenueType) {
+        targetPath = serviceType === 'venues' ? '/venues/' : `/ahmedabad/${typeSlug}/`;
+      } else {
+        targetPath = serviceType === 'vendors' ? '/vendors/' : `/ahmedabad/vendors/${typeSlug}/`;
+      }
     } else {
-      targetPath = serviceType === 'venues' ? '/venues' : '/vendors';
+      targetPath = serviceType === 'vendors' ? '/vendors/' : '/venues/';
     }
 
     // Include free-text search as a query parameter if present
@@ -78,7 +85,7 @@ const HeroSearch = () => {
   };
 
   return (
-    <section className="relative min-h-[70vh] md:min-h-screen flex flex-col justify-end overflow-hidden">
+    <section className="relative min-h-[55vh] md:min-h-[80vh] flex flex-col justify-end overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -92,7 +99,7 @@ const HeroSearch = () => {
       <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[rgba(10,5,10,0.97)] via-[rgba(18,8,14,0.75)] to-[rgba(18,8,14,0.45)]" />
 
       {/* Content */}
-      <div className="relative z-[2] container pb-8 pt-20 md:pb-20 md:pt-40 px-5">
+      <div className="relative z-[2] container pb-8 md:pb-12 pt-20 md:pt-40 px-5">
         <div className="max-w-4xl mx-auto text-center">
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 md:gap-3 mb-3 md:mb-6">
@@ -111,7 +118,7 @@ const HeroSearch = () => {
           </h1>
 
           {/* Search Box */}
-          <div className="bg-black/40 backdrop-blur-md border border-white/15 rounded-xl md:rounded-[2rem] p-3 md:p-6 lg:p-8 max-w-3xl mx-auto mb-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+          <div className="bg-black/40 backdrop-blur-md border border-white/15 rounded-xl md:rounded-[2rem] p-3 md:p-6 lg:p-8 max-w-3xl mx-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
             <h3 className="font-display text-base md:text-2xl text-white font-medium mb-3 md:mb-6 text-center tracking-wide">
               Find Your Perfect Match
             </h3>
@@ -154,15 +161,11 @@ const HeroSearch = () => {
                   <SelectTrigger className="bg-transparent border-0 text-white h-10 md:h-11 w-full focus:ring-0 hover:bg-white/5 rounded-md px-3 text-xs">
                     <SelectValue placeholder="Looking for..." />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="venues">Venues</SelectItem>
-                    <SelectItem value="photographers">Photographers</SelectItem>
-                    <SelectItem value="makeup artists">Makeup Artists</SelectItem>
-                    <SelectItem value="decorators">Decorators</SelectItem>
-                    <SelectItem value="caterers">Caterers</SelectItem>
-                    <SelectItem value="mehndi artists">Mehndi Artists</SelectItem>
-                    <SelectItem value="bands">Bands / DJ</SelectItem>
-                    <SelectItem value="planners">Event Planners</SelectItem>
+                  <SelectContent className="rounded-xl max-h-[300px] overflow-y-auto">
+                    <SelectItem value="venues" className="font-bold border-b border-slate-100">All Venues</SelectItem>
+                    {VENUE_TYPES.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+                    <SelectItem value="vendors" className="font-bold border-t border-b border-slate-100 mt-2">All Vendors</SelectItem>
+                    {VENDOR_TYPES.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -210,24 +213,6 @@ const HeroSearch = () => {
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-2">
-            <Button
-              size="lg"
-              onClick={() => router.push('/list-venue')}
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-6 rounded-xl text-[10px] font-bold tracking-widest uppercase shadow-2xl shadow-primary/20 hover:-translate-y-1 transition-all"
-            >
-              List a Venue
-            </Button>
-            <Button
-              size="lg"
-              onClick={() => router.push('/list-vendor')}
-              className="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/20 hover:border-white/60 px-8 py-6 rounded-xl text-[10px] font-bold tracking-widest uppercase hover:-translate-y-1 transition-all"
-            >
-              List a Vendor
-            </Button>
           </div>
         </div>
       </div>

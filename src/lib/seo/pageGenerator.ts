@@ -45,13 +45,39 @@ const VENUE_TYPE_SLUGS_SET = new Set([
   'birthday-party-venue', 'engagement-venue', 'corporate-event-venue', 'pre-wedding-shoot-venue', 'pool-party-venue',
 ]);
 
+const STRICT_MAPPINGS: Record<string, string> = {
+  'photographers': 'Photographers',
+  'caterers': 'Caterers',
+  'decorators': 'Decorators',
+  'mehndi-artists': 'Mehndi Artists',
+  'djs': 'DJs',
+  'bands': 'Bands',
+  'event-planners': 'Event Planners',
+  'bridal-wear': 'Bridal Wear',
+  'makeup-artists': 'Makeup Artists',
+  'florists': 'Florists',
+  'videographers': 'Videographers',
+  'wedding-planners': 'Wedding Planners',
+  'tent-houses': 'Tent Houses',
+  'choreographers': 'Choreographers',
+  'invitation-cards': 'Invitation Cards',
+  'cake-shops': 'Cake Shops',
+  'jewellers': 'Jewellers',
+  'astrologers': 'Astrologers',
+  'magicians': 'Magicians',
+  'entertainers': 'Entertainers',
+  'groom-wear': 'Groom Wear',
+  'wedding-photographers': 'Wedding Photographers'
+};
+
 function buildPageMeta(
   categorySlug: string,
   cityLabel: string,
   locationLabel: string,  // area+city or just city
   hasArea: boolean
-): { meta_title: string; meta_description: string } {
-  const category = unslugify(categorySlug);
+): { meta_title: string; meta_description: string; pageTitle: string; h1Tag: string } {
+  const catLowerSlug = categorySlug.toLowerCase().replace('-near-me', '');
+  const category = STRICT_MAPPINGS[catLowerSlug] || unslugify(categorySlug);
   const isVendor = VENDOR_SLUGS_SET.has(categorySlug.toLowerCase());
   const isVenueType = VENUE_TYPE_SLUGS_SET.has(categorySlug.toLowerCase());
   // Anything else is treated as event/generic
@@ -59,39 +85,51 @@ function buildPageMeta(
   if (isVendor) {
     if (hasArea) {
       return {
+        pageTitle: `${category} in ${locationLabel} | VenueConnect`,
         meta_title: `Top ${category} in ${locationLabel} | Hire Near You - VenueConnect`,
         meta_description: `Hire top ${category.toLowerCase()} in ${locationLabel} for weddings, birthdays & all events. Compare portfolios, pricing & reviews. Get direct leads via WhatsApp. Book on VenueConnect.`,
+        h1Tag: `Top ${category} in ${locationLabel}`,
       };
     }
     return {
+      pageTitle: `${category} in ${cityLabel} | VenueConnect`,
       meta_title: `Top ${category} in ${cityLabel} | Compare & Hire - VenueConnect`,
       meta_description: `Hire top ${category.toLowerCase()} in ${cityLabel} for weddings, birthdays & all events. Compare portfolios, pricing & reviews. Get direct leads via WhatsApp. Book on VenueConnect.`,
+      h1Tag: `Top ${category} in ${cityLabel}`,
     };
   }
 
   if (isVenueType) {
     if (hasArea) {
       return {
+        pageTitle: `${category} in ${locationLabel} | VenueConnect`,
         meta_title: `Best ${category} in ${locationLabel} | Compare Near You - VenueConnect`,
         meta_description: `Find top ${category.toLowerCase()} in ${locationLabel} for any occasion. Compare capacity, pricing & amenities. 100+ verified listings. Get free quotes on VenueConnect Gujarat.`,
+        h1Tag: `Best ${category} in ${locationLabel}`,
       };
     }
     return {
+      pageTitle: `${category} in ${cityLabel} | VenueConnect`,
       meta_title: `Best ${category} in ${cityLabel} | Compare Prices & Book - VenueConnect`,
       meta_description: `Find top ${category.toLowerCase()} in ${cityLabel} for any occasion. Compare capacity, pricing & amenities. 100+ verified listings. Get free quotes on VenueConnect Gujarat.`,
+      h1Tag: `Best ${category} in ${cityLabel}`,
     };
   }
 
   // Event or generic
   if (hasArea) {
     return {
+      pageTitle: `${category} in ${locationLabel} | VenueConnect`,
       meta_title: `Best ${category} in ${locationLabel} | Book Near You - VenueConnect`,
       meta_description: `Find the best ${category.toLowerCase()} in ${locationLabel}. Compare wedding halls, banquet spaces & party plots. Get free quotes & instant leads. Browse 100+ options on VenueConnect.`,
+      h1Tag: `Best ${category} in ${locationLabel}`,
     };
   }
   return {
+    pageTitle: `${category} in ${cityLabel} | VenueConnect`,
     meta_title: `Best ${category} in ${cityLabel} | Book & Compare Prices - VenueConnect`,
     meta_description: `Find the best ${category.toLowerCase()} in ${cityLabel}. Compare wedding halls, banquet spaces & party plots. Get free quotes & instant leads. Browse 100+ options on VenueConnect.`,
+    h1Tag: `Best ${category} in ${cityLabel}`,
   };
 }
 
@@ -108,14 +146,15 @@ export async function generateSEOPage(
 ): Promise<SEOPageRow | null> {
   const supabase = await createClient();
   if (!supabase) return null;
-
-  const slug = buildSEOSlug(categorySlug, citySlug, areaSlug);
+  const catLowerSlug = categorySlug.toLowerCase().replace('-near-me', '');
+  const isVendor = VENDOR_SLUGS_SET.has(catLowerSlug);
+  const slug = buildSEOSlug(categorySlug, citySlug, areaSlug, isVendor);
 
   const cityLabel = unslugify(citySlug);
   const locationLabel = areaSlug ? `${unslugify(areaSlug)}, ${cityLabel}` : cityLabel;
   const hasArea = !!areaSlug;
 
-  const { meta_title, meta_description } = buildPageMeta(categorySlug, cityLabel, locationLabel, hasArea);
+  const { meta_title, meta_description, pageTitle, h1Tag } = buildPageMeta(categorySlug, cityLabel, locationLabel, hasArea);
 
   const { data: newPage, error } = await supabase
     .from('seo_pages')
@@ -126,8 +165,10 @@ export async function generateSEOPage(
       city_id: cityId,
       area_id: areaId ?? null,
       custom_content: {
+        pageTitle,
         meta_title,
         meta_description,
+        h1Tag,
       },
       last_generated: new Date().toISOString(),
     }, { onConflict: 'slug' })

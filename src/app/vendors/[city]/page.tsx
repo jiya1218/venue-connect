@@ -66,12 +66,12 @@ const ReviewCarousel = () => {
 
 // --- VERIFIED FALLBACK IMAGES ---
 const CATEGORY_ICONS: Record<string, string> = {
-    "Photography": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
-    "Catering": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
+    "Photographers": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80",
+    "Caterers": "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=80",
     "Decorators": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&q=80",
-    "Makeup and Hair": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
-    "Mehendi": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
-    "DJ": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
+    "Makeup Artists": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
+    "Mehndi Artists": "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80",
+    "DJs": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80",
     "Entertainers": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80",
     "Wedding Planners": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&q=80",
     "Astrologers": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&q=80",
@@ -83,12 +83,12 @@ function toSlug(str: string) { return str.toLowerCase().replace(/[\s/]+/g, '-');
 function toTitle(slug: string) { return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); }
 
 const HIRE_SERVICES = [
-    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" },
-    { title: "Caterers", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "catering" },
-    { title: "DJs", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80", path: "dj" },
+    { title: "Mehndi Artists", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" },
+    { title: "Caterers", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "caterers" },
+    { title: "DJs", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80", path: "djs" },
     { title: "Decorators", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80", path: "decorators" },
-    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" },
+    { title: "Photographers", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+    { title: "Makeup Artists", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" },
 ];
 
 
@@ -134,8 +134,8 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
     const ALL_CITIES = ["Delhi", "Faridabad", "Ghaziabad", "Gurgaon", "Noida", "Jaipur", "Mumbai", "Pune", "Chandigarh", "Ahmedabad", "Chennai", "Hyderabad", "Kolkata", "Udaipur", "Bangalore", "Nagpur", "Goa", "Agra", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Vapi", "Anand", "Nadiad", "Indore", "Bhopal", "Lucknow", "Kanpur", "Patna"];
 
     const PRIORITY_CATEGORIES = [
-        "Photography", "Catering", "Decorators", "Makeup and Hair",
-        "Mehendi", "DJ", "Entertainers", "Wedding Planners", "Astrologers"
+        "Photographers", "Caterers", "Decorators", "Makeup Artists",
+        "Mehndi Artists", "DJ", "Entertainers", "Wedding Planners", "Astrologers"
     ];
 
     // Shadow Dataset for Categories
@@ -311,9 +311,9 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                     <div className="flex overflow-x-auto pb-6 no-scrollbar snap-x gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8">
                         {[
                             { title: "Decorators near me", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80", path: "decorators" },
-                            { title: "Mehndi Artists near me", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" },
-                            { title: "Photographers near me", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-                            { title: "Makeup Artists near me", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" }
+                            { title: "Mehndi Artists near me", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehndi-artists" },
+                            { title: "Photographers near me", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+                            { title: "Makeup Artists near me", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" }
                         ].map((s, i) => (
                             <Link key={i} href={`/${citySlug}/vendors/${s.path}`} className="min-w-[calc(85%-1rem)] md:min-w-0 snap-start group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center pb-8 border-b-4 border-b-transparent hover:border-b-primary">
                                 <div className="w-full h-56 overflow-hidden mb-6">
@@ -395,12 +395,12 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                         {[
-                            { title: "Photography Prices", price: "Rs.25000/shoot", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photography" },
-                            { title: "Catering Prices", price: "Rs.500/plate", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "catering" },
-                            { title: "Makeup Artist Prices", price: "Rs.8000/person", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-and-hair" },
-                            { title: "Mehndi Artist Prices", price: "Rs.5000/person", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=600&q=80", path: "mehendi" }
+                            { title: "Photographer Prices", price: "Rs.25000/shoot", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80", path: "photographers" },
+                            { title: "Caterer Prices", price: "Rs.500/plate", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80", path: "caterers" },
+                            { title: "Makeup Artist Prices", price: "Rs.8000/person", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80", path: "makeup-artists" },
+                            { title: "Mehndi Artist Prices", price: "Rs.5000/person", img: "https://images.unsplash.com/photo-1610173827002-62c0f1f05d04?w=400&q=80", path: "mehndi-artists" }
                         ].map((p, i) => (
-                            <Link key={i} href={`/${citySlug}/vendors/${p.path}`} className="bg-white rounded-xl overflow-hidden shadow-lg border border-slate-100 flex flex-col group cursor-pointer hover:shadow-2xl transition-all duration-500">
+                            <Link key={i} href={`/${citySlug}/vendors/${p.path}/`} className="bg-white rounded-xl overflow-hidden shadow-lg border border-slate-100 flex flex-col group cursor-pointer hover:shadow-2xl transition-all duration-500">
                                 <div className="w-full h-48 overflow-hidden">
                                     <img src={p.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.title}/>
                                 </div>
@@ -428,12 +428,12 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                     <h2 className="text-3xl font-black text-slate-900 mb-12 tracking-tight">Popular Search</h2>
                     <div className="flex overflow-x-auto pb-6 no-scrollbar snap-x gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8">
                         {[
-                            { title: 'Photographers', slug: 'photography' },
-                            { title: 'Makeup Artists', slug: 'makeup-and-hair' },
+                            { title: 'Photographers', slug: 'photographers' },
+                            { title: 'Makeup Artists', slug: 'makeup-artists' },
                             { title: 'Decorators', slug: 'decorators' },
-                            { title: 'DJs', slug: 'dj' }
+                            { title: 'DJs', slug: 'djs' }
                         ].map((s, i) => (
-                             <Link key={i} href={`/${citySlug}/vendors/${s.slug}`} className="min-w-[calc(85%-1rem)] md:min-w-0 snap-start h-16 flex items-center justify-center bg-white rounded-2xl shadow-xl border border-slate-50 hover:shadow-2xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 px-6 group">
+                             <Link key={i} href={`/${citySlug}/vendors/${s.slug}/`} className="min-w-[calc(85%-1rem)] md:min-w-0 snap-start h-16 flex items-center justify-center bg-white rounded-2xl shadow-xl border border-slate-50 hover:shadow-2xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 px-6 group">
                                  <span className="font-black text-slate-800 uppercase tracking-tight text-sm text-center group-hover:text-primary transition-colors">{s.title} in {cityName}</span>
                              </Link>
                          ))}
@@ -624,8 +624,8 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-1 mb-12">
                         {[
-                            ['Photography', 'Catering', 'Decorators', 'Mehendi'],
-                            ['Makeup and Hair', 'DJ', 'Pandit', 'Videography'],
+                            ['Photographers', 'Caterers', 'Decorators', 'Mehndi Artists'],
+                            ['Makeup Artists', 'DJs', 'Wedding Planners', 'Videographers'],
                             ['Wedding', 'Sangeet', 'Corporate Event', 'Birthday'],
                             ['Engagement', 'Reception', 'Anniversary', 'Baby Shower']
                         ].map((list, colIdx) => (
@@ -634,8 +634,8 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                                     // First 2 cols are vendor categories, last 2 are occasion searches
                                     const isOccasion = colIdx >= 2;
                                     const href = isOccasion
-                                        ? `/${citySlug}/vendors?q=${encodeURIComponent(item)}`
-                                        : `/${citySlug}/vendors/${item.toLowerCase().replace(/[\s/]+/g, '-').replace(/\s+/g, '-')}`;
+                                        ? `/${citySlug}/vendors/?q=${encodeURIComponent(item)}`
+                                        : `/${citySlug}/vendors/${item.toLowerCase().replace(/[\s/]+/g, '-').replace(/\s+/g, '-')}/`;
                                     return (
                                         <Link key={item} href={href} className="block text-[14px] font-bold text-slate-500 hover:text-black transition-all leading-relaxed">
                                             {item} in {cityName}

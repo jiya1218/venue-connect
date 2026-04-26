@@ -45,7 +45,7 @@ export default function GetQuotePage() {
         ahmedabad: [
             ["Banquet Hall in Ahmedabad", "Party Plot in Ahmedabad", "Lawn in Ahmedabad", "Resort in Ahmedabad"],
             ["Weddings in Ahmedabad", "Birthdays in Ahmedabad", "Corporate Event in Ahmedabad", "Social Mixer in Ahmedabad"],
-            ["Catering in Ahmedabad", "Decorators in Ahmedabad", "Photography in Ahmedabad", "Mehendi in Ahmedabad"],
+            ["Caterers in Ahmedabad", "Decorators in Ahmedabad", "Photographers in Ahmedabad", "Mehndi Artists in Ahmedabad"],
             ["Engagement in Ahmedabad", "Reception in Ahmedabad", "Cocktail Party in Ahmedabad", "Anniversary in Ahmedabad"]
         ]
     };
@@ -305,7 +305,7 @@ export default function GetQuotePage() {
                                                     <option>Makeup Artist</option>
                                                     <option>Choreographer</option>
                                                     <option>Gift / Favors</option>
-                                                    <option>Invitations</option>
+                                                    <option>Invitation Cards</option>
                                                 </select>
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"><ChevronRight className="rotate-90 text-black" size={14} /></div>
                                             </div>

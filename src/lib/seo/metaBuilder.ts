@@ -45,18 +45,19 @@ const VENUE_TYPE_SLUGS_SET = new Set([
 export function buildMetadata(page: SEOPageRow): Metadata {
   const custom = page.custom_content as Record<string, string> | null;
 
-  const title = custom?.metaTitle ?? custom?.meta_title ?? buildDefaultTitle(page.slug);
+  const pageTitle = custom?.pageTitle ?? custom?.metaTitle ?? custom?.meta_title ?? buildDefaultTitle(page.slug);
+  const metaTitle = custom?.metaTitle ?? custom?.meta_title ?? pageTitle;
   const description = custom?.metaDesc ?? custom?.meta_description ?? buildDefaultDescription(page.slug);
   const canonicalUrl = `${SITE_URL}/${page.slug}`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title,
+      title: metaTitle,
       description,
       url: canonicalUrl,
       siteName: SITE_NAME,
@@ -102,12 +103,38 @@ export function buildMetadata(page: SEOPageRow): Metadata {
  *   - Event + City        → Best {Event} in {City} | Book & Compare Prices - VenueConnect
  *   - Event + Area        → Best {Event} in {Area}, {City} | Book Near You - VenueConnect
  */
+const STRICT_MAPPINGS: Record<string, string> = {
+  'photographers': 'Photographers',
+  'caterers': 'Caterers',
+  'decorators': 'Decorators',
+  'mehndi-artists': 'Mehndi Artists',
+  'djs': 'DJs',
+  'bands': 'Bands',
+  'event-planners': 'Event Planners',
+  'bridal-wear': 'Bridal Wear',
+  'makeup-artists': 'Makeup Artists',
+  'florists': 'Florists',
+  'videographers': 'Videographers',
+  'wedding-planners': 'Wedding Planners',
+  'tent-houses': 'Tent Houses',
+  'choreographers': 'Choreographers',
+  'invitation-cards': 'Invitation Cards',
+  'cake-shops': 'Cake Shops',
+  'jewellers': 'Jewellers',
+  'astrologers': 'Astrologers',
+  'magicians': 'Magicians',
+  'entertainers': 'Entertainers',
+  'groom-wear': 'Groom Wear',
+  'wedding-photographers': 'Wedding Photographers'
+};
+
 export function buildMetadataFromSlugs(
   categorySlug: string,
   citySlug: string,
   areaSlug?: string
 ): Metadata {
-  const category = unslugify(categorySlug);
+  const catLowerSlug = categorySlug.toLowerCase().replace('-near-me', '');
+  const category = STRICT_MAPPINGS[catLowerSlug] || unslugify(categorySlug);
   const city = unslugify(citySlug);
   const location = areaSlug ? `${unslugify(areaSlug)}, ${city}` : city;
   const hasArea = !!areaSlug;
@@ -117,57 +144,64 @@ export function buildMetadataFromSlugs(
   const isVendor = VENDOR_SLUGS_SET.has(catLower);
   const isVenueType = VENUE_TYPE_SLUGS_SET.has(catLower);
 
-  let title: string;
+  let pageTitle: string;
+  let metaTitle: string;
   let description: string;
 
   if (isVendor) {
     if (hasArea) {
-      title = `Top ${category} in ${location} | Hire Near You - ${SITE_NAME}`;
+      pageTitle = `${category} in ${location} | ${SITE_NAME}`;
+      metaTitle = `Top ${category} in ${location} | Hire Near You - ${SITE_NAME}`;
       description = `Hire top ${category.toLowerCase()} in ${location} for weddings, birthdays & all events. Compare portfolios, pricing & reviews. Get direct leads via WhatsApp. Book on ${SITE_NAME}.`;
     } else {
-      title = `Top ${category} in ${city} | Compare & Hire - ${SITE_NAME}`;
+      pageTitle = `${category} in ${city} | ${SITE_NAME}`;
+      metaTitle = `Top ${category} in ${city} | Compare & Hire - ${SITE_NAME}`;
       description = `Hire top ${category.toLowerCase()} in ${city} for weddings, birthdays & all events. Compare portfolios, pricing & reviews. Get direct leads via WhatsApp. Book on ${SITE_NAME}.`;
     }
   } else if (isVenueType) {
     if (hasArea) {
-      title = `Best ${category} in ${location} | Compare Near You - ${SITE_NAME}`;
+      pageTitle = `${category} in ${location} | ${SITE_NAME}`;
+      metaTitle = `Best ${category} in ${location} | Compare Near You - ${SITE_NAME}`;
       description = `Find top ${category.toLowerCase()} in ${location} for any occasion. Compare capacity, pricing & amenities. 100+ verified listings. Get free quotes on ${SITE_NAME} Gujarat.`;
     } else {
-      title = `Best ${category} in ${city} | Compare Prices & Book - ${SITE_NAME}`;
+      pageTitle = `${category} in ${city} | ${SITE_NAME}`;
+      metaTitle = `Best ${category} in ${city} | Compare Prices & Book - ${SITE_NAME}`;
       description = `Find top ${category.toLowerCase()} in ${city} for any occasion. Compare capacity, pricing & amenities. 100+ verified listings. Get free quotes on ${SITE_NAME} Gujarat.`;
     }
   } else {
     // Event or generic
     if (hasArea) {
-      title = `Best ${category} in ${location} | Book Near You - ${SITE_NAME}`;
+      pageTitle = `${category} in ${location} | ${SITE_NAME}`;
+      metaTitle = `Best ${category} in ${location} | Book Near You - ${SITE_NAME}`;
       description = `Find the best ${category.toLowerCase()} in ${location}. Compare wedding halls, banquet spaces & party plots. Get free quotes & instant leads. Browse 100+ options on ${SITE_NAME}.`;
     } else {
-      title = `Best ${category} in ${city} | Book & Compare Prices - ${SITE_NAME}`;
+      pageTitle = `${category} in ${city} | ${SITE_NAME}`;
+      metaTitle = `Best ${category} in ${city} | Book & Compare Prices - ${SITE_NAME}`;
       description = `Find the best ${category.toLowerCase()} in ${city}. Compare wedding halls, banquet spaces & party plots. Get free quotes & instant leads. Browse 100+ options on ${SITE_NAME}.`;
     }
   }
 
   const slug = areaSlug
-    ? `${citySlug}/${areaSlug}/${categorySlug}`
-    : `${citySlug}/${categorySlug}`;
-  const canonicalUrl = `${SITE_URL}/${slug}`;
+    ? `${citySlug}/${areaSlug}/${categorySlug}/`
+    : (isVendor ? `${citySlug}/vendors/${categorySlug}/` : `${citySlug}/${categorySlug}/`);
+  const canonicalUrl = `${SITE_URL}/${slug.replace(/\/\/+/g, '/')}`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title,
+      title: metaTitle,
       description,
       url: canonicalUrl,
       siteName: SITE_NAME,
       type: 'website',
       locale: 'en_IN',
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: pageTitle }],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: metaTitle,
       description,
       images: [DEFAULT_OG_IMAGE],
     },
