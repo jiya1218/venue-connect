@@ -32,9 +32,36 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
     
     const isCityPath = cityFromPath && !['venues', 'vendors', 'login', 'register', 'profile', 'admin'].includes(cityFromPath);
 
+    let initialType = "";
+    let initialOccasion = "";
+
+    // Parse the current route to populate default filters if no search params exist
+    if (isCityPath && pathSegments.length >= 2) {
+        if (type === 'vendors' && pathSegments[1] === 'vendors' && pathSegments[2]) {
+             const vSlug = pathSegments[2].toLowerCase();
+             const match = VENDOR_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === vSlug);
+             if (match) initialType = match;
+        } else if (type === 'venues') {
+             const venueSlug = pathSegments[1].toLowerCase();
+             if (venueSlug.endsWith('-venues')) {
+                 const occSlug = venueSlug.replace('-venues', '');
+                 for (const [group, list] of Object.entries(OCCASIONS)) {
+                     const match = list.find(o => o.toLowerCase().replace(/[\s\(\)]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') === occSlug || o.toLowerCase().replace(/[\s\(\)]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') + '-party' === occSlug);
+                     if (match) {
+                         initialOccasion = match;
+                         break;
+                     }
+                 }
+             } else {
+                 const match = VENUE_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === venueSlug);
+                 if (match) initialType = match;
+             }
+        }
+    }
+
     const [location, setLocation] = useState(searchParams.get("city") || (isCityPath ? cityFromPath : ""));
-    const [occasion, setOccasion] = useState(searchParams.get("q") || "");
-    const [selectedType, setSelectedType] = useState(searchParams.get("type") || "");
+    const [occasion, setOccasion] = useState(searchParams.get("q") || initialOccasion);
+    const [selectedType, setSelectedType] = useState(searchParams.get("type") || initialType);
     const [selectedRegion, setSelectedRegion] = useState(searchParams.get("area") || "");
     const [foodType, setFoodType] = useState(searchParams.get("food") || "Any");
     
@@ -49,8 +76,8 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         const p = new URLSearchParams(searchParams.toString());
         const hasChanged = 
             location !== (p.get("city") || (isCityPath ? cityFromPath : "")) ||
-            occasion !== (p.get("q") || "") ||
-            selectedType !== (p.get("type") || "") ||
+            occasion !== (p.get("q") || initialOccasion) ||
+            selectedType !== (p.get("type") || initialType) ||
             selectedRegion !== (p.get("area") || "") ||
             foodType !== (p.get("food") || "Any") ||
             budget !== (p.get("budget") || "") ||
@@ -64,7 +91,16 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
     const applyFilters = () => {
         const p = new URLSearchParams(searchParams.toString());
         
-        if (occasion) p.set("q", occasion); else p.delete("q");
+        let pathOccasionSlug = "";
+        if (occasion && type === 'venues' && !selectedType) {
+             pathOccasionSlug = occasion.toLowerCase().replace(/[\s\(\)]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') + '-venues';
+             p.delete("q");
+        } else if (occasion) {
+             p.set("q", occasion); 
+        } else {
+             p.delete("q");
+        }
+
         if (selectedRegion) p.set("area", selectedRegion); else p.delete("area");
         if (foodType && foodType !== 'Any') p.set("food", foodType); else p.delete("food");
         if (budget) p.set("budget", budget); else p.delete("budget");
@@ -80,15 +116,16 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         const typeSlug = selectedType.trim().toLowerCase().replace(/[\s/]+/g, '-');
         
         let targetPath = "/";
+        const finalCategorySlug = typeSlug || pathOccasionSlug;
         
         if (citySlug) {
             if (type === 'vendors') {
-                targetPath = typeSlug ? `/${citySlug}/vendors/${typeSlug}/` : `/${citySlug}/vendors/`;
+                targetPath = finalCategorySlug ? `/${citySlug}/vendors/${finalCategorySlug}/` : `/${citySlug}/vendors/`;
             } else {
-                targetPath = typeSlug ? `/${citySlug}/${typeSlug}/` : `/${citySlug}/`;
+                targetPath = finalCategorySlug ? `/${citySlug}/${finalCategorySlug}/` : `/${citySlug}/`;
             }
-        } else if (typeSlug) {
-            targetPath = type === 'vendors' ? `/ahmedabad/vendors/${typeSlug}/` : `/ahmedabad/${typeSlug}/`;
+        } else if (finalCategorySlug) {
+            targetPath = type === 'vendors' ? `/ahmedabad/vendors/${finalCategorySlug}/` : `/ahmedabad/${finalCategorySlug}/`;
         } else {
             targetPath = type === 'vendors' ? '/vendors/' : '/venues/';
         }

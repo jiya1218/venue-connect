@@ -77,7 +77,17 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
   const [inquirySent, setInquirySent] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
-  const [searchCategory, setSearchCategory] = useState(categorySlug || '');
+  const initialCategory = (() => {
+      if (!categorySlug) return '';
+      const compareSlug = categorySlug.toLowerCase();
+      const vendorMatch = VENDOR_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
+      if (vendorMatch) return vendorMatch;
+      const venueMatch = VENUE_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
+      if (venueMatch) return venueMatch;
+      return '';
+  })();
+
+  const [searchCategory, setSearchCategory] = useState(initialCategory);
   const [searchCity, setSearchCity] = useState(citySlug === 'all' ? 'All Cities' : unslugify(citySlug) || 'Ahmedabad');
   const [mounted, setMounted] = useState(false);
 

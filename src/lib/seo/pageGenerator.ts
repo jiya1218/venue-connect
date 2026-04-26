@@ -1,4 +1,8 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+);
 import { buildSEOSlug, unslugify } from './slugify';
 
 export interface SEOPageRow {
@@ -144,8 +148,7 @@ export async function generateSEOPage(
   areaSlug?: string,
   areaId?: string
 ): Promise<SEOPageRow | null> {
-  const supabase = await createClient();
-  if (!supabase) return null;
+  if (!supabaseAdmin) return null;
   const catLowerSlug = categorySlug.toLowerCase().replace('-near-me', '');
   const isVendor = VENDOR_SLUGS_SET.has(catLowerSlug);
   const slug = buildSEOSlug(categorySlug, citySlug, areaSlug, isVendor);
@@ -156,7 +159,7 @@ export async function generateSEOPage(
 
   const { meta_title, meta_description, pageTitle, h1Tag } = buildPageMeta(categorySlug, cityLabel, locationLabel, hasArea);
 
-  const { data: newPage, error } = await supabase
+  const { data: newPage, error } = await supabaseAdmin
     .from('seo_pages')
     .upsert({
       slug,
@@ -187,11 +190,10 @@ export async function generateSEOPage(
  * Fetches an existing SEO page by its slug only (no write).
  */
 export async function getSEOPageBySlug(slug: string): Promise<SEOPageRow | null> {
-  const supabase = await createClient();
-  if (!supabase) return null;
+  if (!supabaseAdmin) return null;
 
   console.log(`[getSEOPageBySlug] Fetching slug: "${slug}"`);
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('seo_pages')
     .select('*')
     .ilike('slug', slug)

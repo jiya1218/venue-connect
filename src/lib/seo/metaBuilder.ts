@@ -48,11 +48,18 @@ export function buildMetadata(page: SEOPageRow): Metadata {
   const pageTitle = custom?.pageTitle ?? custom?.metaTitle ?? custom?.meta_title ?? buildDefaultTitle(page.slug);
   const metaTitle = custom?.metaTitle ?? custom?.meta_title ?? pageTitle;
   const description = custom?.metaDesc ?? custom?.meta_description ?? buildDefaultDescription(page.slug);
+  
+  let keywordsStr = undefined;
+  if (custom?.keyword || custom?.secondaryKeywords) {
+    keywordsStr = [custom.keyword, custom.secondaryKeywords].filter(Boolean).join(', ');
+  }
+
   const canonicalUrl = `${SITE_URL}/${page.slug}`;
 
   return {
-    title: pageTitle,
+    title: metaTitle,
     description,
+    keywords: keywordsStr,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -68,13 +75,13 @@ export function buildMetadata(page: SEOPageRow): Metadata {
           url: DEFAULT_OG_IMAGE,
           width: 1200,
           height: 630,
-          alt: title,
+          alt: pageTitle,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: metaTitle,
       description,
       images: [DEFAULT_OG_IMAGE],
     },
@@ -187,7 +194,7 @@ export function buildMetadataFromSlugs(
   const canonicalUrl = `${SITE_URL}/${slug.replace(/\/\/+/g, '/')}`;
 
   return {
-    title: pageTitle,
+    title: metaTitle,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
