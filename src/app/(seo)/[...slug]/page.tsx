@@ -208,7 +208,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     let finalCatForMeta = categorySlug;
     let finalAreaForMeta = (parsed as any).areaSlug;
     
-    if (parsed.slugArr && parsed.slugArr.length === 2 && 
+    if (slugArr && slugArr.length === 2 && 
         !isNearMe && 
         !VENUE_CATEGORY_SLUGS.has(categorySlug) && 
         !VENDOR_CATEGORY_SLUGS.has(categorySlug) &&
