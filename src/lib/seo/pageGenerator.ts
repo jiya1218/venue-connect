@@ -1,8 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
 import { buildSEOSlug, unslugify } from './slugify';
 
 export interface SEOPageRow {
@@ -148,7 +144,11 @@ export async function generateSEOPage(
   areaSlug?: string,
   areaId?: string
 ): Promise<SEOPageRow | null> {
-  if (!supabaseAdmin) return null;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
   const catLowerSlug = categorySlug.toLowerCase().replace('-near-me', '');
   const isVendor = VENDOR_SLUGS_SET.has(catLowerSlug);
   const slug = buildSEOSlug(categorySlug, citySlug, areaSlug, isVendor);
@@ -190,7 +190,11 @@ export async function generateSEOPage(
  * Fetches an existing SEO page by its slug only (no write).
  */
 export async function getSEOPageBySlug(slug: string): Promise<SEOPageRow | null> {
-  if (!supabaseAdmin) return null;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
   console.log(`[getSEOPageBySlug] Fetching slug: "${slug}"`);
   const { data, error } = await supabaseAdmin
