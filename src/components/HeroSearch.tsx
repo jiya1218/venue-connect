@@ -92,6 +92,7 @@ const HeroSearch = () => {
           src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80"
           alt="Luxury Event Venue"
           className="w-full h-full object-cover animate-[zoomOut_12s_ease_forwards]"
+          loading="eager"
         />
       </div>
 

@@ -66,7 +66,13 @@ const Navbar = () => {
         router.push(`/${cached.toLowerCase().replace(/\s+/g, '-')}`);
         return;
       }
-      const res = await fetch("https://ipapi.co/json/");
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
+      const res = await fetch("https://ipapi.co/json/", { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
       const data = await res.json();
       if (data.city && gujaratCities.some(c => c.toLowerCase() === data.city.toLowerCase())) {
         const citySlug = data.city.toLowerCase();
