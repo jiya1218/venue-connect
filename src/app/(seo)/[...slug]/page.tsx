@@ -186,7 +186,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (page && isNearMe && displayCity !== 'gujarat' && page.custom_content) {
         const content = page.custom_content as Record<string, any>;
         const localizedCity = unslugify(detectedCity);
-        ['meta_title', 'meta_description', 'h1Tag', 'metaTitle', 'pageTitle', 'metaDesc'].forEach(f => {
+        ['meta_title', 'meta_description', 'h1Tag', 'metaTitle', 'pageTitle', 'metaDesc', 'keyword', 'secondaryKeywords'].forEach(f => {
             if (content[f] && typeof content[f] === 'string' && content[f].includes('Gujarat')) {
                 content[f] = content[f].replace(/Gujarat/g, localizedCity);
             }
