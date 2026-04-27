@@ -6,8 +6,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle2, Gift, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { gujaratCities } from "@/lib/cities";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const GetQuoteCTA = () => {
+  const [venueCount, setVenueCount] = useState(110);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      const { count } = await supabase
+        .from('venues')
+        .select('id', { count: 'exact', head: true });
+      if (count) setVenueCount(count);
+    };
+    fetchCount();
+  }, []);
+
   return (
     <section className="py-4 md:py-6 bg-gradient-to-br from-primary/10 via-primary/5 to-white">
       <div className="container">
@@ -74,7 +89,7 @@ const GetQuoteCTA = () => {
                   </h4>
                   <div className="grid grid-cols-1 gap-3 md:gap-6 text-left">
                     {[
-                      { stat: "35,000+ Venues", sub: "Largest venue network" },
+                      { stat: `${venueCount}+ Venues`, sub: "Gujarat's curated network" },
                       { stat: "Best Price Guarantee", sub: "Exclusive discounts" },
                       { stat: "Free Expert Advice", sub: "Dedicated support team" },
                     ].map((item) => (
