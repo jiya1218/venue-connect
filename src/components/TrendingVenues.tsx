@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getListingImage } from "@/lib/imageUtils";
 
 const BADGES = ["Most Viewed", "Recently Searched", "Trending"];
 // Uniform card: 130px wide, same height across sections
@@ -50,14 +51,21 @@ const TrendingVenues = () => {
           <div className="flex gap-2 pl-4 pr-4" style={{ width: "max-content" }}>
             {venues.map((venue, i) => {
               const citySlug = (venue.city || "ahmedabad").toLowerCase().replace(/\s+/g, "-");
-              const imgSrc = venue.image || (venue.images && venue.images[0]);
+              const imgSrc = getListingImage(venue);
               return (
                 <Link key={venue.id} href={`/${citySlug}/${venue.slug}`}
                   className={`${CARD_W} bg-white rounded-xl overflow-hidden border border-border shadow-sm`}>
                   {/* image same height as card width → square top then details below */}
                   <div className="relative h-[130px] overflow-hidden">
-                    <img src={imgSrc || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=80"}
-                      alt={venue.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={imgSrc || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=80"}
+                      alt={venue.name} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                      }}
+                    />
                     <div className="absolute top-1.5 left-1.5">
                       <span className="px-1.5 py-0.5 rounded-full bg-primary text-white text-[7px] font-bold flex items-center gap-0.5 uppercase">
                         <TrendingUp className="w-2 h-2" />{BADGES[i] || "Trending"}
@@ -82,13 +90,20 @@ const TrendingVenues = () => {
         <div className="hidden md:grid grid-cols-3 gap-6">
           {venues.map((venue, i) => {
             const citySlug = (venue.city || "ahmedabad").toLowerCase().replace(/\s+/g, "-");
-            const imgSrc = venue.image || (venue.images && venue.images[0]);
+            const imgSrc = getListingImage(venue);
             return (
               <Link key={venue.id} href={`/${citySlug}/${venue.slug}`}
                 className="group bg-white rounded-2xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 block shadow-sm">
                 <div className="relative h-56 overflow-hidden">
-                  <img src={imgSrc || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80"} alt={venue.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img 
+                    src={imgSrc || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80"} 
+                    alt={venue.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                    }}
+                  />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1.5 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-1 uppercase">
                       <TrendingUp className="w-2.5 h-2.5" />{BADGES[i] || "Trending"}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { getListingImage } from "@/lib/imageUtils";
 
 export interface VendorData {
     id: string;
@@ -17,6 +18,7 @@ export interface VendorData {
     reviews: number;
     startingPrice: number;
     image: string;
+    images?: string[];
     featured?: boolean;
     verified?: boolean;
     owner_id?: string;
@@ -124,7 +126,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
 
                 <div className="relative h-32 sm:h-56 overflow-hidden">
                     <img
-                        src={vendor.image}
+                        src={getListingImage(vendor)}
                         alt={vendor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />

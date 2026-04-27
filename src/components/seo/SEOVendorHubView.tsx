@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { GUJARAT_CITIES, VENDOR_TYPES } from "@/lib/constants";
 import { cleanName } from "@/lib/imageEnricher";
+import { getListingImage } from "@/lib/imageUtils";
 
 interface SEOVendorHubViewProps {
     citySlug: string;
@@ -249,7 +250,7 @@ function VendorCard({ v, citySlug, locationLabel }: { v: any, citySlug: string, 
         <Link href={`/${v.city?.toLowerCase() || citySlug}/vendors/${v.slug}/`} className="min-w-[320px] group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col hover:-translate-y-2">
             <div className="relative h-48 overflow-hidden">
                 <img 
-                    src={v.image || (v.images && v.images[0]) || "https://images.unsplash.com/photo-1519225421980-715bd0215aed?w=600&q=80"} 
+                    src={getListingImage(v)} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={v.name}
                     onError={(e) => {

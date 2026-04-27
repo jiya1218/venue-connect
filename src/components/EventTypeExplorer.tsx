@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const eventTypes = [
   {
@@ -47,6 +49,40 @@ const eventTypes = [
 ];
 
 const EventTypeExplorer = () => {
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const { data } = await supabase.from('venues').select('type');
+      if (data) {
+        const c: Record<string, number> = {};
+        data.forEach(v => {
+          const t = v.type || 'Other';
+          c[t] = (c[t] || 0) + 1;
+        });
+        setCounts(c);
+      }
+    };
+    fetchCounts();
+  }, []);
+
+  const getCount = (name: string) => {
+    const mapping: Record<string, string[]> = {
+      "Wedding": ["Banquet Hall", "Hotel", "Resort", "Party Plot", "Lawn"],
+      "Engagement": ["Banquet Hall", "Hotel", "Restaurant"],
+      "Birthday": ["Restaurant", "Banquet Hall"],
+      "Corporate Event": ["Convention Center", "Convention Centre", "Hotel"],
+      "Reception": ["Banquet Hall", "Hotel", "Resort", "Party Plot"],
+      "Garba Event": ["Party Plot", "Lawn"],
+      "Kitty Party": ["Restaurant", "Banquet Hall"],
+      "Pool Party": ["Resort", "Farmhouse"]
+    };
+    const dbTypes = mapping[name] || [];
+    const total = dbTypes.reduce((acc, t) => acc + (counts[t] || 0), 0);
+    return total > 0 ? `${total}+` : "12+";
+  };
+
   return (
     <section className="py-4 md:py-6 bg-white">
       <div className="container">
@@ -111,7 +147,7 @@ const EventTypeExplorer = () => {
                         {event.name}
                       </h3>
                       <p className="text-white/80 text-[10px] md:text-sm text-center md:text-left uppercase tracking-widest font-bold">
-                        {event.count}
+                        {getCount(event.name)} venues
                       </p>
                     </div>
 

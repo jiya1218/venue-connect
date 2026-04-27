@@ -3,6 +3,8 @@
 import { Sparkles, Crown, TreePine, Building2, Castle, Flower2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const moods = [
   {
@@ -62,6 +64,38 @@ const moods = [
 ];
 
 const VenueMoodExplorer = () => {
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const { data } = await supabase.from('venues').select('type');
+      if (data) {
+        const c: Record<string, number> = {};
+        data.forEach(v => {
+          const t = v.type || 'Other';
+          c[t] = (c[t] || 0) + 1;
+        });
+        setCounts(c);
+      }
+    };
+    fetchCounts();
+  }, []);
+
+  const getCount = (name: string) => {
+    const mapping: Record<string, string[]> = {
+      "Luxury": ["Hotel", "Banquet Hall", "Boutique Venue"],
+      "Traditional": ["Resort", "Heritage Venue"],
+      "Outdoor": ["Lawn", "Party Plot", "Farmhouse"],
+      "Modern": ["Convention Center", "Convention Centre", "Banquet Hall"],
+      "Heritage": ["Heritage Venue", "Resort"],
+      "Garden Venues": ["Lawn", "Party Plot"]
+    };
+    const dbTypes = mapping[name] || [];
+    const total = dbTypes.reduce((acc, t) => acc + (counts[t] || 0), 0);
+    return total > 0 ? `${total}+` : "5+";
+  };
+
   return (
     <section className="py-4 md:py-6 bg-gradient-to-b from-white to-primary/5">
       <div className="container">
@@ -126,7 +160,7 @@ const VenueMoodExplorer = () => {
                     </p>
                     
                     <span className="text-white/60 text-[9px] md:text-xs font-black uppercase tracking-widest">
-                      {mood.count} venues
+                      {getCount(mood.name)} venues
                     </span>
                   </div>
 

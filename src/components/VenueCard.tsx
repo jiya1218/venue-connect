@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import GetQuoteModal from "./GetQuoteModal";
+import { getListingImage } from "@/lib/imageUtils";
 
 export interface VenueData {
     id: string;
@@ -18,6 +19,7 @@ export interface VenueData {
     rating: number;
     reviews: number;
     image: string;
+    images?: string[];
     featured?: boolean;
     verified?: boolean;
     amenities?: string[];
@@ -127,7 +129,7 @@ const VenueCard = ({ venue }: VenueCardProps) => {
 
                 <div className="relative h-32 sm:h-56 overflow-hidden">
                     <img
-                        src={venue.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'}
+                        src={getListingImage(venue)}
                         alt={venue.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />

@@ -62,6 +62,7 @@ const ReviewCarousel = () => {
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
 import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES } from "@/lib/constants";
+import { getListingImage } from "@/lib/imageUtils";
 
 function unslugify(slug: string) {
     if (!slug) return '';
@@ -255,7 +256,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                {/* IMAGE PREVIEW — fixed aspect ratio for consistency */}
                                <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0">
                                    <img 
-                                     src={listing.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                     src={getListingImage(listing)} 
                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                      alt={listing.name}
                                      onError={(e) => {
@@ -351,7 +352,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                 <Link key={`v-${i}`} href={`/${citySlug}/vendors/${v.slug}`} className="group bg-white p-3 md:p-6 rounded-2xl md:rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500">
                                    <div className="relative w-full aspect-square rounded-xl md:rounded-[2rem] overflow-hidden mb-3 md:mb-6">
                                       <img 
-                                        src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                        src={getListingImage(v)} 
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                         alt={v.name} 
                                         onError={(e) => {
@@ -387,7 +388,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                className="group bg-slate-50/50 rounded-xl p-2 border border-slate-100 hover:bg-white transition-all duration-500">
                              <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-2">
                                  <img 
-                                   src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                   src={getListingImage(v)} 
                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                    alt={v.name} 
                                    onError={(e) => {
@@ -418,7 +419,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                              <div className="relative w-full aspect-[4/3] rounded-xl md:rounded-[2rem] overflow-hidden mb-2.5 md:mb-6">
                                  
                                   <img 
-                                    src={v.image || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'} 
+                                    src={getListingImage(v)} 
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                     alt={v.name} 
                                     onError={(e) => {

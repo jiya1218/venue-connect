@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { VENDOR_TYPES, GUJARAT_CITIES } from "@/lib/constants";
+import { getListingImage } from "@/lib/imageUtils";
 
 const REVIEWS = [
   { name: "Amarya", text: "We recently hosted our child's first birthday with the help of VenueConnect and it was a very memorable...", title: "Wonderful Experience !", rating: 5 },
@@ -196,6 +197,7 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                 const { data } = await supabase
                     .from("vendors")
                     .select("*")
+                    .eq('is_approved', true)
                     .ilike("city", `%${cityName}%`)
                     .order("rating", { ascending: false })
                     .limit(10);
@@ -349,9 +351,13 @@ export default function CityVendorsPage({ params }: { params: Promise<{ city: st
                                 >
                                     <div className="relative h-48 overflow-hidden">
                                         <img 
-                                            src={v.image || (v.images && v.images[0]) || DEFAULT_V_IMG} 
+                                            src={getListingImage(v)} 
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                             alt={v.name}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                            }}
                                         />
                                         <div className="absolute top-3 right-3 bg-white/95 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
                                             <Star size={12} className="fill-yellow-400 text-yellow-400" />

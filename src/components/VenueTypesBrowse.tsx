@@ -2,6 +2,8 @@
 
 import { Building2, Home, TreePine, Hotel, Waves, UtensilsCrossed, Users2, Building } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const venueTypes = [
   { icon: Building2, name: "Banquet Halls",      count: "2,400+", image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=80" },
@@ -17,6 +19,41 @@ const venueTypes = [
 const CARD = "w-[130px] h-[130px] flex-shrink-0 relative rounded-xl overflow-hidden block";
 
 const VenueTypesBrowse = () => {
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const { data } = await supabase.from('venues').select('type');
+      if (data) {
+        const c: Record<string, number> = {};
+        data.forEach(v => {
+          const t = v.type || 'Other';
+          c[t] = (c[t] || 0) + 1;
+        });
+        setCounts(c);
+      }
+    };
+    fetchCounts();
+  }, []);
+
+  const getCount = (name: string) => {
+    // Mapping UI name to DB type
+    const mapping: Record<string, string[]> = {
+      "Banquet Halls": ["Banquet Hall"],
+      "Party Plots": ["Party Plot", "Lawn"],
+      "Farmhouses": ["Farmhouse"],
+      "Hotels": ["Hotel"],
+      "Resorts": ["Resort"],
+      "Restaurants": ["Restaurant"],
+      "Clubs": ["Club", "Boutique Venue"],
+      "Convention Centers": ["Convention Center", "Convention Centre"]
+    };
+    const dbTypes = mapping[name] || [name];
+    const total = dbTypes.reduce((acc, t) => acc + (counts[t] || 0), 0);
+    return total > 0 ? `${total}+` : "10+";
+  };
+
   return (
     <section className="py-4 md:py-6 bg-white">
       <div className="md:container">
@@ -43,7 +80,7 @@ const VenueTypesBrowse = () => {
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
                     <Icon className="w-6 h-6 text-white mb-1" />
                     <h3 className="font-black text-white text-[9px] uppercase tracking-tight leading-tight">{type.name}</h3>
-                    <p className="text-white/70 text-[7px] font-bold uppercase mt-0.5">{type.count}</p>
+                    <p className="text-white/70 text-[7px] font-bold uppercase mt-0.5">{getCount(type.name)}</p>
                   </div>
                 </Link>
               );
@@ -63,7 +100,7 @@ const VenueTypesBrowse = () => {
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
                   <Icon className="w-10 h-10 text-white mb-3 group-hover:scale-110 transition-transform" />
                   <h3 className="font-black text-white text-base mb-1 uppercase tracking-tight">{type.name}</h3>
-                  <p className="text-white/70 text-sm font-bold uppercase tracking-widest">{type.count} venues</p>
+                  <p className="text-white/70 text-sm font-bold uppercase tracking-widest">{getCount(type.name)} venues</p>
                 </div>
               </Link>
             );

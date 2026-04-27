@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getListingImage } from "@/lib/imageUtils";
 
 function timeAgo(dateStr: string): string {
   const now = new Date();
@@ -67,7 +68,7 @@ const RecentlyAddedVenues = () => {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {venues.map((venue, i) => {
             const citySlug = (venue.city || "ahmedabad").toLowerCase().replace(/\s+/g, "-");
-            const imgSrc = venue.image || (venue.images && venue.images[0]);
+            const imgSrc = getListingImage(venue);
             const added = venue.created_at ? timeAgo(venue.created_at) : "Recently";
 
             return (
@@ -83,10 +84,14 @@ const RecentlyAddedVenues = () => {
                   className="group bg-white rounded-xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 block h-full shadow-sm"
                 >
                   <div className="relative h-32 md:h-52 overflow-hidden">
-                    <img
-                      src={imgSrc || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80"}
+                    <img 
+                      src={imgSrc || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80"} 
                       alt={venue.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                      }}
                     />
                     
                     <div className="absolute top-2 left-2">
