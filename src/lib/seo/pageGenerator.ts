@@ -196,11 +196,12 @@ export async function getSEOPageBySlug(slug: string): Promise<SEOPageRow | null>
     process.env.SUPABASE_SERVICE_ROLE_KEY
   );
 
-  console.log(`[getSEOPageBySlug] Fetching slug: "${slug}"`);
+  const normalizedSlug = slug.endsWith('/') ? slug.slice(0, -1) : slug;
+  console.log(`[getSEOPageBySlug] Fetching slug: "${normalizedSlug}" (original: "${slug}")`);
   const { data, error } = await supabaseAdmin
     .from('seo_pages')
     .select('*')
-    .ilike('slug', slug)
+    .ilike('slug', normalizedSlug)
     .maybeSingle();
 
   if (error) console.error(`[getSEOPageBySlug] DB Error for ${slug}:`, error.message);
