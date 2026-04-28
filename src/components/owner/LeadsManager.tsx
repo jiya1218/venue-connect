@@ -20,7 +20,11 @@ export default function LeadsManager() {
     const fetchLeads = async () => {
         try {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            console.log("Current User in Dashboard:", user?.id);
+            if (!user) {
+                console.error("No user found in dashboard session");
+                return;
+            }
 
             const { data, error } = await supabase
                 .from('leads')
@@ -29,6 +33,7 @@ export default function LeadsManager() {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
+            console.log("Fetched Leads count:", data?.length);
             setLeads(data || []);
         } catch (error) {
             console.error("Error fetching leads:", error);

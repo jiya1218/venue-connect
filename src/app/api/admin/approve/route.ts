@@ -29,13 +29,20 @@ export async function POST(req: NextRequest) {
 
     const commonData = {
       name: app.business_name,
+      slug: app.business_name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
       city: app.city,
+      location: app.address,
       address: app.address,
       images: app.images || (app.image_url ? [app.image_url] : []),
       image: app.images?.[0] || app.image_url,
       description: app.description,
       owner_id: app.user_id,
       starting_price: app.starting_price || app.veg_price_per_plate || app.price_per_plate || 0,
+      rating: 0,
+      reviews: 0,
+      is_approved: true,
+      is_active: true,
+      is_verified: true
     };
 
     let specificData = {};
@@ -74,7 +81,11 @@ export async function POST(req: NextRequest) {
 
     if (insertError) {
       console.error('Migration error:', insertError);
-      return NextResponse.json({ error: 'Failed to migrate data' }, { status: 500 });
+      return NextResponse.json({ 
+        error: 'Failed to migrate data', 
+        details: insertError.message,
+        code: insertError.code
+      }, { status: 500 });
     }
 
     // 4. Mark application as approved

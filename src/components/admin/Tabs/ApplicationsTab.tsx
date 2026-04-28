@@ -75,7 +75,8 @@ export default function ApplicationsTab() {
         setApplications(applications.filter(a => a.id !== app.id));
       } else {
         const error = await res.json();
-        throw new Error(error.error || "Approval failed");
+        const fullMessage = error.details ? `${error.error}: ${error.details} (${error.code})` : (error.error || "Approval failed");
+        throw new Error(fullMessage);
       }
     } catch (error: any) {
       toast.error(error.message);

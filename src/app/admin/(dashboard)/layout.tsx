@@ -22,6 +22,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   if (supabase) {
     const { data: { session } } = await supabase.auth.getSession();
+    
+    // We only want to protect dashboard pages, not the login page itself.
+    // Since layouts apply to all children, we check if a session exists.
+    // If no session exists, the individual pages (like /admin/pending) will trigger this.
+    // Note: To avoid loops, the login page should ideally be outside this layout.
+    // But we can check session here.
     if (!session) redirect('/admin/login');
     
     user = session.user;

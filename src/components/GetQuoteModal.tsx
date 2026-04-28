@@ -20,6 +20,7 @@ const GetQuoteModal = ({ businessName, listingId, listingType, ownerId, triggerB
     const supabase = createClient();
 
     const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -33,6 +34,7 @@ const GetQuoteModal = ({ businessName, listingId, listingType, ownerId, triggerB
                     listing_type: listingType,
                     owner_id: ownerId || null,
                     customer_name: name,
+                    customer_email: email,
                     customer_phone: phone,
                     message: `Quote request from VenueConnect`
                 }
@@ -45,6 +47,7 @@ const GetQuoteModal = ({ businessName, listingId, listingType, ownerId, triggerB
             });
 
             setName("");
+            setEmail("");
             setPhone("");
             setOpen(false);
         } catch (error: any) {
@@ -77,6 +80,17 @@ const GetQuoteModal = ({ businessName, listingId, listingType, ownerId, triggerB
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Full Name"
+                                className="w-full h-9 px-3 rounded-lg border border-slate-200 outline-none focus:border-primary text-xs bg-white" 
+                            />
+                        </div>
+
+                        <div>
+                            <input 
+                                type="email" 
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Email Address"
                                 className="w-full h-9 px-3 rounded-lg border border-slate-200 outline-none focus:border-primary text-xs bg-white" 
                             />
                         </div>

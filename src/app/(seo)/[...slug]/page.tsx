@@ -468,9 +468,17 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
                                                 <Link href="#location" className="inline-block mt-2 text-[12px] font-black text-primary uppercase tracking-widest hover:underline">View on Map</Link>
                                             </div>
                                         </div>
-                                        <button className="w-full md:w-auto px-8 py-4 bg-primary text-white text-[13px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/25 hover:scale-105 transition-transform">
-                                            Get Best Deal
-                                        </button>
+                                        <GetQuoteModal 
+                                            businessName={venue.name}
+                                            listingId={venue.id}
+                                            listingType="venue"
+                                            ownerId={venue.owner_id}
+                                            triggerButton={
+                                                <button className="w-full md:w-auto px-8 py-4 bg-primary text-white text-[13px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/25 hover:scale-105 transition-transform">
+                                                    Get Best Deal
+                                                </button>
+                                            }
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -487,39 +495,15 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
                                     Check Availability & <br /><span className="text-primary italic">Request Prices</span>
                                 </h3>
 
-                                <form className="space-y-2 sm:space-y-3 md:space-y-4">
-                                    <div className="space-y-2 sm:space-y-3 md:space-y-4">
-                                        <select className="w-full h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold focus:ring-2 focus:ring-primary focus:outline-none appearance-none cursor-pointer">
-                                            <option className="text-slate-900">Select Occasion</option>
-                                            <option className="text-slate-900">Wedding</option>
-                                            <option className="text-slate-900">Engagement</option>
-                                            <option className="text-slate-900">Birthday</option>
-                                        </select>
-                                        <input type="date" className="w-full h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold" />
-                                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                                            <input type="number" placeholder="Guests" className="w-full h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold placeholder:text-white/40" />
-                                            <select className="w-full h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold appearance-none">
-                                                <option className="text-slate-900">Budget</option>
-                                            </select>
-                                        </div>
-                                        <input type="text" placeholder="Your Name" className="w-full h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold placeholder:text-white/40" />
-                                        <div className="flex gap-2">
-                                            <div className="w-14 sm:w-16 md:w-20 h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-[11px] sm:text-[12px] md:text-[13px] font-bold">+91</div>
-                                            <input type="tel" placeholder="Mobile No." className="flex-grow h-9 sm:h-11 md:h-14 bg-white/10 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-5 text-[11px] sm:text-[12px] md:text-[13px] text-white font-bold placeholder:text-white/40" />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 sm:gap-3 py-1 sm:py-1.5 md:py-2">
-                                        <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                                            <input type="checkbox" defaultChecked className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 accent-primary" />
-                                        </div>
-                                        <label className="text-[9px] sm:text-[10px] md:text-[11px] font-bold text-white/70 leading-snug">Send venue details on WhatsApp</label>
-                                    </div>
-
-                                    <button className="w-full h-9 sm:h-11 md:h-16 bg-primary hover:bg-primary/90 text-white font-black text-[10px] sm:text-[11px] md:text-[14px] uppercase tracking-wider rounded-xl sm:rounded-2xl transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-95">
-                                        Send Enquiry
-                                    </button>
-                                </form>
+                                <div className="space-y-4">
+                                    <p className="text-sm text-white/60 mb-6">Send an inquiry directly to the venue owner to get the best prices and availability for your event.</p>
+                                    <GetQuoteModal 
+                                        businessName={venue.name}
+                                        listingId={venue.id}
+                                        listingType="venue"
+                                        ownerId={venue.owner_id}
+                                    />
+                                </div>
 
                                 <div className="mt-3 sm:mt-5 md:mt-8 flex items-center gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4 bg-white/5 rounded-xl sm:rounded-2xl border border-white/5">
                                     <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-primary rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"><Phone size={16} className="sm:hidden" /><Phone size={18} className="hidden sm:block md:hidden" /><Phone size={20} className="hidden md:block" /></div>
@@ -688,57 +672,15 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                             <h3 className="text-lg sm:text-xl md:text-2xl font-black mb-2">Check Availability</h3>
                             <p className="text-white/50 text-[12px] sm:text-xs md:text-sm font-bold mb-8 uppercase tracking-widest">Send inquiry to {vendor.name}</p>
 
-                            <form className="space-y-3 md:space-y-4">
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-[2px] text-white/40 ml-1">Full Name</label>
-                                    <input type="text" placeholder="Your Name" className="w-full h-10 sm:h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 text-xs sm:text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
-                                </div>
-                                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-[2px] text-white/40 ml-1">Email</label>
-                                        <input type="email" placeholder="Email" className="w-full h-10 sm:h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 text-xs sm:text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-[2px] text-white/40 ml-1">Mobile</label>
-                                        <input type="tel" placeholder="Mobile" className="w-full h-10 sm:h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 text-xs sm:text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-[2px] text-white/40 ml-1">Event Date</label>
-                                        <input type="date" className="w-full h-10 sm:h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 text-xs sm:text-sm focus:ring-2 focus:ring-primary outline-none transition-all [color-scheme:dark]" />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-[2px] text-white/40 ml-1">Event Type</label>
-                                        <select className="w-full h-10 sm:h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 text-xs sm:text-sm focus:ring-2 focus:ring-primary outline-none appearance-none transition-all">
-                                            <option className="bg-slate-900">Wedding</option>
-                                            <option className="bg-slate-900">Reception</option>
-                                            <option className="bg-slate-900">Engagement</option>
-                                            <option className="bg-slate-900">Birthday</option>
-                                            <option className="bg-slate-900">Corporate</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="py-3 md:py-4 space-y-4">
-                                    <label className="flex items-start gap-3 group cursor-pointer">
-                                        <input type="checkbox" className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-offset-slate-900" />
-                                        <span className="text-[10px] sm:text-[11px] md:text-xs font-bold text-white/60 group-hover:text-white transition-colors">Do you also need a venue for your event?</span>
-                                    </label>
-                                    <label className="flex items-start gap-3 group cursor-pointer">
-                                        <input type="checkbox" className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-offset-slate-900" />
-                                        <span className="text-[10px] sm:text-[11px] md:text-xs font-bold text-white/60 group-hover:text-white transition-colors">Share my details on WhatsApp for quick response</span>
-                                    </label>
-                                    <label className="flex items-start gap-3 group cursor-pointer">
-                                        <input type="checkbox" className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-offset-slate-900" />
-                                        <span className="text-[10px] sm:text-[11px] md:text-xs font-bold text-white/60 group-hover:text-white transition-colors">Share proposals from similar vendors for my event</span>
-                                    </label>
-                                </div>
-
-                                <button className="w-full h-11 sm:h-12 md:h-16 bg-primary hover:bg-primary/90 text-white font-black rounded-xl sm:rounded-2xl shadow-xl shadow-primary/30 transform hover:-translate-y-1 active:scale-95 transition-all uppercase tracking-widest text-[10px] sm:text-[11px] md:text-xs">
-                                    Send Inquiry Now
-                                </button>
-                            </form>
+                            <div className="space-y-4">
+                                <p className="text-sm text-white/60 mb-8">Send an inquiry directly to {vendor.name} to check availability and get custom pricing for your event.</p>
+                                <GetQuoteModal 
+                                    businessName={vendor.name}
+                                    listingId={vendor.id}
+                                    listingType="vendor"
+                                    ownerId={vendor.owner_id}
+                                />
+                            </div>
 
                             <div className="mt-5 sm:mt-8 pt-5 sm:pt-8 border-t border-white/10 flex items-center gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><ShieldCheck size={24} /></div>

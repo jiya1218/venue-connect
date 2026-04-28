@@ -88,12 +88,12 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
-      <div className="container flex items-center justify-between h-12 lg:h-20 px-3 lg:px-6">
+      <div className="container flex items-center justify-between h-11 lg:h-14 px-3 lg:px-6">
         <Link href="/" className="hidden lg:flex items-center hover:opacity-80 transition-opacity">
           <img
             src="/venue-connect.png"
             alt="VenueConnect"
-            className="h-6 lg:h-12 w-auto"
+            className="h-6 lg:h-9 w-auto"
           />
         </Link>
 
@@ -223,7 +223,7 @@ const Navbar = () => {
 
       {/* Improved Mobile Menu Overlay */}
       {open && (
-        <div className="lg:hidden fixed inset-0 top-12 lg:top-20 z-40 bg-white/95 backdrop-blur-md overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 top-12 lg:top-16 z-40 bg-white/95 backdrop-blur-md overflow-y-auto">
           <div className="container py-8 px-6 space-y-6">
             <nav className="space-y-1">
               <Link href="/" className="flex items-center justify-between text-lg font-bold py-4 border-b border-slate-100 hover:text-primary transition-colors" onClick={() => setOpen(false)}>

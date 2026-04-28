@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Building, MapPin, Eye, Edit, Store, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import MyApplications from "./MyApplications";
 
 export default function MyListings() {
     const [venues, setVenues] = useState<Record<string, unknown>[]>([]);
@@ -63,6 +64,8 @@ export default function MyListings() {
                     <Button>Add New Listing</Button>
                 </Link>
             </div>
+            
+            <MyApplications />
 
             {hasNoListings && (
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center flex flex-col items-center justify-center">
@@ -153,7 +156,7 @@ function ListingCard({ data, type }: { data: Record<string, unknown>, type: 'ven
                 <Button variant="outline" size="sm" className="w-full bg-white gap-2 text-slate-600 hover:text-slate-900">
                     <Edit className="w-3.5 h-3.5" /> Edit
                 </Button>
-                <Link href={`/${type}s/${id}`} className="w-full">
+                <Link href={`/${type}s/${data.slug || id}`} className="w-full">
                     <Button variant="outline" size="sm" className="w-full bg-white gap-2 text-slate-600 hover:text-primary hover:border-primary/30">
                         <Eye className="w-3.5 h-3.5" /> View
                     </Button>
