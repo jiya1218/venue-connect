@@ -69,25 +69,31 @@ export const BlogsCarousel = () => {
         { title: "Top 10 Birthday Party Ideas for Kids", text: "Planning a kids birthday can be effortless w...", date: "Monday Mar 30, 2026", img: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80", slug: "top-10-birthday-party-ideas" },
     ];
 
+    const [autoPlay, setAutoPlay] = useState(true);
+
     useEffect(() => {
+        if (!autoPlay) return;
+        // Disable auto-rotate on mobile view (under 768px)
+        if (typeof window !== 'undefined' && window.innerWidth < 768) return;
+
         const timer = setInterval(() => {
             setIsAnimating(true);
             setCurrentIndex(prev => (prev + 1) % blogs.length);
         }, 5000);
         return () => clearInterval(timer);
-    }, [blogs.length]);
+    }, [blogs.length, autoPlay]);
 
     return (
-        <div className="relative group/carousel max-w-[1800px] mx-auto text-left">
+        <div className="relative group/carousel mx-auto">
             <button 
-                onClick={() => { setIsAnimating(true); setCurrentIndex(prev => (prev - 1 + blogs.length) % blogs.length); }}
-                className="absolute top-[40%] -left-4 md:-left-8 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-950 hover:text-white transition-all shadow-xl"
+                onClick={() => { setAutoPlay(false); setIsAnimating(true); setCurrentIndex(prev => (prev - 1 + blogs.length) % blogs.length); }}
+                className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
             >
                 <ChevronLeft size={24} />
             </button>
             <button 
-                onClick={() => { setIsAnimating(true); setCurrentIndex(prev => (prev + 1) % blogs.length); }}
-                className="absolute top-[40%] -right-4 md:-right-8 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-950 hover:text-white transition-all shadow-xl"
+                onClick={() => { setAutoPlay(false); setIsAnimating(true); setCurrentIndex(prev => (prev + 1) % blogs.length); }}
+                className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
             >
                 <ChevronRight size={24} />
             </button>

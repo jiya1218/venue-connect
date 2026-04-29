@@ -8,7 +8,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { OCCASIONS, VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES } from "@/lib/constants";
 
 interface ListingFilterProps {
-    type: 'venues' | 'vendors';
+    type?: 'venues' | 'vendors';
+    initialCity?: string;
+    initialOccasion?: string;
+    initialType?: string;
+    initialRegion?: string;
+    initialFood?: string;
 }
 
 const VENUE_CAPACITIES = ['Under 100', '100 - 500', '500 - 1000', '1000+'];
@@ -22,7 +27,16 @@ const AMENITIES = [
     { key: 'alcohol', label: '🍾 Liquor OK' },
 ];
 
-const ListingFilter = ({ type }: ListingFilterProps) => {
+const unslugify = (slug: string) => slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+export default function ListingFilter({ 
+    type = 'venues',
+    initialCity,
+    initialOccasion: propOccasion,
+    initialType: propType,
+    initialRegion: propRegion,
+    initialFood: propFood
+}: ListingFilterProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -32,8 +46,9 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
     
     const isCityPath = cityFromPath && !['venues', 'vendors', 'login', 'register', 'profile', 'admin'].includes(cityFromPath);
 
-    let initialType = "";
-    let initialOccasion = "";
+    let initialOccasion = propOccasion || "";
+    let initialType = propType || "";
+    let initialCityVal = initialCity || (isCityPath ? cityFromPath : "");
 
     // Parse the current route to populate default filters if no search params exist
     if (isCityPath && pathSegments.length >= 2) {
@@ -59,11 +74,11 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         }
     }
 
-    const [location, setLocation] = useState(searchParams.get("city") || (isCityPath ? cityFromPath : ""));
+    const [location, setLocation] = useState(searchParams.get("city") || initialCityVal);
     const [occasion, setOccasion] = useState(searchParams.get("q") || initialOccasion);
     const [selectedType, setSelectedType] = useState(searchParams.get("type") || initialType);
-    const [selectedRegion, setSelectedRegion] = useState(searchParams.get("area") || "");
-    const [foodType, setFoodType] = useState(searchParams.get("food") || "Any");
+    const [selectedRegion, setSelectedRegion] = useState(searchParams.get("area") || propRegion || "");
+    const [foodType, setFoodType] = useState(searchParams.get("food") || propFood || "Any");
     
     const [budget, setBudget] = useState(searchParams.get("budget") || "");
     const [capacity, setCapacity] = useState(searchParams.get("capacity") || "");
@@ -112,8 +127,8 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
         p.delete("type");
         p.delete("page");
 
-        const citySlug = location.trim().toLowerCase().replace(/\s+/g, '-');
-        const typeSlug = selectedType.trim().toLowerCase().replace(/[\s/]+/g, '-');
+        const citySlug = (!location || location === 'All Cities') ? '' : location.trim().toLowerCase().replace(/\s+/g, '-');
+        const typeSlug = (!selectedType || selectedType === 'All Types' || selectedType === 'All Vendors') ? '' : selectedType.trim().toLowerCase().replace(/[\s/]+/g, '-');
         
         let targetPath = "/";
         const finalCategorySlug = typeSlug || pathOccasionSlug;
@@ -125,9 +140,9 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
                 targetPath = finalCategorySlug ? `/${citySlug}/${finalCategorySlug}/` : `/${citySlug}/`;
             }
         } else if (finalCategorySlug) {
-            targetPath = type === 'vendors' ? `/ahmedabad/vendors/${finalCategorySlug}/` : `/ahmedabad/${finalCategorySlug}/`;
+            targetPath = type === 'vendors' ? `/${finalCategorySlug}/` : `/${finalCategorySlug}/`;
         } else {
-            targetPath = type === 'vendors' ? '/vendors/' : '/venues/';
+            targetPath = type === 'vendors' ? '/all-vendors/' : '/all-venues/';
         }
 
         const queryString = p.toString();
@@ -193,24 +208,82 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
                 <div className="flex flex-col md:grid md:grid-cols-6 items-center gap-4 md:gap-6 mb-4">
                     
                     {/* Mobile: Compact Search & Filter Bar */}
-                    <div className="md:hidden w-full flex items-center gap-2">
-                        <div className="flex-grow flex items-center bg-slate-50 border border-slate-100 rounded-xl px-3 h-10">
-                            <MapPin size={12} className="text-slate-400 mr-2" />
+                    {/* Mobile: Comprehensive Horizontal Scroll Filter Bar */}
+                    <div className="md:hidden w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                        {/* City */}
+                        <div className="flex-shrink-0 flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2.5 h-9 min-w-[100px]">
+                            <MapPin size={10} className="text-slate-400 mr-1.5" />
                             <select 
                                 value={location} 
                                 onChange={e => setLocation(e.target.value)}
-                                className="w-full bg-transparent text-[10px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
+                                className="w-full bg-transparent text-[9px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
                             >
-                                <option value="">Select City</option>
+                                <option value="">City</option>
                                 {GUJARAT_CITIES.map(c => <option key={c} value={c.toLowerCase()}>{c}</option>)}
                             </select>
                         </div>
+
+                        {/* Occasion */}
+                        <div className="flex-shrink-0 flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2.5 h-9 min-w-[110px]">
+                            <select 
+                                value={occasion} 
+                                onChange={e => setOccasion(e.target.value)}
+                                className="w-full bg-transparent text-[9px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
+                            >
+                                <option value="">Occasion</option>
+                                {Object.entries(OCCASIONS).map(([group, list]) => (
+                                    <optgroup key={group} label={group} className="text-xs">
+                                        {list.map(o => <option key={o} value={o}>{o}</option>)}
+                                    </optgroup>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Type */}
+                        <div className="flex-shrink-0 flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2.5 h-9 min-w-[110px]">
+                            <select 
+                                value={selectedType} 
+                                onChange={e => setSelectedType(e.target.value)}
+                                className="w-full bg-transparent text-[9px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
+                            >
+                                <option value="">{type === 'vendors' ? 'Category' : 'Type'}</option>
+                                {(type === 'vendors' ? VENDOR_TYPES : VENUE_TYPES).map(t => (
+                                    <option key={t} value={t}>{t}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Region */}
+                        <div className="flex-shrink-0 flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2.5 h-9 min-w-[100px]">
+                            <select 
+                                value={selectedRegion} 
+                                onChange={e => setSelectedRegion(e.target.value)}
+                                className="w-full bg-transparent text-[9px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
+                            >
+                                <option value="">Region</option>
+                                {['SG Highway', 'Satellite', 'Bodakdev', 'Adajan', 'Vesu', 'Prahlad Nagar', 'Girdhar Nagar', 'Pal'].map(r => <option key={r} value={r}>{r}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Food */}
+                        <div className="flex-shrink-0 flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2.5 h-9 min-w-[90px]">
+                            <select 
+                                value={foodType} 
+                                onChange={e => setFoodType(e.target.value)}
+                                className="w-full bg-transparent text-[9px] font-black uppercase tracking-wider text-slate-900 appearance-none focus:outline-none"
+                            >
+                                <option value="Any">Food</option>
+                                <option value="Pure Veg">Pure Veg</option>
+                                <option value="Non-Veg">Non-Veg</option>
+                            </select>
+                        </div>
+
                         <Button 
                             onClick={() => setShowMore(!showMore)}
                             variant="outline"
-                            className="w-10 h-10 p-0 border-slate-200 rounded-xl bg-white text-slate-900 shadow-sm"
+                            className="flex-shrink-0 w-9 h-9 p-0 border-slate-200 rounded-lg bg-white text-slate-900 shadow-sm"
                         >
-                            <SlidersHorizontal size={16} />
+                            <SlidersHorizontal size={14} />
                         </Button>
                     </div>
 
@@ -397,6 +470,4 @@ const ListingFilter = ({ type }: ListingFilterProps) => {
             </div>
         </div>
     );
-};
-
-export default ListingFilter;
+}

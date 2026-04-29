@@ -61,7 +61,7 @@ const ReviewCarousel = () => {
 };
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
-import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES } from "@/lib/constants";
+import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA } from "@/lib/constants";
 import { getListingImage } from "@/lib/imageUtils";
 
 function unslugify(slug: string) {
@@ -72,6 +72,15 @@ function unslugify(slug: string) {
         .join(' ');
 }
 
+const blogs = [
+    { title: "Event Lighting Ideas That Completely...", text: "Lighting is one of the most powerful yet oft...", date: "Friday Mar 27, 2026", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80", slug: "event-lighting-ideas" },
+    { title: "How Couples Are Blending Festiviti...", text: "Indian weddings have always been grand, vibr...", date: "Tuesday Apr 14, 2026", img: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80", slug: "blending-festivities" },
+    { title: "Modern Wedding Rituals That Are Rep...", text: "Weddings have always been a reflection of cu...", date: "Thursday Apr 09, 2026", img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80", slug: "modern-wedding-rituals" },
+    { title: "Bollywood Bridal Lehengas That Defi...", text: "When it comes to Indian weddings, Bollywood h...", date: "Saturday Apr 04, 2026", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80", slug: "bollywood-bridal-lehengas" },
+    { title: "Top 10 Birthday Party Ideas for Kids", text: "Planning a kids birthday can be effortless w...", date: "Monday Mar 30, 2026", img: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80", slug: "top-10-birthday-party-ideas" },
+    { title: "Perfect Corporate Venue Guide 2026", text: "Discover how to impress your clients with th...", date: "Wednesday Apr 22, 2026", img: "https://images.unsplash.com/photo-1505373877841-825f7d46678?auto=format&fit=crop&w=800&q=80", slug: "perfect-corporate-venue-guide" }
+];
+
 export default function SEOCollectionView({ seoPage, seoData, venues, vendors, categorySlug, citySlug, areaSlug, spaceType, foodType, isVendorContext: forcedVendor, isNearMe, rawSlug, sParams }: any) {
   const [showMoreText, setShowMoreText] = useState(false);
   const [showMoreAreas, setShowMoreAreas] = useState(false);
@@ -80,11 +89,22 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
   const [isAnimating, setIsAnimating] = useState(true);
   const initialCategory = (() => {
       if (!categorySlug) return '';
-      const compareSlug = categorySlug.toLowerCase();
+      const compareSlug = categorySlug.toLowerCase().replace('-venues', '').replace('-venue', '');
+      
+      // Check Vendors
       const vendorMatch = VENDOR_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
       if (vendorMatch) return vendorMatch;
+      
+      // Check Venue Types
       const venueMatch = VENUE_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
       if (venueMatch) return venueMatch;
+
+      // Check Occasions
+      for (const [group, list] of Object.entries(OCCASIONS_DATA)) {
+          const match = list.find(o => o.toLowerCase().replace(/[\s\(\)]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') === compareSlug);
+          if (match) return match;
+      }
+      
       return '';
   })();
 
@@ -93,6 +113,19 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
+
+  const [autoPlay, setAutoPlay] = useState(true);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return;
+
+    const timer = setInterval(() => {
+        setIsAnimating(true);
+        setCurrentIndex(prev => (prev + 1) % blogs.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [blogs.length, autoPlay]);
 
   const VENDOR_SLUGS = VENDOR_TYPES.map(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-'));
   const isVendorContext = forcedVendor || categorySlug === 'vendors' || categorySlug === 'all-vendors' || VENDOR_SLUGS.includes(categorySlug?.toLowerCase());
@@ -121,15 +154,6 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
           }
       }
   };
-
-  const blogs = [
-    { title: "Event Lighting Ideas That Completely...", text: "Lighting is one of the most powerful yet oft...", date: "Friday Mar 27, 2026", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80", slug: "event-lighting-ideas" },
-    { title: "How Couples Are Blending Festiviti...", text: "Indian weddings have always been grand, vibr...", date: "Tuesday Apr 14, 2026", img: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80", slug: "blending-festivities" },
-    { title: "Modern Wedding Rituals That Are Rep...", text: "Weddings have always been a reflection of cu...", date: "Thursday Apr 09, 2026", img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80", slug: "modern-wedding-rituals" },
-    { title: "Bollywood Bridal Lehengas That Defi...", text: "When it comes to Indian weddings, Bollywood h...", date: "Saturday Apr 04, 2026", img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80", slug: "bollywood-bridal-lehengas" },
-    { title: "Top 10 Birthday Party Ideas for Kids", text: "Planning a kids birthday can be effortless w...", date: "Monday Mar 30, 2026", img: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80", slug: "top-10-birthday-party-ideas" },
-    { title: "Perfect Corporate Venue Guide 2026", text: "Discover how to impress your clients with th...", date: "Wednesday Apr 22, 2026", img: "https://images.unsplash.com/photo-1505373877841-825f7d46678?auto=format&fit=crop&w=800&q=80", slug: "perfect-corporate-venue-guide" }
-  ];
 
   // Priority logic for display
   const listingsToDisplay = isVendorContext ? vendors : venues;
@@ -237,7 +261,14 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
       </section>
 
       {/* 2. MAIN CONTENT AREA */}
-      {mounted && !isVendorContext && <ListingFilter type='venues' />}
+      {mounted && (
+        <ListingFilter 
+            type={isVendorContext ? 'vendors' : 'venues'} 
+            initialCity={unslugify(citySlug)}
+            initialOccasion={initialCategory}
+            initialType={initialCategory}
+        />
+      )}
       
       <section className="max-w-[1800px] mx-auto px-4 md:px-20 py-10 md:py-16">
           <div className="flex flex-col gap-6 md:gap-12">
@@ -659,19 +690,19 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
               <div className="relative group/carousel mx-auto">
                   {/* Navigation Arrows - Perfectly Balanced */}
                   <button 
-                      suppressHydrationWarning
-                      onClick={() => setCurrentIndex(prev => (prev - 1 + (blogs.length - 4)) % (blogs.length - 4))}
-                      className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
-                  >
-                      <ArrowLeft size={24} />
-                  </button>
-                  <button 
-                      suppressHydrationWarning
-                      onClick={() => setCurrentIndex(prev => (prev + 1) % (blogs.length - 4))}
-                      className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
-                  >
-                      <ChevronRight size={24} />
-                  </button>
+                       suppressHydrationWarning
+                       onClick={() => { setAutoPlay(false); setIsAnimating(true); setCurrentIndex(prev => (prev - 1 + blogs.length) % blogs.length); }}
+                       className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
+                   >
+                       <ArrowLeft size={24} />
+                   </button>
+                   <button 
+                       suppressHydrationWarning
+                       onClick={() => { setAutoPlay(false); setIsAnimating(true); setCurrentIndex(prev => (prev + 1) % blogs.length); }}
+                       className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
+                   >
+                       <ChevronRight size={24} />
+                   </button>
 
                   {/* Carousel Container - Balanced Spacing */}
                   <div className="overflow-hidden px-1">

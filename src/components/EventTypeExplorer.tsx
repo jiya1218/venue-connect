@@ -80,7 +80,7 @@ const EventTypeExplorer = () => {
     };
     const dbTypes = mapping[name] || [];
     const total = dbTypes.reduce((acc, t) => acc + (counts[t] || 0), 0);
-    return total > 0 ? `${total}+` : "12+";
+    return `${total}`;
   };
 
   return (
@@ -128,11 +128,11 @@ const EventTypeExplorer = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="min-w-[calc(50%-0.5rem)] md:min-w-0 snap-start"
+                  className="min-w-[calc(70%-1rem)] md:min-w-0 snap-start"
                 >
                   <Link
                     href={`/${slug}`}
-                    className="group relative h-64 md:h-80 rounded-2xl overflow-hidden cursor-pointer block"
+                    className="group relative h-52 md:h-80 rounded-2xl overflow-hidden cursor-pointer block"
                   >
                     <img
                       src={event.image}

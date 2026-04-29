@@ -160,19 +160,19 @@ export default function RequirementWizard() {
                 key={step}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-6 md:p-10 shadow-2xl h-[540px] flex flex-col relative overflow-hidden"
+                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-10 shadow-2xl min-h-[460px] md:h-[540px] flex flex-col relative overflow-hidden"
             >
-                <div className="flex items-center justify-between mb-8 shrink-0">
+                <div className="flex items-center justify-between mb-5 md:mb-8 shrink-0">
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-[4px] text-primary mb-1">Step {step + 1}/{STEPS.length}</p>
-                        <h2 className="text-2xl font-black text-white uppercase tracking-tight">{STEPS[step].title}</h2>
+                        <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[3px] md:tracking-[4px] text-primary mb-0.5 md:mb-1">Step {step + 1}/{STEPS.length}</p>
+                        <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">{STEPS[step].title}</h2>
                     </div>
                     <div className="text-right">
-                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{STEPS[step].subtitle}</p>
+                        <p className="text-[9px] md:text-[10px] font-bold text-white/30 uppercase tracking-widest">{STEPS[step].subtitle}</p>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3 md:space-y-4">
                     {step === 0 && (
                         <div className="space-y-4">
                             <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={OCCASIONS} onChange={(v: string) => updateData({ occasion: v })} />
@@ -210,10 +210,10 @@ export default function RequirementWizard() {
                     )}
                 </div>
 
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5 shrink-0">
+                <div className="flex items-center justify-between mt-6 md:mt-8 pt-4 md:pt-6 border-t border-white/5 shrink-0">
                     {step > 0 ? (
-                        <button onClick={prevStep} className="flex items-center gap-2 text-white/40 hover:text-white font-black text-xs transition-all uppercase tracking-widest group">
-                            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
+                        <button onClick={prevStep} className="flex items-center gap-2 text-white/40 hover:text-white font-black text-[10px] md:text-xs transition-all uppercase tracking-widest group">
+                            <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:-translate-x-1 transition-transform" /> Back
                         </button>
                     ) : <div />}
                     
@@ -221,7 +221,7 @@ export default function RequirementWizard() {
                         <Button 
                             onClick={handleFinalSubmit}
                             disabled={loading || isNextDisabled()}
-                            className="bg-primary hover:bg-primary/90 text-white h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20"
+                            className="bg-primary hover:bg-primary/90 text-white h-12 md:h-14 px-8 md:px-12 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-primary/20"
                         >
                             {loading ? "Submitting..." : "Submit Request"}
                         </Button>
@@ -229,9 +229,9 @@ export default function RequirementWizard() {
                         <Button 
                             onClick={nextStep}
                             disabled={isNextDisabled()}
-                            className="bg-white text-slate-900 hover:bg-slate-100 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-2"
+                            className="bg-white text-slate-900 hover:bg-slate-100 h-12 md:h-14 px-8 md:px-10 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2"
                         >
-                            Continue <ChevronRight className="w-4 h-4" />
+                            Continue <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </Button>
                     )}
                 </div>
@@ -257,7 +257,7 @@ function SelectField({ label, icon, value, options, onChange, disabled = false }
                 <select 
                     value={value} 
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all appearance-none cursor-pointer text-sm"
+                    className="w-full h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-4 md:px-5 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all appearance-none cursor-pointer text-xs md:text-sm"
                     suppressHydrationWarning
                 >
                     <option value="" className="text-slate-900">Select {label}</option>
@@ -283,7 +283,7 @@ function InputField({ label, icon, value, onChange, type = "text", placeholder }
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
-                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all text-sm [color-scheme:dark]"
+                    className="w-full h-12 md:h-14 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-4 md:px-5 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all text-xs md:text-sm [color-scheme:dark]"
                     suppressHydrationWarning
                 />
             </div>

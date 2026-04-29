@@ -129,7 +129,7 @@ function SearchBar() {
 
 const HeroSearch = () => {
   return (
-    <section className="relative min-h-[90vh] md:min-h-screen flex flex-col justify-center overflow-hidden py-20 md:py-0">
+    <section className="relative min-h-0 md:min-h-screen flex flex-col justify-center overflow-hidden py-12 md:py-0">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -152,20 +152,20 @@ const HeroSearch = () => {
 
           {/* LEFT CONTENT */}
           <div className="flex-1 text-center lg:text-left space-y-4">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
-              <span className="text-[10px] md:text-xs font-black uppercase tracking-[3px] text-white/70">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+              <span className="text-[9px] md:text-xs font-black uppercase tracking-[2px] md:tracking-[3px] text-white/70">
                 India's Most Trusted Venue Network
               </span>
             </div>
 
-            <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1] text-white tracking-tighter">
-              Plan Your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-primary-foreground drop-shadow-2xl">Dream Event</span><br />
+            <h1 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-tight md:leading-[1] text-white tracking-tighter">
+              Plan Your <br className="hidden md:block" />{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-primary-foreground drop-shadow-2xl">Dream Event</span> <br className="hidden md:block" />
               with Experts
             </h1>
 
-            <p className="text-base md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-sm md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 md:px-0">
               Stop hunting, start celebrating. Share your vision and receive hand-picked quotes from Gujarat's finest venues — fast.
             </p>
 
@@ -176,16 +176,16 @@ const HeroSearch = () => {
             </div>
 
             {/* Social Proof */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-1">
-              <div className="flex -space-x-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-1">
+              <div className="flex -space-x-1.5 scale-90 md:scale-100 origin-left">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800">
+                  <div key={i} className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800">
                     <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
                   </div>
                 ))}
-                <div className="w-8 h-8 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[10px] font-bold text-white">+2k</div>
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[9px] md:text-[10px] font-bold text-white">+2k</div>
               </div>
-              <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Trusted by 50,000+ Happy Families</p>
+              <p className="text-[9px] md:text-xs font-bold text-white/40 uppercase tracking-widest">Trusted by 50,000+ Happy Families</p>
             </div>
           </div>
 
