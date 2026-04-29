@@ -7,6 +7,7 @@ import ListingsTab from "@/components/admin/Tabs/ListingsTab";
 import ApplicationsTab from "@/components/admin/Tabs/ApplicationsTab";
 import UsersTab from "@/components/admin/Tabs/UsersTab";
 import CitiesTab from "@/components/admin/Tabs/CitiesTab";
+import LeadsTab from "@/components/admin/Tabs/LeadsTab";
 
 function AdminDashboardContent() {
   const searchParams = useSearchParams();
@@ -16,6 +17,7 @@ function AdminDashboardContent() {
     <div className="animate-in fade-in duration-700">
       {activeTab === 'dashboard' && <DashboardTab />}
       {activeTab === 'listings' && <ListingsTab />}
+      {activeTab === 'leads' && <LeadsTab />}
       {activeTab === 'applications' && <ApplicationsTab />}
       {activeTab === 'users' && <UsersTab />}
       {activeTab === 'cities' && <CitiesTab />}

@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { MapPin, Star, ArrowRight, Building2, Sparkles, ChevronRight, CheckCircle2, Phone, MessageCircle, Info, IndianRupee, Users2, Building, Store, ShieldCheck, Clock, Eye, Heart, PencilLine, Share2 } from 'lucide-react';
+import { MapPin, Star, ArrowRight, Building2, Sparkles, ChevronRight, CheckCircle2, Phone, MessageCircle, Info, IndianRupee, Users2, Building, Store, ShieldCheck, Clock, Eye, Heart, PencilLine, Share2, Check, Camera } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/server';
 import { getSEOPageBySlug, generateSEOPage, type SEOPageRow } from '@/lib/seo/pageGenerator';
@@ -19,14 +19,33 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { RelatedSearches } from '@/components/seo/RelatedSearches';
 
-// Components for listing detail view
-import VenueGallery from "@/components/listing/VenueGallery";
-import ListingHeaderActions from "@/components/listing/ListingHeaderActions";
-import ListingDescription from "@/components/listing/ListingDescription";
-import { QuickInfoBar, PricingDetails, AmenitiesGrid, SpacesCapacity, CateringPolicy, LocationMap } from "@/components/listing/VenueSections";
-import { VendorQuickStats, VendorServices, VendorPortfolio, VendorServiceAreas } from "@/components/listing/VendorSections";
 import ReviewsList from "@/components/ReviewsList";
 import GetQuoteModal from "@/components/GetQuoteModal";
+import VenueGallery from "@/components/listing/VenueGallery";
+import ListingDescription from "@/components/listing/ListingDescription";
+import VenueEnquiryForm from "@/components/listing/VenueEnquiryForm";
+import { 
+    QuickInfoBar, 
+    PricingDetails, 
+    AmenitiesGrid, 
+    SpacesCapacity, 
+    CateringPolicy, 
+    LocationMap,
+    NearestLandmarks,
+    PolicyTerms,
+    AboutVenue,
+    GoodForOccasions,
+    CuisinesServed,
+    FacilitiesList,
+    SpaceTypeAvailable,
+    CarParking,
+    MoreInformation,
+    VenueSummary,
+    FAQs
+} from "@/components/listing/VenueSections";
+import { VendorQuickStats, VendorServices, VendorPortfolio, VendorServiceAreas } from "@/components/listing/VendorSections";
+import VendorEnquiryForm from "@/components/listing/VendorEnquiryForm";
+import SimilarVendors from "@/components/listing/SimilarVendors";
 import { enrichListings, getEnrichedImage, cleanName } from '@/lib/imageEnricher';
 
 export const revalidate = 3600;
@@ -393,155 +412,108 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
                 </div>
             </div>
 
-            {/* HERO GRID */}
-            <div className="max-w-[1300px] mx-auto px-0 md:px-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 md:gap-8">
-
-                    {/* LEFT: GALLERY SLIDER */}
-                    <div className="lg:col-span-8">
-                        <VenueGallery images={images} name={cleanedName} />
-
-                        {/* AUTHORITY INFO */}
-                        <div className="mt-6 px-4 md:px-0">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                                <h1 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
-                                    {cleanedName}
-                                </h1>
-                                <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1 px-2 py-1 rounded bg-amber-500 text-white">
-                                        <Star size={12} className="fill-current" />
-                                        <span className="text-[12px] font-bold">4.2</span>
-                                    </div>
-                                    <span className="text-[12px] text-slate-500 font-bold">(12 reviews)</span>
-                                </div>
-                            </div>
-
-                            {/* META BAR - Optimized for Mobile Wrapping */}
-                            <div className="flex flex-wrap items-center gap-y-4 gap-x-6 mb-8 pb-8 border-b border-slate-100">
-                                <div className="flex items-center gap-2 text-slate-600">
-                                    <Building size={16} className="text-primary/60" />
-                                    <span className="text-[13px] font-bold">Banquet Hall</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-600">
-                                    <Users2 size={16} className="text-primary/60" />
-                                    <span className="text-[13px] font-bold">{venue.min_capacity || 50}-{venue.max_capacity || 500} Guests</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-600">
-                                    <Eye size={16} className="text-primary/60" />
-                                    <span className="text-[13px] font-bold">2.4k Views</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-slate-600 cursor-pointer hover:text-primary transition-colors">
-                                    <Heart size={16} />
-                                    <span className="text-[13px] font-bold">Shortlist</span>
-                                </div>
-                                <button className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-slate-900 font-bold hover:bg-slate-200 transition-all ml-auto text-xs">
-                                    <PencilLine size={14} /> Write Review
-                                </button>
-                            </div>
-
-                            {/* PRICING & LOCATION */}
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="flex items-center justify-between md:justify-start gap-4 p-4 bg-green-50/50 rounded-2xl border border-green-100">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                                            <p className="text-[13px] font-black text-slate-600 uppercase tracking-wider">Veg Plate</p>
-                                        </div>
-                                        <p className="text-lg font-black text-slate-900">₹{venue.veg_price_per_plate || '750'}</p>
-                                    </div>
-                                    <div className="flex items-center justify-between md:justify-start gap-4 p-4 bg-red-50/50 rounded-2xl border border-red-100">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,62,54,0.4)]" />
-                                            <p className="text-[13px] font-black text-slate-600 uppercase tracking-wider">Non-Veg Plate</p>
-                                        </div>
-                                        <p className="text-lg font-black text-slate-900">₹{venue.non_veg_price_per_plate || '950'}</p>
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 border-t border-slate-100">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                        <div className="flex items-start gap-3">
-                                            <MapPin className="text-primary shrink-0 mt-1" size={20} />
-                                            <div>
-                                                <p className="text-[15px] font-bold text-slate-900">{venue.location || venue.area}, {venue.city}</p>
-                                                <p className="text-[13px] text-slate-500 font-medium mt-1 leading-relaxed">{venue.address}</p>
-                                                <Link href="#location" className="inline-block mt-2 text-[12px] font-black text-primary uppercase tracking-widest hover:underline">View on Map</Link>
-                                            </div>
-                                        </div>
-                                        <GetQuoteModal 
-                                            businessName={venue.name}
-                                            listingId={venue.id}
-                                            listingType="venue"
-                                            ownerId={venue.owner_id}
-                                            triggerButton={
-                                                <button className="w-full md:w-auto px-8 py-4 bg-primary text-white text-[13px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/25 hover:scale-105 transition-transform">
-                                                    Get Best Deal
-                                                </button>
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+            {/* HERO SECTION WITH TITLE & RATING */}
+            <div className="max-w-[1300px] mx-auto px-4 md:px-6 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h1 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight">
+                        {cleanedName}
+                    </h1>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 text-white shadow-lg shadow-amber-500/20">
+                            <Star size={14} className="fill-current" />
+                            <span className="text-sm font-black">4.2</span>
                         </div>
-                    </div>
-
-                    {/* RIGHT: ENQUIRY FORM */}
-                    <div className="lg:col-span-4 px-4 md:px-0 mt-6 md:mt-0">
-                        <div className="sticky top-24">
-                            <div className="bg-slate-900 rounded-xl sm:rounded-[1.75rem] p-3 sm:p-5 md:rounded-[2.5rem] md:p-8 text-white shadow-2xl relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl" />
-
-                                <h3 className="text-base sm:text-lg md:text-xl font-black mb-2 sm:mb-4 md:mb-8 leading-tight">
-                                    Check Availability & <br /><span className="text-primary italic">Request Prices</span>
-                                </h3>
-
-                                <div className="space-y-4">
-                                    <p className="text-sm text-white/60 mb-6">Send an inquiry directly to the venue owner to get the best prices and availability for your event.</p>
-                                    <GetQuoteModal 
-                                        businessName={venue.name}
-                                        listingId={venue.id}
-                                        listingType="venue"
-                                        ownerId={venue.owner_id}
-                                    />
-                                </div>
-
-                                <div className="mt-3 sm:mt-5 md:mt-8 flex items-center gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4 bg-white/5 rounded-xl sm:rounded-2xl border border-white/5">
-                                    <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-primary rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"><Phone size={16} className="sm:hidden" /><Phone size={18} className="hidden sm:block md:hidden" /><Phone size={20} className="hidden md:block" /></div>
-                                    <div>
-                                        <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white/50">Call Expert</p>
-                                        <p className="font-black text-xs sm:text-sm md:text-lg">+91-9104841218</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <span className="text-[12px] text-slate-500 font-bold uppercase tracking-widest">(12 reviews)</span>
+                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-xl text-slate-900 font-bold hover:bg-slate-200 transition-all cursor-pointer">
+                            <Share2 size={16} /> <span className="text-xs">Share</span>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* STICKY TABS */}
-            <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm mt-12 overflow-hidden">
-                <div className="max-w-[1300px] mx-auto px-4 flex items-center gap-6 md:gap-10 h-14 overflow-x-auto no-scrollbar scroll-smooth">
-                    {['Overview', 'Spaces', 'Prices', 'Amenities', 'Location', 'Reviews'].map((tab) => (
-                        <Link key={tab} href={`#${tab.toLowerCase()}`} className="text-[11px] md:text-[12px] font-black text-slate-400 uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap py-4 border-b-2 border-transparent hover:border-primary">
-                            {tab}
-                        </Link>
-                    ))}
+                <div className="flex items-center gap-2 mt-2 text-slate-500">
+                    <MapPin size={16} className="text-primary/60" />
+                    <span className="text-sm font-medium">{venue.location || venue.area}, {venue.city}</span>
                 </div>
             </div>
 
-            {/* BOTTOM CONTENT Discovery FEED */}
-            <div className="max-w-[1300px] mx-auto px-4 md:px-6 mt-12 pb-24">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                    <div className="lg:col-span-8 space-y-20">
-                        <section id="overview" className="scroll-mt-24"><ListingDescription description={venue.description} /></section>
-                        <section id="spaces" className="scroll-mt-24"><SpacesCapacity venue={venue} /></section>
-                        <section id="prices" className="scroll-mt-24"><PricingDetails venue={venue} /></section>
-                        <section id="amenities" className="scroll-mt-24"><AmenitiesGrid venue={venue} /></section>
-                        <section id="location" className="scroll-mt-24"><LocationMap venue={venue} /></section>
-                        <section id="reviews" className="scroll-mt-24">
+            <div className="max-w-[1300px] mx-auto px-4 md:px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+                    
+                    {/* LEFT CONTENT AREA */}
+                    <div className="lg:col-span-8 space-y-12">
+                        {/* 1. Images Smaller and side-by-side with form */}
+                        <div className="mb-6">
+                            <VenueGallery images={images} name={cleanedName} />
+                        </div>
+
+                        {/* 2. About Section (Description, Ambience, Services) */}
+                        <AboutVenue venue={venue} />
+
+                        {/* 2. Space Capacity */}
+                        <SpacesCapacity venue={venue} />
+
+                        {/* 3. Good for Occasions */}
+                        <GoodForOccasions venue={venue} />
+
+                        {/* 4. Cuisines Served */}
+                        <CuisinesServed venue={venue} />
+
+                        {/* 5. Facilities */}
+                        <FacilitiesList venue={venue} />
+
+                        {/* 6. Space Type Available */}
+                        <SpaceTypeAvailable venue={venue} />
+
+                        {/* 7. Car Parking */}
+                        <CarParking />
+
+                        {/* 8. More Information (Policies Table) */}
+                        <MoreInformation venue={venue} />
+
+                        {/* 9. Summary */}
+                        <VenueSummary venue={venue} />
+
+                        {/* 10. Reviews */}
+                        <section id="reviews" className="scroll-mt-24 pt-12 border-t border-slate-100">
+                            <h3 className="text-xl font-black text-slate-950 mb-8">Reviews & Ratings</h3>
                             <ReviewsList listingId={venue.id} listingType="venue" />
                         </section>
+
+                        {/* 11. FAQs */}
+                        <FAQs venue={venue} />
+
+                        {/* 12. Location Map */}
+                        <LocationMap venue={venue} />
                     </div>
+
+                    {/* RIGHT SIDEBAR: FORM & LANDMARKS */}
+                    <div className="lg:col-span-4 space-y-8">
+                        <div className="sticky top-24 space-y-8">
+                            {/* Lead Form */}
+                            <VenueEnquiryForm venue={venue} />
+                            
+                            {/* Nearest Landmarks (Requested below form) */}
+                            <NearestLandmarks venue={venue} />
+
+                            {/* Policy Terms & Disclaimer (Requested below form) */}
+                            <PolicyTerms />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* RELATED VENUES / MORE LIKE THIS */}
+            <div className="max-w-[1300px] mx-auto px-4 md:px-6 mt-20 pb-24 border-t border-slate-100 pt-20">
+                <div className="flex items-center justify-between mb-10">
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900">More Like This in {unslugify(cityParam)}</h2>
+                    <Link href={`/${cityParam}/venues`} className="text-sm font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-2">
+                        View All <ArrowRight size={16} />
+                    </Link>
+                </div>
+                {/* This would normally be a carousel of similar venues */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <p className="text-slate-400 italic font-medium col-span-full text-center py-10 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                        Discovering similar premium venues in {unslugify(cityParam)}...
+                    </p>
                 </div>
             </div>
         </div>
@@ -571,8 +543,9 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
             <div className="max-w-[1300px] mx-auto px-4 md:px-6 py-6 md:py-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
 
-                    {/* LEFT: GALLERY & INFO */}
-                    <div className="lg:col-span-8 space-y-6 md:space-y-10">
+                    {/* LEFT COLUMN: VISUALS & DETAILS */}
+                    <div className="lg:col-span-8 space-y-12">
+                        {/* GALLERY BLOCK */}
                         <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
                             <VenueGallery images={images} name={cleanedName} />
                             <div className="p-6 md:p-8">
@@ -583,24 +556,24 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                                             <p className="text-[12px] md:text-sm font-bold text-slate-400 flex items-center gap-1.5">
                                                 <MapPin size={14} className="text-primary" /> {vendor.location || vendor.address || vendor.city}
                                             </p>
-                                            <Badge className="bg-green-500/10 text-green-600 border-none font-bold uppercase tracking-widest text-[9px]">Verified Pro</Badge>
+                                            {isApproved && <Badge className="bg-green-500/10 text-green-600 border-none font-bold uppercase tracking-widest text-[9px]">Verified Pro</Badge>}
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-2xl self-start md:self-center">
                                         <Star size={18} className="fill-yellow-400 text-yellow-400" />
                                         <span className="text-xl font-black text-slate-900">{vendor.rating || '4.8'}</span>
-                                        <span className="text-slate-400 font-bold text-sm">({vendor.reviews || 24} Reviews)</span>
+                                        <span className="text-slate-400 font-bold text-sm">({vendor.reviews || 0} Reviews)</span>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-slate-50">
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Starting Price</p>
-                                        <p className="text-lg font-black text-slate-900">₹{vendor.starting_price || '5,000'}</p>
+                                        <p className="text-lg font-black text-slate-900">₹{vendor.starting_price?.toLocaleString('en-IN') || 'Consult'}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Category</p>
-                                        <p className="text-lg font-black text-slate-900">{vendor.category || 'Professional'}</p>
+                                        <p className="text-lg font-black text-slate-900">{vendor.category || 'Expert'}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Response Time</p>
@@ -614,144 +587,152 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                             </div>
                         </div>
 
-                        {/* DETAILS SECTIONS */}
-                        <div className="space-y-12 bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-sm">
-                            <section id="about" className="scroll-mt-24">
-                                <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
-                                    <span className="w-1.5 h-8 bg-primary rounded-full" /> About {cleanedName}
-                                </h3>
-                                <ListingDescription description={vendor.description || `Professional ${vendor.category || 'vendor'} providing premium services in ${cityParam}.`} />
-                            </section>
-
-                            <section id="pricing" className="scroll-mt-24">
-                                <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
-                                    <span className="w-1.5 h-8 bg-primary rounded-full" /> Package & Pricing
-                                </h3>
-                                <VendorQuickStats vendor={vendor} />
-                            </section>
-
-                            <section id="contact" className="scroll-mt-24">
-                                <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
-                                    <span className="w-1.5 h-8 bg-primary rounded-full" /> Contact & Location
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm"><Phone size={18} /></div>
-                                            <div>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Phone</p>
-                                                <p className="text-sm font-black text-slate-900">+91 98XXX XXXX</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm"><MessageCircle size={18} /></div>
-                                            <div>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Email</p>
-                                                <p className="text-sm font-black text-slate-900">contact@{vendor.slug}.com</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-3">Address</p>
-                                        <p className="text-sm font-bold text-slate-600 leading-relaxed">{vendor.address || `${vendor.location}, ${vendor.city}, Gujarat`}</p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section id="reviews" className="scroll-mt-24 pt-4 border-t border-slate-50">
-                                <ReviewsList listingId={vendor.id} listingType="vendor" />
-                            </section>
+                        {/* STICKY TAB NAVIGATION */}
+                        <div className="bg-white border-y border-slate-100 sticky top-20 z-30 shadow-sm -mx-4 md:-mx-6 px-4 md:px-6 overflow-x-auto no-scrollbar">
+                            <div className="flex items-center gap-8 py-4">
+                                {[
+                                    { id: 'overview', label: 'Overview' },
+                                    { id: 'portfolio', label: 'Portfolio' },
+                                    { id: 'pricing', label: 'Pricing' },
+                                    { id: 'contact', label: 'Contact' },
+                                    { id: 'reviews', label: 'Reviews' }
+                                ].map((tab) => (
+                                    <a 
+                                        key={tab.id} 
+                                        href={`#${tab.id}`} 
+                                        className="text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors whitespace-nowrap"
+                                    >
+                                        {tab.label}
+                                    </a>
+                                ))}
+                            </div>
                         </div>
+
+                        {/* SECTIONS */}
+                        <section id="overview" className="scroll-mt-32">
+                             <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-primary rounded-full" /> About {cleanedName}
+                            </h3>
+                            <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                                <ListingDescription description={vendor.description || `Professional ${vendor.category || 'vendor'} providing premium services in ${cityParam}.`} />
+                                
+                                <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-slate-50">
+                                    {[
+                                        { label: 'Services', val: 'Wedding & Events' },
+                                        { label: 'Experience', val: '5+ Years' },
+                                        { label: 'Travel', val: 'Available' },
+                                        { label: 'Booking', val: '20% Advance' }
+                                    ].map((spec, i) => (
+                                        <div key={i}>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{spec.label}</p>
+                                            <p className="text-sm font-bold text-slate-900">{spec.val}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="portfolio" className="scroll-mt-32">
+                            <VendorPortfolio images={images} name={cleanedName} />
+                        </section>
+
+                        <section id="pricing" className="scroll-mt-32">
+                             <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-primary rounded-full" /> Packages & Services
+                            </h3>
+                            <VendorServices vendor={vendor} />
+                        </section>
+
+                        <section id="contact" className="scroll-mt-32">
+                             <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-primary rounded-full" /> Contact & Location
+                            </h3>
+                            <VendorServiceAreas vendor={vendor} />
+                        </section>
+
+                        <section id="reviews" className="scroll-mt-32">
+                             <h3 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-primary rounded-full" /> Reviews & Ratings
+                            </h3>
+                            <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                                <ReviewsList listingId={vendor.id} listingType="vendor" />
+                            </div>
+                        </section>
+
+                        {/* OTHER SERVICES IN CITY */}
+                        <section className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden">
+                             <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mb-32 -mr-32 blur-3xl" />
+                             <h3 className="text-2xl font-black mb-2">Other services in {unslugify(cityParam)}</h3>
+                             <p className="text-white/40 font-bold text-xs uppercase tracking-[2px] mb-8">Comprehensive Event Solutions</p>
+                             
+                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {['Venues', 'Caterers', 'Photographers', 'Decorators'].map(srv => (
+                                    <Link key={srv} href={`/${cityParam}/${srv.toLowerCase()}`} className="group p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                                        <p className="text-sm font-bold text-white/80 group-hover:text-white transition-colors">{srv}</p>
+                                        <ArrowRight size={14} className="mt-2 text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
+                                    </Link>
+                                ))}
+                             </div>
+                        </section>
+
+                        {/* SIMILAR VENDORS */}
+                        <section className="pt-10 border-t border-slate-100">
+                             <SimilarVendors currentId={vendor.id} city={vendor.city || cityParam} category={vendor.category || 'Photographers'} />
+                        </section>
                     </div>
 
-                    {/* RIGHT: ENQUIRY FORM */}
-                    <div className="lg:col-span-4 lg:sticky lg:top-24">
-                        <div className="bg-slate-950 rounded-2xl md:rounded-[2.5rem] p-6 md:p-10 text-white shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl" />
-
-                            <h3 className="text-lg sm:text-xl md:text-2xl font-black mb-2">Check Availability</h3>
-                            <p className="text-white/50 text-[12px] sm:text-xs md:text-sm font-bold mb-8 uppercase tracking-widest">Send inquiry to {vendor.name}</p>
-
-                            <div className="space-y-4">
-                                <p className="text-sm text-white/60 mb-8">Send an inquiry directly to {vendor.name} to check availability and get custom pricing for your event.</p>
-                                <GetQuoteModal 
-                                    businessName={vendor.name}
-                                    listingId={vendor.id}
-                                    listingType="vendor"
-                                    ownerId={vendor.owner_id}
-                                />
-                            </div>
-
-                            <div className="mt-5 sm:mt-8 pt-5 sm:pt-8 border-t border-white/10 flex items-center gap-4">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><ShieldCheck size={24} /></div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Trusted Partner</p>
-                                    <p className="text-xs font-bold text-white/80 leading-none">Direct quote from official vendor</p>
-                                </div>
-                            </div>
+                    {/* RIGHT COLUMN: STICKY FORM */}
+                    <div className="lg:col-span-4 lg:sticky lg:top-32 space-y-8">
+                        <VendorEnquiryForm vendor={vendor} />
+                        
+                        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 mb-4 flex items-center gap-2">
+                                <ShieldCheck size={16} className="text-emerald-500" /> Quality Commitment
+                            </h4>
+                            <ul className="space-y-4">
+                                {[
+                                    { t: 'Fast Response', d: 'Replies within 4 hours' },
+                                    { t: 'Verified Work', d: 'All portfolio images are authentic' },
+                                    { t: 'Secure Payment', d: 'Safe booking with VenueConnect' }
+                                ].map((item, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                                            <Check size={12} />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-900 leading-none mb-1">{item.t}</p>
+                                            <p className="text-[10px] text-slate-400 font-medium">{item.d}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* BOTTOM CONTENT Discovery FEED */}
-            <div className="max-w-[1300px] mx-auto px-4 md:px-6 mt-12 pb-10 md:pb-24 overflow-hidden">
-                <div className="space-y-16">
-                    {/* Event Planning inspiration */}
-                    <section className="bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-sm overflow-hidden">
-                        <div className="mb-6 md:mb-10">
-                            <h2 className="text-xl md:text-2xl font-black text-slate-950 mb-1">Event Planning Inspiration & Ideas</h2>
-                            <p className="text-primary font-bold text-[12px] md:text-sm">Latest trends and professional advice for your big day</p>
-                        </div>
-
-                        {/* Desktop: Continuous Seamless Rotation */}
-                        <div className="hidden md:block relative">
-                            <div className="flex gap-6 animate-infinite-scroll hover:[animation-play-state:paused]">
-                                {[
-                                    { title: 'Choosing the Perfect Catering Menu', img: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800' },
-                                    { title: 'Top 10 Wedding Photography Trends 2026', img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800' },
-                                    { title: 'How to Budget for Your Special Event', img: 'https://images.unsplash.com/photo-1454165833767-131438967468?w=800' },
-                                    { title: 'Modern Floral Decor for Receptions', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800' },
-                                    { title: 'Creative Lighting for Outdoor Parties', img: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800' },
-                                    { title: 'Finding the Right Entertainment', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800' },
-                                    // Duplicate for seamless loop
-                                    { title: 'Choosing the Perfect Catering Menu', img: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800' },
-                                    { title: 'Top 10 Wedding Photography Trends 2026', img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800' },
-                                    { title: 'How to Budget for Your Special Event', img: 'https://images.unsplash.com/photo-1454165833767-131438967468?w=800' },
-                                    { title: 'Modern Floral Decor for Receptions', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800' },
-                                    { title: 'Creative Lighting for Outdoor Parties', img: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800' },
-                                    { title: 'Finding the Right Entertainment', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800' }
-                                ].map((b, i) => (
-                                    <div key={i} className="min-w-[300px] group cursor-pointer">
-                                        <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-3 border border-slate-50 shadow-sm">
-                                            <img src={b.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
-                                        </div>
-                                        <h4 className="font-black text-sm text-slate-800 group-hover:text-primary transition-colors leading-tight line-clamp-2 px-1">{b.title}</h4>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Mobile: 2 Visible + Horizontal Scroll */}
-                        <div className="md:hidden flex overflow-x-auto gap-4 no-scrollbar snap-x">
-                            {[
-                                { title: 'Choosing the Perfect Catering Menu', img: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800' },
-                                { title: 'Top 10 Wedding Photography Trends 2026', img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800' },
-                                { title: 'How to Budget for Your Special Event', img: 'https://images.unsplash.com/photo-1454165833767-131438967468?w=800' },
-                                { title: 'Modern Floral Decor for Receptions', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800' },
-                                { title: 'Creative Lighting for Outdoor Parties', img: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800' },
-                                { title: 'Finding the Right Entertainment', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800' }
-                            ].map((b, i) => (
-                                <div key={i} className="min-w-[70%] snap-start group cursor-pointer">
-                                    <div className="aspect-video rounded-2xl overflow-hidden mb-3 border border-slate-100">
-                                        <img src={b.img} className="w-full h-full object-cover" alt="" />
-                                    </div>
-                                    <h4 className="font-black text-[13px] text-slate-900 leading-tight">{b.title}</h4>
+            {/* BOTTOM INSPIRATION SECTION (ALREADY IN PAGE) */}
+            <div className="max-w-[1300px] mx-auto px-4 md:px-6 mt-10 pb-20">
+                <section className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+                    <h3 className="text-2xl font-black text-slate-950 mb-8 flex items-center gap-4">
+                        <Camera className="text-primary" /> Event Planning Inspiration & Ideas
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {[
+                            { t: 'Wedding Makeup Trends 2026', i: 'https://images.unsplash.com/photo-1487412947147-5cebf100d898?w=800&q=80' },
+                            { t: 'Top 10 Photographer Poses', i: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80' },
+                            { t: 'Best Decor Themes for Outdoors', i: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' }
+                        ].map((post, i) => (
+                            <div key={i} className="group cursor-pointer">
+                                <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-4 border border-slate-100">
+                                    <img src={post.i} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                </div>
+                                <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors">{post.t}</h4>
+                                <p className="text-xs text-slate-400 mt-2 font-medium">Read more insights from experts <ArrowRight size={10} className="inline ml-1" /></p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
             </div>
         </div>
     );

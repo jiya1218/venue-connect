@@ -38,7 +38,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const NAV_ITEMS = [
     { href: '/admin?tab=dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin?tab=listings', label: 'Listings', icon: Database },
-    { href: '/admin?tab=applications', label: 'Applications', icon: ClipboardList },
+    { href: '/admin?tab=leads', label: 'Leads', icon: ClipboardList },
+    { href: '/admin?tab=applications', label: 'Applications', icon: Users },
     { href: '/admin?tab=users', label: 'Users', icon: Users },
     { href: '/admin?tab=cities', label: 'Cities', icon: MapPin },
   ];

@@ -111,6 +111,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                                className="w-full bg-transparent border-none focus:ring-0 text-white font-bold text-xs md:text-sm appearance-none cursor-pointer"
                                value={searchCategory}
                                onChange={(e) => setSearchCategory(e.target.value)}
+                               suppressHydrationWarning
                            >
                                <option value="" className="text-slate-900 font-sans tracking-normal">What are you looking for?</option>
                                <option value="All Vendors" className="text-slate-900 font-bold bg-slate-50 uppercase tracking-tighter">-- All Vendors --</option>
@@ -125,6 +126,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                                className="w-full bg-transparent border-none focus:ring-0 text-white font-black text-[9px] md:text-[11px] uppercase tracking-[3px] md:tracking-[5px] appearance-none cursor-pointer"
                                value={searchCity}
                                onChange={(e) => setSearchCity(e.target.value)}
+                               suppressHydrationWarning
                            >
                                <option value="All Cities" className="text-slate-900 font-bold">ALL CITIES</option>
                                {['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot'].map(c => (
@@ -132,7 +134,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                                ))}
                            </select>
                        </div>
-                       <button onClick={handleSearch} className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[3px] md:tracking-[5px] text-[9px] md:text-[10px] px-6 md:px-12 transition-all h-10 md:h-full min-h-[40px] md:min-h-[64px]">
+                       <button suppressHydrationWarning onClick={handleSearch} className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[3px] md:tracking-[5px] text-[9px] md:text-[10px] px-6 md:px-12 transition-all h-10 md:h-full min-h-[40px] md:min-h-[64px]">
                            SEARCH
                        </button>
                    </div>
@@ -144,8 +146,8 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
             {/* CATEGORY SWIPER */}
             <section className="py-4 bg-white relative border-b border-slate-50 overflow-hidden">
                 <div className="max-w-[1800px] mx-auto px-10 md:px-20 relative">
-                     <button onClick={() => setCatIndex(prev => Math.max(0, prev - 1))} className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-slate-900 rounded-full flex items-center justify-center bg-white hover:bg-slate-900 hover:text-white transition-all z-10 shadow-xl"><ArrowLeft size={16}/></button>
-                     <button onClick={() => setCatIndex(prev => prev + 1)} className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-slate-900 rounded-full flex items-center justify-center bg-white hover:bg-slate-900 hover:text-white transition-all z-10 shadow-xl"><ChevronRight size={16}/></button>
+                     <button suppressHydrationWarning onClick={() => setCatIndex(prev => Math.max(0, prev - 1))} className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-slate-900 rounded-full flex items-center justify-center bg-white hover:bg-slate-900 hover:text-white transition-all z-10 shadow-xl"><ArrowLeft size={16}/></button>
+                     <button suppressHydrationWarning onClick={() => setCatIndex(prev => prev + 1)} className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-slate-900 rounded-full flex items-center justify-center bg-white hover:bg-slate-900 hover:text-white transition-all z-10 shadow-xl"><ChevronRight size={16}/></button>
 
                     <div className="overflow-hidden">
                         <div 
@@ -171,8 +173,8 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">Top Rated Professionals in {locationLabel}</h2>
                         <div className="flex gap-4">
-                             <button onClick={() => setTopVendorsIndex(prev => Math.max(0, prev - 1))} className="w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><ChevronLeft size={20}/></button>
-                             <button onClick={() => setTopVendorsIndex(prev => prev + 1)} className="w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><ChevronRight size={20}/></button>
+                             <button suppressHydrationWarning onClick={() => setTopVendorsIndex(prev => Math.max(0, prev - 1))} className="w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><ChevronLeft size={20}/></button>
+                             <button suppressHydrationWarning onClick={() => setTopVendorsIndex(prev => prev + 1)} className="w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><ChevronRight size={20}/></button>
                         </div>
                     </div>
 
@@ -211,8 +213,8 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                             <h2 className="text-2xl md:text-5xl font-black tracking-tight leading-tight uppercase">What our clients <br/> have to say..</h2>
                         </div>
                         <div className="flex gap-3 md:gap-4">
-                            <button onClick={() => setReviewsIndex(prev => Math.max(0, prev - 1))} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-950 transition-all"><ChevronLeft size={20}/></button>
-                            <button onClick={() => setReviewsIndex(prev => prev + 1)} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-950 transition-all"><ChevronRight size={20}/></button>
+                            <button suppressHydrationWarning onClick={() => setReviewsIndex(prev => Math.max(0, prev - 1))} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-950 transition-all"><ChevronLeft size={20}/></button>
+                            <button suppressHydrationWarning onClick={() => setReviewsIndex(prev => prev + 1)} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-950 transition-all"><ChevronRight size={20}/></button>
                         </div>
                     </div>
 

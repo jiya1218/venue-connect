@@ -19,8 +19,8 @@ const ReviewCarousel = () => {
     useEffect(() => { setMounted(true); }, []);
     
     const [revStartIndex, setRevStartIndex] = useState(0);
-    const isMobile = mounted && typeof window !== 'undefined' && window.innerWidth < 768;
-    const visibleCount = isMobile ? 1 : 3;
+    // Use a stable visible count for hydration, then adjust after mount
+    const visibleCount = !mounted ? 3 : (typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 3);
 
     const next = () => {
         setRevStartIndex((prev) => (prev + 1) % REVIEWS.length);
@@ -34,7 +34,7 @@ const ReviewCarousel = () => {
 
     return (
         <div className="relative px-12 group/revnav">
-            <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center text-slate-400 hover:text-primary transition-all z-20 border border-slate-100 md:-left-4">
+            <button suppressHydrationWarning onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center text-slate-400 hover:text-primary transition-all z-20 border border-slate-100 md:-left-4">
                 <ChevronLeft size={24} />
             </button>
 
@@ -53,7 +53,7 @@ const ReviewCarousel = () => {
                 ))}
             </div>
 
-            <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center text-slate-400 hover:text-primary transition-all z-20 border border-slate-100 md:-right-4">
+            <button suppressHydrationWarning onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center text-slate-400 hover:text-primary transition-all z-20 border border-slate-100 md:-right-4">
                 <ChevronRight size={24} />
             </button>
         </div>
@@ -203,6 +203,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                 className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm appearance-none cursor-pointer"
                                 value={searchCategory}
                                 onChange={(e) => setSearchCategory(e.target.value)}
+                                suppressHydrationWarning
                             >
                                 <option value="" className="text-slate-900">{isVendorContext ? "Search Vendors..." : "Search Venues..."}</option>
                                 {(isVendorContext ? VENDOR_TYPES : VENUE_TYPES).map(t => (
@@ -218,6 +219,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                 className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm appearance-none cursor-pointer"
                                 value={searchCity}
                                 onChange={(e) => setSearchCity(e.target.value)}
+                                suppressHydrationWarning
                             >
                                 <option value="All Cities" className="text-slate-900">All Cities</option>
                                 {GUJARAT_CITIES.map(c => (
@@ -226,7 +228,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                             </select>
                         </div>
 
-                        <button onClick={handleSearch} className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] md:text-xs h-full px-4 md:px-12 transition-all">
+                        <button suppressHydrationWarning onClick={handleSearch} className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] md:text-xs h-full px-4 md:px-12 transition-all">
                             Go
                         </button>
                     </div>
@@ -265,7 +267,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                      }}
                                    />
                                    
-                                   <button className="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all">
+                                   <button suppressHydrationWarning className="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all">
                                        <Heart size={14} className="md:w-5 md:h-5" />
                                    </button>
 
@@ -321,7 +323,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
 
                                    <div className="mt-auto pt-2 md:pt-8 flex gap-2 md:gap-3">
                                        <Link href={`/${isNearMe ? (listing.city || listing.locations?.city || citySlug).toLowerCase() : citySlug}${isVendorContext ? '/vendors' : ''}/${listing.slug}`} className="flex-1 flex items-center justify-center border border-slate-900 md:border-2 text-slate-900 h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-slate-900 hover:text-white transition-all transform active:scale-95">View</Link>
-                                       <button className="flex-1 bg-[#EF3E36] text-white h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-[#D9362F] transition-all transform active:scale-95 shadow-md shadow-primary/20">Price</button>
+                                       <button suppressHydrationWarning className="flex-1 bg-[#EF3E36] text-white h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-[#D9362F] transition-all transform active:scale-95 shadow-md shadow-primary/20">Price</button>
                                    </div>
                                </div>
                            </div>
@@ -491,15 +493,31 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                           ) : (
                             <form className="space-y-1.5 md:space-y-4" onSubmit={(e) => { e.preventDefault(); setInquirySent(true); }}>
                                 <div className="grid grid-cols-2 gap-1.5 md:gap-4">
-                                    <select className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm focus:ring-2 focus:ring-primary appearance-none">
+                                    <select 
+                                        className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm focus:ring-2 focus:ring-primary appearance-none"
+                                        suppressHydrationWarning
+                                    >
                                         <option>Occasion</option>
                                         {OCCASIONS.map(o => <option key={o}>{o}</option>)}
                                     </select>
-                                    <input required type="date" className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm" />
+                                    <input 
+                                        required 
+                                        type="date" 
+                                        className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm" 
+                                        suppressHydrationWarning
+                                    />
                                 </div>
                                 <div className="grid grid-cols-2 gap-1.5 md:gap-4">
-                                    <input type="number" placeholder="No. of Guests" className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" />
-                                    <select className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm appearance-none focus:ring-2 focus:ring-primary">
+                                    <input 
+                                        type="number" 
+                                        placeholder="No. of Guests" 
+                                        className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" 
+                                        suppressHydrationWarning
+                                    />
+                                    <select 
+                                        className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-3 text-[10px] md:text-sm appearance-none focus:ring-2 focus:ring-primary"
+                                        suppressHydrationWarning
+                                    >
                                         <option>Budget Range</option>
                                         <option>Below 500</option>
                                         <option>500-1000</option>
@@ -507,9 +525,27 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                         <option>Above 1500</option>
                                     </select>
                                 </div>
-                                <input required type="text" placeholder="Full Name" className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-4 md:px-6 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" />
-                                <input required type="tel" placeholder="Mobile Number" className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-4 md:px-6 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" />
-                                <button type="submit" className="w-full h-11 md:h-14 bg-primary hover:bg-primary/90 text-white font-black rounded-lg md:rounded-2xl shadow-lg shadow-primary/20 transform active:scale-95 transition-all uppercase tracking-widest text-[10px] md:text-[12px]">Get Quotes Now</button>
+                                <input 
+                                    required 
+                                    type="text" 
+                                    placeholder="Full Name" 
+                                    className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-4 md:px-6 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" 
+                                    suppressHydrationWarning
+                                />
+                                <input 
+                                    required 
+                                    type="tel" 
+                                    placeholder="Mobile Number" 
+                                    className="w-full h-10 md:h-14 bg-white border border-slate-200 rounded-lg md:rounded-2xl px-4 md:px-6 text-[10px] md:text-sm focus:ring-2 focus:ring-primary" 
+                                    suppressHydrationWarning
+                                />
+                                <button 
+                                    type="submit" 
+                                    className="w-full h-11 md:h-14 bg-primary hover:bg-primary/90 text-white font-black rounded-lg md:rounded-2xl shadow-lg shadow-primary/20 transform active:scale-95 transition-all uppercase tracking-widest text-[10px] md:text-[12px]"
+                                    suppressHydrationWarning
+                                >
+                                    Get Quotes Now
+                                </button>
                             </form>
                           )}
                           <p className="mt-6 text-[10px] text-center text-slate-400 font-bold uppercase tracking-widest">50k+ Happy Families</p>
@@ -548,7 +584,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-3 md:gap-10 px-4">
               <h2 className="text-lg md:text-3xl font-medium text-white italic" style={{ fontFamily: 'serif' }}>{isVendorContext ? 'Have a Business?' : 'Have a Space?'}</h2>
               <Link href="/list-business">
-                <Button className="bg-white hover:bg-slate-100 text-[#1e293b] font-black px-6 md:px-8 h-9 md:h-12 rounded-xl text-xs md:text-sm transition-all border-none">
+                <Button suppressHydrationWarning className="bg-white hover:bg-slate-100 text-[#1e293b] font-black px-6 md:px-8 h-9 md:h-12 rounded-xl text-xs md:text-sm transition-all border-none">
                     List Your Business
                 </Button>
               </Link>
@@ -590,7 +626,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                          ))}
                      </div>
                      <div className="text-right -mt-4">
-                         <button onClick={() => setShowMoreAreas(!showMoreAreas)} className="text-primary font-black hover:underline text-sm bg-white pl-4">
+                         <button suppressHydrationWarning onClick={() => setShowMoreAreas(!showMoreAreas)} className="text-primary font-black hover:underline text-sm bg-white pl-4">
                              {showMoreAreas ? 'Show Less' : 'Show More'}
                          </button>
                      </div>
@@ -623,12 +659,14 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
               <div className="relative group/carousel mx-auto">
                   {/* Navigation Arrows - Perfectly Balanced */}
                   <button 
+                      suppressHydrationWarning
                       onClick={() => setCurrentIndex(prev => (prev - 1 + (blogs.length - 4)) % (blogs.length - 4))}
                       className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
                   >
                       <ArrowLeft size={24} />
                   </button>
                   <button 
+                      suppressHydrationWarning
                       onClick={() => setCurrentIndex(prev => (prev + 1) % (blogs.length - 4))}
                       className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-slate-900 flex items-center justify-center bg-white text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-xl"
                   >

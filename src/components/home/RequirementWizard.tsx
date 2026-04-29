@@ -102,9 +102,16 @@ export default function RequirementWizard() {
 
     const sendOTP = async () => {
         try {
-            const { error } = await supabase.auth.signInWithOtp({ email: formData.customer_email });
-            if (error) throw error;
-            toast.success(`OTP sent to ${formData.customer_email}`);
+            if (otpVia === 'email') {
+                const { error } = await supabase.auth.signInWithOtp({ email: formData.customer_email });
+                if (error) throw error;
+                toast.success(`OTP sent to ${formData.customer_email}`);
+            } else {
+                const fullPhone = `${countryCode.code}${formData.customer_phone}`;
+                const { error } = await supabase.auth.signInWithOtp({ phone: fullPhone });
+                if (error) throw error;
+                toast.success(`OTP sent to ${fullPhone}`);
+            }
         } catch (err: any) {
             toast.error('Failed to send OTP: ' + err.message);
         }
@@ -152,20 +159,32 @@ export default function RequirementWizard() {
 
         setLoading(true);
         try {
-            // Verify OTP with Supabase
-            const { error: verifyError } = await supabase.auth.verifyOtp({
-                email: formData.customer_email,
-                token: otpValue,
-                type: 'email'
-            });
+            // DEVELOPER BYPASS: Allow 123456 for local testing
+            const isTestOTP = otpValue === '123456';
+            const isLocal = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.hostname.startsWith('192.168');
 
-            if (verifyError) {
-                toast.error("Invalid OTP. Please check your email and try again.");
-                setLoading(false);
-                return;
+            console.log("Submission Hostname:", window.location.hostname);
+
+            if (!(isLocal && isTestOTP)) {
+                // Verify OTP with Supabase (Real Verification)
+                const verifyData = otpVia === 'email' 
+                    ? { email: formData.customer_email, token: otpValue, type: 'email' as const }
+                    : { phone: `${countryCode.code}${formData.customer_phone}`, token: otpValue, type: 'sms' as const };
+
+                const { error: verifyError } = await supabase.auth.verifyOtp(verifyData);
+
+                if (verifyError) {
+                    toast.error(`Invalid OTP. Please check your ${otpVia} and try again.`);
+                    setLoading(false);
+                    return;
+                }
+            } else {
+                console.log("Developer Mode: Bypassing OTP check with code 123456");
             }
 
-            // OTP verified — save the requirement
+            // OTP verified or bypassed — save the requirement
             const { error } = await supabase.from('user_requirements').insert([
                 {
                     ...formData,
@@ -175,6 +194,29 @@ export default function RequirementWizard() {
             ]);
 
             if (error) throw error;
+
+            // SYNC TO GOOGLE SHEETS
+            const GOOGLE_SHEETS_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL;
+            if (GOOGLE_SHEETS_URL) {
+                console.log("Syncing to Google Sheets...", GOOGLE_SHEETS_URL);
+                try {
+                    // Using text/plain to avoid CORS preflight issues with Google Apps Script
+                    await fetch(GOOGLE_SHEETS_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({
+                            ...formData,
+                            customer_phone: `${countryCode.code} ${formData.customer_phone}`,
+                        })
+                    });
+                    console.log("Google Sheets sync request sent.");
+                } catch (sheetError) {
+                    console.error("Google Sheets Sync Error:", sheetError);
+                }
+            } else {
+                console.warn("Google Sheets URL not found in .env.local");
+            }
 
             toast.success("Verified & Submitted!");
             setStep(STEPS.length);

@@ -4,20 +4,24 @@ export const OCCASIONS = {
     "Mehendi Party (Pre-wedding)", "Anniversary Party", "Birthday Party",
     "Kids Birthday Party", "First Birthday Party", "Baby Shower", "Bridal Shower",
     "Bachelor Party", "Kitty Party", "Get Together", "Reunion / Class Reunion",
-    "Family Function", "Naming Ceremony", "Aqueeqa Ceremony", "Christian Communion"
+    "Family Function", "Naming Ceremony", "Aqueeqa Ceremony", "Christian Communion",
+    "Thread Ceremony", "Mundan Ceremony", "House Warming", "Retirement Party",
+    "Farewell Party", "Social Gathering"
   ],
   "🪩 Parties & Celebrations": [
     "Cocktail Party", "Cocktail Dinner", "Pool Party", "Garba Night", "Holi Party",
-    "Freshers Party", "Farewell Party", "Adventure Party"
+    "Freshers Party", "Adventure Party", "Christmas Party",
+    "New Year Party", "Lohri Party", "Diwali Party", "Bachelorette Party"
   ],
   "🏢 Corporate / Professional": [
     "Corporate Event", "Corporate Party", "Corporate Training", "Corporate Offsite",
     "Conference", "Seminar", "Meeting", "Training", "Team Outing", "Product Launch",
     "Brand Promotion", "Exhibition", "Walk-in Interview", "Business Dinner",
-    "Residential Conference", "MICE"
+    "Residential Conference", "MICE", "Award Ceremony", "Workshop", "Press Conference"
   ],
   "🎭 Entertainment / Cultural": [
-    "Musical Concert", "Fashion Show", "Stage Event", "Game Watch", "Annual Fest", "Photo Shoots"
+    "Musical Concert", "Fashion Show", "Stage Event", "Game Watch", "Annual Fest", "Photo Shoots",
+    "Video Shoots", "Cultural Event", "Art Exhibition"
   ]
 };
 

@@ -143,23 +143,23 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
     }));
 
     return (
-        <div id="reviews" className="mt-12 pt-8 border-t border-slate-100">
-            <h2 className="text-2xl md:text-3xl font-bold font-display mb-10 text-slate-900 border-l-4 border-primary pl-6 py-1">Ratings & Reviews</h2>
+        <div id="reviews" className="mt-8 pt-6 border-t border-slate-100">
+            <h2 className="text-xl md:text-2xl font-bold font-display mb-6 text-slate-900 border-l-4 border-primary pl-4 py-0.5">Ratings & Reviews</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
                 {/* Summary & Form Column */}
-                <div className="md:col-span-1 space-y-8">
-                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm text-center">
-                        <div className="text-6xl font-display font-bold text-slate-900 mb-2">{averageRating}</div>
-                        <div className="flex justify-center gap-1 mb-4">
+                <div className="md:col-span-6 space-y-6">
+                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm text-center">
+                        <div className="text-5xl font-display font-bold text-slate-900 mb-1">{averageRating}</div>
+                        <div className="flex justify-center gap-0.5 mb-3">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <Star
                                     key={star}
-                                    className={`w-6 h-6 ${star <= parseFloat(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-slate-200'}`}
+                                    className={`w-5 h-5 ${star <= parseFloat(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-slate-200'}`}
                                 />
                             ))}
                         </div>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">{reviews.length} Verified Reviews</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">{reviews.length} Verified Reviews</p>
                         
                         {/* Rating Bars */}
                         <div className="space-y-3">
@@ -178,8 +178,8 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
-                        <h3 className="font-semibold mb-4">Write a Review</h3>
+                    <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+                        <h3 className="text-sm font-bold mb-4 uppercase tracking-widest text-slate-900">Write a Review</h3>
                         {currentUser ? (
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
@@ -226,7 +226,7 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
                 </div>
 
                 {/* Reviews List Column */}
-                <div className="md:col-span-2 space-y-4">
+                <div className="md:col-span-6 space-y-4">
                     {loading ? (
                         <div className="flex justify-center py-4 md:py-6">
                             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -261,10 +261,10 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-muted/10 border border-dashed border-border rounded-xl p-10 text-center flex flex-col items-center justify-center h-full min-h-[300px]">
-                            <Star className="w-12 h-12 text-muted-foreground mb-4 opacity-30" />
-                            <h3 className="text-lg font-medium text-foreground mb-1">No reviews yet</h3>
-                            <p className="text-sm text-muted-foreground">Be the first to share your experience at this venue!</p>
+                        <div className="bg-muted/10 border border-dashed border-border rounded-2xl p-6 text-center flex flex-col items-center justify-center h-full min-h-[200px]">
+                            <Star className="w-10 h-10 text-muted-foreground mb-3 opacity-20" />
+                            <h3 className="text-base font-bold text-slate-900 mb-1">No reviews yet</h3>
+                            <p className="text-xs text-muted-foreground max-w-[180px] mx-auto">Be the first to share your experience at this venue!</p>
                         </div>
                     )}
                 </div>
