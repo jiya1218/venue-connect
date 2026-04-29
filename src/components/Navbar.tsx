@@ -88,7 +88,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
-      <div className="container flex items-center justify-between h-11 lg:h-14 px-3 lg:px-6">
+      <div className="container flex items-center justify-between h-14 px-3 lg:px-6 relative">
         <Link href="/" className="hidden lg:flex items-center hover:opacity-80 transition-opacity">
           <img
             src="/venue-connect.png"
@@ -189,10 +189,10 @@ const Navbar = () => {
         </div>
 
          {/* ── MOBILE HEADER: Logo LEFT | WhatsApp + Hamburger RIGHT ── */}
-         <div className="lg:hidden absolute left-0 right-0 top-0 h-12 flex items-center px-3 justify-between gap-2">
+         <div className="lg:hidden absolute inset-0 h-14 flex items-center px-3 justify-between gap-2">
             {/* Left: Logo - Bigger */}
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity flex-shrink-0" onClick={() => setOpen(false)}>
-              <img src="/venue-connect.png" alt="VenueConnect" className="h-12 w-auto" />
+              <img src="/venue-connect.png" alt="VenueConnect" className="h-10 w-auto" />
             </Link>
 
             {/* Right: WhatsApp + Hamburger */}
