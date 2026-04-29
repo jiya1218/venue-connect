@@ -17,7 +17,21 @@ const STEPS = [
     { id: 'contact', title: 'Contact Info', subtitle: 'Final Step' }
 ];
 
-const OCCASIONS = ['Wedding', 'Engagement', 'Birthday', 'Corporate', 'Anniversary', 'Social Party'];
+const OCCASIONS = [
+    'Wedding', 'Birthday Party', 'Engagement', 'Corporate Event', 'Reception', 
+    'Sangeet Ceremony', 'Haldi Ceremony', 'Mehendi Ceremony', 'Anniversary Party', 
+    'Baby Shower', 'Bridal Shower', 'Bachelor Party', 'Kitty Party', 'Get Together', 
+    'Family Function', 'Naming Ceremony', 'Aqueeqa Ceremony', 'Christian Communion', 
+    'Cocktail Party', 'Cocktail Dinner', 'Pool Party', 'Garba Night', 'Holi Party', 
+    'Freshers Party', 'Farewell Party', 'Adventure Party', 'Corporate Party', 
+    'Corporate Training', 'Corporate Offsite', 'Conference', 'Seminar', 'Meeting', 
+    'Training', 'Team Outing', 'Product Launch', 'Brand Promotion', 'Exhibition', 
+    'Walk-in Interview', 'Business Dinner', 'Residential Conference', 'MICE', 
+    'Musical Concert', 'Fashion Show', 'Stage Event', 'Game Watch', 'Annual Fest', 
+    'Photo Shoots', 'Reunion', 'Class Reunion', 'Kids Birthday Party', 
+    'First Birthday Party', 'Engagement Party', 'Reception Party'
+];
+
 const CITIES = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'];
 const AREAS: Record<string, string[]> = {
     'Ahmedabad': ['Prahlad Nagar', 'Sindhu Bhavan', 'Satellite', 'Bodakdev', 'SG Highway', 'C G Road'],
@@ -26,7 +40,12 @@ const AREAS: Record<string, string[]> = {
     'Rajkot': ['Kalavad Road', 'Yagnik Road', 'University Road'],
     'Gandhinagar': ['Sector 21', 'Kudasan', 'Sargasan', 'Raysan']
 };
-const SPACE_TYPES = ['Banquet Hall', 'Party Plot', 'Lawn', 'Resort', 'Hotel', 'Rooftop'];
+const SPACE_TYPES = [
+    'Banquet Hall', 'Farmhouse', 'Party Plot', 'Hotel', 'Resort', 
+    'Restaurant', 'Convention Center', 'Club', 'Rooftop Venue', 
+    'Garden Venue', 'Heritage Venue', 'Luxury Venue'
+];
+
 const FOOD_TYPES = ['Only Veg', 'Veg + Non-Veg', 'Pure Veg (Jain)'];
 const BUDGETS = ['Under ₹500', '₹500 - ₹1000', '₹1000 - ₹1500', '₹1500 - ₹2000', 'Above ₹2000'];
 
@@ -130,7 +149,7 @@ export default function RequirementWizard() {
 
     return (
         <div className="w-full max-w-xl mx-auto">
-            {/* Minimal Progress Bar */}
+            {/* Progress Indicators */}
             <div className="flex gap-2 mb-6 px-4">
                 {STEPS.map((_, i) => (
                     <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-500 ${i <= step ? 'bg-primary shadow-[0_0_10px_rgba(239,62,54,0.3)]' : 'bg-white/10'}`} />
@@ -141,9 +160,9 @@ export default function RequirementWizard() {
                 key={step}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-6 md:p-10 shadow-2xl h-[520px] flex flex-col relative overflow-hidden"
+                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-6 md:p-10 shadow-2xl h-[540px] flex flex-col relative overflow-hidden"
             >
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-8 shrink-0">
                     <div>
                         <p className="text-[10px] font-black uppercase tracking-[4px] text-primary mb-1">Step {step + 1}/{STEPS.length}</p>
                         <h2 className="text-2xl font-black text-white uppercase tracking-tight">{STEPS[step].title}</h2>
@@ -153,7 +172,7 @@ export default function RequirementWizard() {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
                     {step === 0 && (
                         <div className="space-y-4">
                             <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={OCCASIONS} onChange={(v) => updateData({ occasion: v })} />
@@ -191,7 +210,7 @@ export default function RequirementWizard() {
                     )}
                 </div>
 
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5 shrink-0">
                     {step > 0 ? (
                         <button onClick={prevStep} className="flex items-center gap-2 text-white/40 hover:text-white font-black text-xs transition-all uppercase tracking-widest group">
                             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
