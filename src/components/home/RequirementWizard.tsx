@@ -175,31 +175,31 @@ export default function RequirementWizard() {
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
                     {step === 0 && (
                         <div className="space-y-4">
-                            <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={OCCASIONS} onChange={(v) => updateData({ occasion: v })} />
+                            <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={OCCASIONS} onChange={(v: string) => updateData({ occasion: v })} />
                             <div className="grid grid-cols-2 gap-4">
-                                <SelectField label="City" icon={<MapPin />} value={formData.city} options={CITIES} onChange={(v) => updateData({ city: v, area: '' })} />
-                                <SelectField label="Area" icon={<MapPin />} value={formData.area} options={AREAS[formData.city] || []} onChange={(v) => updateData({ area: v })} disabled={!formData.city} />
+                                <SelectField label="City" icon={<MapPin />} value={formData.city} options={CITIES} onChange={(v: string) => updateData({ city: v, area: '' })} />
+                                <SelectField label="Area" icon={<MapPin />} value={formData.area} options={AREAS[formData.city] || []} onChange={(v: string) => updateData({ area: v })} disabled={!formData.city} />
                             </div>
-                            <SelectField label="Venue Type" icon={<Building2 />} value={formData.space_type} options={SPACE_TYPES} onChange={(v) => updateData({ space_type: v })} />
+                            <SelectField label="Venue Type" icon={<Building2 />} value={formData.space_type} options={SPACE_TYPES} onChange={(v: string) => updateData({ space_type: v })} />
                         </div>
                     )}
 
                     {step === 1 && (
                         <div className="space-y-4">
-                            <SelectField label="Food Type" icon={<Utensils />} value={formData.food_type} options={FOOD_TYPES} onChange={(v) => updateData({ food_type: v })} />
-                            <SelectField label="Budget Per Person" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v) => updateData({ budget_per_person: v })} />
+                            <SelectField label="Food Type" icon={<Utensils />} value={formData.food_type} options={FOOD_TYPES} onChange={(v: string) => updateData({ food_type: v })} />
+                            <SelectField label="Budget Per Person" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v: string) => updateData({ budget_per_person: v })} />
                             <div className="grid grid-cols-2 gap-4">
-                                <InputField label="Expected Guests" icon={<Users />} type="number" value={formData.expected_guests} onChange={(v) => updateData({ expected_guests: v })} placeholder="e.g. 200" />
-                                <InputField label="Event Date" icon={<Calendar />} type="date" value={formData.event_date} onChange={(v) => updateData({ event_date: v })} />
+                                <InputField label="Expected Guests" icon={<Users />} type="number" value={formData.expected_guests} onChange={(v: string) => updateData({ expected_guests: v })} placeholder="e.g. 200" />
+                                <InputField label="Event Date" icon={<Calendar />} type="date" value={formData.event_date} onChange={(v: string) => updateData({ event_date: v })} />
                             </div>
                         </div>
                     )}
 
                     {step === 2 && (
                         <div className="space-y-4">
-                            <InputField label="Full Name" icon={<User />} value={formData.customer_name} onChange={(v) => updateData({ customer_name: v })} placeholder="Rahul Sharma" />
-                            <InputField label="Mobile Number" icon={<Phone />} value={formData.customer_phone} onChange={(v) => updateData({ customer_phone: v })} placeholder="98765 43210" />
-                            <InputField label="Email Address" icon={<Mail />} value={formData.customer_email} onChange={(v) => updateData({ customer_email: v })} placeholder="rahul@example.com" />
+                            <InputField label="Full Name" icon={<User />} value={formData.customer_name} onChange={(v: string) => updateData({ customer_name: v })} placeholder="Rahul Sharma" />
+                            <InputField label="Mobile Number" icon={<Phone />} value={formData.customer_phone} onChange={(v: string) => updateData({ customer_phone: v })} placeholder="98765 43210" />
+                            <InputField label="Email Address" icon={<Mail />} value={formData.customer_email} onChange={(v: string) => updateData({ customer_email: v })} placeholder="rahul@example.com" />
                             
                             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mt-6">
                                 <p className="text-[10px] text-white/40 font-medium leading-relaxed italic text-center">
