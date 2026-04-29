@@ -30,7 +30,7 @@ export default function LeadsTab() {
             if (error) throw error;
             
             // Fetch venue names manually for the leads found
-            const venueIds = [...new Set(data.map(l => l.listing_id))].filter(Boolean);
+            const venueIds = Array.from(new Set(data.map(l => l.listing_id))).filter(Boolean);
             if (venueIds.length > 0) {
                 const { data: venuesData } = await supabase
                     .from('venues')
