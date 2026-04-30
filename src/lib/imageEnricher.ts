@@ -232,26 +232,17 @@ function getPoolKey(category: string, type: string, name: string): string {
  * If the provided image is a generic placeholder or missing, it provides a unique variety.
  */
 export function getEnrichedImage(listing: any): string {
-  if (!listing) return `https://images.unsplash.com/photo-${IMAGE_POOLS.generic[0]}?w=800&q=80`;
+  if (!listing) return `https://images.unsplash.com/photo-${IMAGE_POOLS.generic[0]}?auto=format&fit=crop&w=800&q=80`;
 
   const currentImage = listing.image || (listing.images && listing.images[0]) || '';
   
-  // Aggressive detection of generic placeholders and broken patterns
+  // Aggressive detection of generic placeholders or low-quality sources
   const placeholderIds = [
-    '1519167758481-83f550bb49b3', // Wedding/Banquet generic
-    '1555244162-803834f70033', // Catering generic
-    '1519225421980-715bd0215aed', // Decor generic
-    '1537633552985-df8429e8048b', // Photo generic
-    '1511285560929-80b456fea0bc', // Celebration generic
-    '1505373877841-825f7d46678', // Party generic
-    '1487412720507-e7ab37603c6f', // Makeup generic
-    '1610173827002-62c0f1f05d04', // Mehendi generic
-    '1516280440614-37939bbacd81', // DJ generic
-    '1534180477871-5d6cc81f3920', // DJ generic 2
-    '1478146059778-26028b07395a', // Vendor generic
-    '1603217192634-61068e4d4bf9', // Mehendi generic 2
-    '1536240478700-b869ad10e2af', // Video generic
-    '1617196034183-421b4040ed20', // Pandit generic
+    '1519167758481-83f550bb49b3', '1555244162-803834f70033', '1519225421980-715bd0215aed',
+    '1537633552985-df8429e8048b', '1511285560929-80b456fea0bc', '1505373877841-825f7d46678',
+    '1487412720507-e7ab37603c6f', '1610173827002-62c0f1f05d04', '1516280440614-37939bbacd81',
+    '1534180477871-5d6cc81f3920', '1478146059778-26028b07395a', '1603217192634-61068e4d4bf9',
+    '1536240478700-b869ad10e2af', '1617196034183-421b4040ed20'
   ];
 
   const isGeneric = !currentImage || 
@@ -260,24 +251,22 @@ export function getEnrichedImage(listing: any): string {
                     placeholderIds.some(id => currentImage.includes(id)) ||
                     currentImage.includes('placeholder') ||
                     currentImage.includes('default') ||
-                    currentImage.includes('noimage');
+                    currentImage.includes('noimage') ||
+                    !currentImage.includes('unsplash.com'); // Favor Unsplash for "proper" previews
   
-  // If it's already a specific image (not a common placeholder), return it
-  // unless the user wants us to force variety (which they do)
-  if (!isGeneric && currentImage.startsWith('http') && !currentImage.includes('unsplash.com')) return currentImage;
+  // If it's already a good Unsplash image, keep it
+  if (!isGeneric && currentImage.includes('unsplash.com') && currentImage.startsWith('http')) return currentImage;
 
   // Otherwise, pick a deterministic variety from our pools
   const poolKey = getPoolKey(listing.category || '', listing.type || listing.vendor_type || '', listing.name || '');
   const pool = IMAGE_POOLS[poolKey] || IMAGE_POOLS.generic;
   
-  // Use cleaned name AND ID for more consistent but unique hashing
   const salt = cleanName(listing.name || 'default');
   const uniqueId = listing.id || listing.slug || salt;
   const index = getHash(salt + uniqueId) % pool.length;
   const imageId = pool[index];
 
-  // Return high-quality optimized Unsplash URL
-  return `https://images.unsplash.com/photo-${imageId}?auto=format&fit=crop&w=1200&q=80`;
+  return `https://images.unsplash.com/photo-${imageId}?auto=format&fit=crop&w=1200&h=800&q=80`;
 }
 
 /**

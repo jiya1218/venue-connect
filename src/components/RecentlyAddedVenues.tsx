@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getListingImage } from "@/lib/imageUtils";
+import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
 
 function timeAgo(dateStr: string): string {
   const now = new Date();
@@ -90,7 +90,7 @@ const RecentlyAddedVenues = () => {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                        target.src = getVarietyFallback(venue.name);
                       }}
                     />
                     

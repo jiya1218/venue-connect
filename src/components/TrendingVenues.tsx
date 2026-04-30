@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getListingImage } from "@/lib/imageUtils";
+import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
 
 const BADGES = ["Most Viewed", "Recently Searched", "Trending"];
 // Uniform card: 130px wide, same height across sections
@@ -63,7 +63,7 @@ const TrendingVenues = () => {
                       className="w-full h-full object-cover" 
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                        target.src = getVarietyFallback(venue.name);
                       }}
                     />
                     <div className="absolute top-1.5 left-1.5">
@@ -101,7 +101,7 @@ const TrendingVenues = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                      target.src = getVarietyFallback(venue.name);
                     }}
                   />
                   <div className="absolute top-4 left-4">

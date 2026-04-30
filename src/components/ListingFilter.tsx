@@ -14,6 +14,8 @@ interface ListingFilterProps {
     initialType?: string;
     initialRegion?: string;
     initialFood?: string;
+    isNearMe?: boolean;
+    rawSlug?: string;
 }
 
 const VENUE_CAPACITIES = ['Under 100', '100 - 500', '500 - 1000', '1000+'];
@@ -35,7 +37,9 @@ export default function ListingFilter({
     initialOccasion: propOccasion,
     initialType: propType,
     initialRegion: propRegion,
-    initialFood: propFood
+    initialFood: propFood,
+    isNearMe = false,
+    rawSlug = ""
 }: ListingFilterProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -44,7 +48,8 @@ export default function ListingFilter({
     const pathSegments = pathname.split('/').filter(Boolean);
     const cityFromPath = pathSegments[0];
     
-    const isCityPath = cityFromPath && !['venues', 'vendors', 'login', 'register', 'profile', 'admin'].includes(cityFromPath);
+    const isNearMePath = cityFromPath && cityFromPath.endsWith('-near-me');
+    const isCityPath = cityFromPath && !isNearMePath && !['venues', 'vendors', 'login', 'register', 'profile', 'admin'].includes(cityFromPath);
 
     let initialOccasion = propOccasion || "";
     let initialType = propType || "";
@@ -90,7 +95,7 @@ export default function ListingFilter({
     useEffect(() => {
         const p = new URLSearchParams(searchParams.toString());
         const hasChanged = 
-            location !== (p.get("city") || (isCityPath ? cityFromPath : "")) ||
+            location !== (p.get("city") || initialCityVal) ||
             occasion !== (p.get("q") || initialOccasion) ||
             selectedType !== (p.get("type") || initialType) ||
             selectedRegion !== (p.get("area") || "") ||
@@ -133,7 +138,10 @@ export default function ListingFilter({
         let targetPath = "/";
         const finalCategorySlug = typeSlug || pathOccasionSlug;
         
-        if (citySlug) {
+        if (isNearMe && rawSlug) {
+            // Keep the "near me" URL as the base path
+            targetPath = `/${rawSlug}/`;
+        } else if (citySlug) {
             if (type === 'vendors') {
                 targetPath = finalCategorySlug ? `/${citySlug}/vendors/${finalCategorySlug}/` : `/${citySlug}/vendors/`;
             } else {

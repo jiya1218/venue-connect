@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { getVarietyFallback } from "@/lib/imageUtils";
 
 interface SafeImageProps {
     src?: string;
@@ -9,10 +9,8 @@ interface SafeImageProps {
     fallback?: string;
 }
 
-const DEFAULT_FALLBACK = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80";
-
-export function SafeImage({ src, alt, className, fallback = DEFAULT_FALLBACK }: SafeImageProps) {
-    const [imgSrc, setImgSrc] = useState(src || fallback);
+export function SafeImage({ src, alt, className, fallback }: SafeImageProps) {
+    const [imgSrc, setImgSrc] = useState(src || fallback || getVarietyFallback(alt));
     const [hasError, setHasError] = useState(false);
 
     return (
@@ -23,7 +21,7 @@ export function SafeImage({ src, alt, className, fallback = DEFAULT_FALLBACK }: 
             onError={() => {
                 if (!hasError) {
                     setHasError(true);
-                    setImgSrc(fallback);
+                    setImgSrc(fallback || getVarietyFallback(alt));
                 }
             }}
         />

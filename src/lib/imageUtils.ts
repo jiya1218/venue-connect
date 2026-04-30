@@ -1,34 +1,51 @@
-export const DEFAULT_PLACEHOLDER = "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80";
+export const DEFAULT_PLACEHOLDER = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80";
 
 /**
- * Robustly resolves the best image URL from a listing,
- * handling "null" strings, empty values, and gallery fallbacks.
- * Also detects generic placeholders and ensures variety.
+ * Robustly resolves the best image URL from a listing.
+ * We prioritize the primary image if it exists and isn't a "null" string.
+ * Variety enrichment is handled by imageEnricher.ts.
  */
 export function getListingImage(listing: any, fallback: string = DEFAULT_PLACEHOLDER): string {
     if (!listing) return fallback;
 
-    const placeholderIds = [
-        '1519167758481-83f550bb49b3', '1555244162-803834f70033', '1519225421980-715cb0215aed',
-        '1537633552985-df8429e8048b', '1511285560929-80b456fea0bc', '1505373877841-825f7d46678',
-        '1487412720507-e7ab37603c6f', '1610173827002-62c0f1f05d04', '1516280440614-37939bbacd81'
-    ];
-
     const isInvalid = (url: any) => {
         if (!url || typeof url !== 'string' || url === 'null' || url === 'undefined' || url.trim() === '') return true;
-        // If it's a common generic placeholder, treat as invalid to trigger variety/fallback
-        if (placeholderIds.some(id => url.includes(id))) return true;
+        // Basic check for common broken patterns
+        if (url.includes('no-image') || url.includes('placeholder-image')) return true;
         return false;
     };
 
-    // Check primary image
+    // 1. Check primary image
     if (!isInvalid(listing.image)) return listing.image;
 
-    // Check gallery fallback
+    // 2. Check gallery fallbacks
     if (listing.images && Array.isArray(listing.images) && listing.images.length > 0) {
-        const firstGallery = listing.images[0];
-        if (!isInvalid(firstGallery)) return firstGallery;
+        const firstGallery = listing.images.find(img => !isInvalid(img));
+        if (firstGallery) return firstGallery;
+    }
+
+    // 3. Last resort: Return a deterministic variety fallback if listing has a name
+    if (listing.name) {
+        const hash = listing.name.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+        const varietyId = ['1519167758481-83f550bb49b3', '1517457373958-b7bdd4587205', '1523585322415-3843e914364c', '1470225620780-dba8ba36b745'][hash % 4];
+        return `https://images.unsplash.com/photo-${varietyId}?w=800&q=80`;
     }
 
     return fallback;
+}
+
+/**
+ * Returns a variety-based fallback URL based on a string (usually listing name).
+ */
+export function getVarietyFallback(name: string = ''): string {
+    const hash = name.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+    const varietyId = [
+        '1519167758481-83f550bb49b3', 
+        '1517457373958-b7bdd4587205', 
+        '1523585322415-3843e914364c', 
+        '1470225620780-dba8ba36b745',
+        '1511795409834-ef04bbd61622',
+        '1511285560929-80b456fea0bc'
+    ][hash % 6];
+    return `https://images.unsplash.com/photo-${varietyId}?w=800&q=80`;
 }

@@ -62,7 +62,7 @@ const ReviewCarousel = () => {
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
 import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA } from "@/lib/constants";
-import { getListingImage } from "@/lib/imageUtils";
+import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
 
 function unslugify(slug: string) {
     if (!slug) return '';
@@ -87,28 +87,28 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
   const [inquirySent, setInquirySent] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
-  const initialCategory = (() => {
-      if (!categorySlug) return '';
+  const { matchedCategory, matchedType } = (() => {
+      if (!categorySlug) return { matchedCategory: '', matchedType: '' };
       const compareSlug = categorySlug.toLowerCase().replace('-venues', '').replace('-venue', '');
       
       // Check Vendors
       const vendorMatch = VENDOR_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
-      if (vendorMatch) return vendorMatch;
+      if (vendorMatch) return { matchedCategory: vendorMatch, matchedType: 'vendor' };
       
       // Check Venue Types
       const venueMatch = VENUE_TYPES.find(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-') === compareSlug);
-      if (venueMatch) return venueMatch;
+      if (venueMatch) return { matchedCategory: venueMatch, matchedType: 'venue' };
 
       // Check Occasions
       for (const [group, list] of Object.entries(OCCASIONS_DATA)) {
           const match = list.find(o => o.toLowerCase().replace(/[\s\(\)]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') === compareSlug);
-          if (match) return match;
+          if (match) return { matchedCategory: match, matchedType: 'occasion' };
       }
       
-      return '';
+      return { matchedCategory: '', matchedType: '' };
   })();
 
-  const [searchCategory, setSearchCategory] = useState(initialCategory);
+  const [searchCategory, setSearchCategory] = useState(matchedCategory);
   const [searchCity, setSearchCity] = useState(citySlug === 'all' ? 'All Cities' : unslugify(citySlug) || 'Ahmedabad');
   const [mounted, setMounted] = useState(false);
 
@@ -138,6 +138,15 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
           : searchCategory.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-');
       
       const isAllCities = searchCity === 'All Cities';
+
+      // Check if we should maintain the Near Me URL
+      const normalizedCategorySlug = categorySlug?.toLowerCase().replace('-venues', '').replace('-venue', '');
+      const normalizedCategory = category.replace('-venues', '').replace('-venue', '');
+
+      if (isNearMe && (city === 'gujarat' || city === 'all-cities') && normalizedCategory === normalizedCategorySlug) {
+          window.location.href = `/${rawSlug}/`;
+          return;
+      }
 
       if (isVendorContext) {
           if (isAllCities) {
@@ -265,8 +274,10 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
         <ListingFilter 
             type={isVendorContext ? 'vendors' : 'venues'} 
             initialCity={unslugify(citySlug)}
-            initialOccasion={initialCategory}
-            initialType={initialCategory}
+            initialOccasion={matchedType === 'occasion' ? matchedCategory : ''}
+            initialType={matchedType === 'venue' || matchedType === 'vendor' ? matchedCategory : ''}
+            isNearMe={isNearMe}
+            rawSlug={rawSlug}
         />
       )}
       
@@ -294,7 +305,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                      alt={listing.name}
                                      onError={(e) => {
                                        const target = e.target as HTMLImageElement;
-                                       target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                       target.src = getVarietyFallback(listing.name);
                                      }}
                                    />
                                    
@@ -390,7 +401,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                         alt={v.name} 
                                         onError={(e) => {
                                           const target = e.target as HTMLImageElement;
-                                          target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                          target.src = getVarietyFallback(v.name);
                                         }}
                                       />
                                    </div>
@@ -426,7 +437,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                    alt={v.name} 
                                    onError={(e) => {
                                      const target = e.target as HTMLImageElement;
-                                     target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                     target.src = getVarietyFallback(v.name);
                                    }}
                                  />
                                  <div className="absolute top-1 right-1 bg-white/95 px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
@@ -457,7 +468,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                     alt={v.name} 
                                     onError={(e) => {
                                       const target = e.target as HTMLImageElement;
-                                      target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                                      target.src = getVarietyFallback(v.name);
                                     }}
                                   />
                                  <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/95 px-1.5 py-0.5 md:px-3 md:py-1 rounded-full flex items-center gap-0.5 md:gap-1 shadow-lg">

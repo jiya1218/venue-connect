@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { GUJARAT_CITIES, VENDOR_TYPES } from "@/lib/constants";
 import { cleanName } from "@/lib/imageEnricher";
-import { getListingImage } from "@/lib/imageUtils";
+import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
 
 interface SEOVendorHubViewProps {
     citySlug: string;
@@ -257,7 +257,7 @@ function VendorCard({ v, citySlug, locationLabel }: { v: any, citySlug: string, 
                     alt={v.name}
                     onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
+                        target.src = getVarietyFallback(v.name);
                     }}
                 />
                 <div className="absolute top-4 right-4 bg-white/95 px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">

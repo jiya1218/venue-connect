@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Camera, Maximize2 } from 'lucide-react';
 import VenueLightbox from './VenueLightbox';
+import { getVarietyFallback } from "@/lib/imageUtils";
 
 interface VenueGalleryProps {
   images: string[];
@@ -20,8 +21,12 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
   };
 
   // Ensure we have at least 5 images for the grid
-  const displayImages = images && images.length > 0 ? images : ['https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'];
+  const displayImages = images && images.length > 0 ? images : [getVarietyFallback(name)];
   const count = displayImages.length;
+
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    (e.target as HTMLImageElement).src = getVarietyFallback(name);
+  };
 
   return (
     <div className="mb-6 md:mb-10">
@@ -36,7 +41,7 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
               src={displayImages[0]} 
               alt={name} 
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-              onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }}
+              onError={handleImgError}
             />
             {overlay && <div className="absolute top-8 left-8 z-10">{overlay}</div>}
           </div>
@@ -44,19 +49,19 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
           <div className="grid grid-cols-2 gap-3 h-[300px] lg:h-[450px] rounded-2xl lg:rounded-[2.5rem] overflow-hidden">
             {displayImages.slice(0, 2).map((img, i) => (
               <div key={i} className="relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(i)}>
-                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
               </div>
             ))}
           </div>
         ) : count === 3 ? (
           <div className="grid grid-cols-3 gap-3 h-[300px] lg:h-[450px] rounded-2xl lg:rounded-[2.5rem] overflow-hidden">
             <div className="col-span-2 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(0)}>
-              <img src={displayImages[0]} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+              <img src={displayImages[0]} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
             </div>
             <div className="grid grid-rows-2 gap-3">
               {displayImages.slice(1, 3).map((img, i) => (
                 <div key={i} className="relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(i+1)}>
-                  <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+                  <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
                 </div>
               ))}
             </div>
@@ -65,22 +70,22 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
           <div className="grid grid-cols-4 gap-3 h-[300px] lg:h-[450px] rounded-2xl lg:rounded-[2.5rem] overflow-hidden">
             {displayImages.slice(0, 4).map((img, i) => (
               <div key={i} className={`relative group cursor-pointer overflow-hidden ${i === 0 ? 'col-span-2 row-span-2' : ''}`} onClick={() => openLightbox(i)}>
-                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
               </div>
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-3 h-[300px] lg:h-[450px] rounded-2xl lg:rounded-[2.5rem] overflow-hidden">
             <div className="col-span-2 row-span-2 relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(0)}>
-              <img src={displayImages[0]} alt={name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+              <img src={displayImages[0]} alt={name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" onError={handleImgError} />
             </div>
             {displayImages.slice(1, 4).map((img, i) => (
               <div key={i} className="relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(i+1)}>
-                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+                <img src={img} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
               </div>
             ))}
             <div className="relative group cursor-pointer overflow-hidden" onClick={() => openLightbox(4)}>
-              <img src={displayImages[4]} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }} />
+              <img src={displayImages[4]} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={handleImgError} />
               <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white backdrop-blur-[2px]">
                 <Camera className="w-8 h-8 mb-2" />
                 <span className="font-bold tracking-widest uppercase text-xs">View Photos</span>
@@ -97,7 +102,7 @@ export default function VenueGallery({ images, name, overlay }: VenueGalleryProp
           src={displayImages[0]} 
           alt={name} 
           className="w-full h-full object-cover" 
-          onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80'; }}
+          onError={handleImgError}
         />
         {overlay && <div className="absolute top-3 left-3 z-10 scale-75 origin-top-left">{overlay}</div>}
         <button 
