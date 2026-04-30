@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { getVarietyFallback } from "@/lib/imageUtils";
 
 interface SafeImageProps {
