@@ -20,7 +20,7 @@ export function getListingImage(listing: any, fallback: string = DEFAULT_PLACEHO
 
     // 2. Check gallery fallbacks
     if (listing.images && Array.isArray(listing.images) && listing.images.length > 0) {
-        const firstGallery = listing.images.find(img => !isInvalid(img));
+        const firstGallery = listing.images.find((img: string) => !isInvalid(img));
         if (firstGallery) return firstGallery;
     }
 
