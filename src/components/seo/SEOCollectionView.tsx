@@ -62,7 +62,9 @@ const ReviewCarousel = () => {
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
 import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA } from "@/lib/constants";
+import { citiesData } from "@/lib/citiesData";
 import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
+import GetQuoteModal from '@/components/GetQuoteModal';
 
 function unslugify(slug: string) {
     if (!slug) return '';
@@ -109,7 +111,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
   })();
 
   const [searchCategory, setSearchCategory] = useState(matchedCategory);
-  const [searchCity, setSearchCity] = useState(citySlug === 'all' ? 'All Cities' : unslugify(citySlug) || 'Ahmedabad');
+  const [searchCity, setSearchCity] = useState(citySlug === 'all' ? 'All Cities' : (citySlug ? unslugify(citySlug) : ''));
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
@@ -148,18 +150,34 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
           return;
       }
 
+      const isOccasion = EVENT_SUGGESTIONS.includes(searchCategory);
+      let finalCategory = category;
+      if (isOccasion && !finalCategory.endsWith('-venues') && !finalCategory.endsWith('-venue')) {
+          finalCategory += '-venues';
+      }
+
       if (isVendorContext) {
           if (isAllCities) {
-              window.location.href = (category === 'vendors') ? '/all-vendors/' : `/${category}/`;
+              window.location.href = (finalCategory === 'vendors') ? '/all-vendors/' : `/${finalCategory}/`;
           } else {
-              window.location.href = `/${city}/vendors/${category}/`;
+              // Maintain area if city hasn't changed and we have an area slug
+              if (areaSlug && city === citySlug?.toLowerCase()) {
+                  window.location.href = `/${city}/${areaSlug}/vendors/${finalCategory}/`;
+              } else {
+                  window.location.href = `/${city}/vendors/${finalCategory}/`;
+              }
           }
       } else {
           // Venues search logic
           if (isAllCities) {
-              window.location.href = `/${category === 'venues' ? 'all-venues' : category}/`;
+              window.location.href = `/${finalCategory === 'venues' ? 'all-venues' : finalCategory}/`;
           } else {
-              window.location.href = `/${city}/${category === 'venues' ? 'venues' : category}/`;
+              // Maintain area if city hasn't changed and we have an area slug
+              if (areaSlug && city === citySlug?.toLowerCase()) {
+                  window.location.href = `/${city}/${areaSlug}/${finalCategory === 'venues' ? 'venues' : finalCategory}/`;
+              } else {
+                  window.location.href = `/${city}/${finalCategory === 'venues' ? 'venues' : finalCategory}/`;
+              }
           }
       }
   };
@@ -276,6 +294,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
             initialCity={unslugify(citySlug)}
             initialOccasion={matchedType === 'occasion' ? matchedCategory : ''}
             initialType={matchedType === 'venue' || matchedType === 'vendor' ? matchedCategory : ''}
+            initialRegion={areaSlug ? unslugify(areaSlug) : ''}
             isNearMe={isNearMe}
             rawSlug={rawSlug}
         />
@@ -295,81 +314,89 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
 
                    {/* LISTING CARDS — uniform 2-col mobile grid with fixed aspect ratio image */}
                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
-                       {listingsToDisplay.map((listing: any, i: number) => (
-                           <div key={listing.id || i} className="bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-3xl transition-all duration-500 group flex flex-col hover:-translate-y-2">
-                               {/* IMAGE PREVIEW — fixed aspect ratio for consistency */}
-                               <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0">
-                                   <img 
-                                     src={getListingImage(listing)} 
-                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                                     alt={listing.name}
-                                     onError={(e) => {
-                                       const target = e.target as HTMLImageElement;
-                                       target.src = getVarietyFallback(listing.name);
-                                     }}
-                                   />
-                                   
-                                   <button suppressHydrationWarning className="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all">
-                                       <Heart size={14} className="md:w-5 md:h-5" />
-                                   </button>
+                       {listingsToDisplay.map((listing: any, i: number) => {
+                           const detailHref = `/${isNearMe ? (listing.city || citySlug).toLowerCase() : citySlug}${isVendorContext ? '/vendors' : ''}/${listing.slug}`;
+                           return (
+                           <div key={listing.id || i} className="bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-3xl transition-all duration-500 group flex flex-col hover:-translate-y-2 relative">
+                               {/* Entire card is a link EXCEPT the Get Quote button */}
+                               <Link href={detailHref} className="flex flex-col flex-grow">
+                                   {/* IMAGE PREVIEW — fixed aspect ratio for consistency */}
+                                   <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0">
+                                       <img
+                                         src={getListingImage(listing)}
+                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                         alt={listing.name}
+                                         onError={(e) => {
+                                           const target = e.target as HTMLImageElement;
+                                           target.src = getVarietyFallback(listing.name);
+                                         }}
+                                       />
 
-                                   <div className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4 flex items-center justify-between">
-                                       {(listing.max_capacity || listing.capacity) && (
-                                           <div className="flex items-center gap-1 md:gap-2 bg-black/50 backdrop-blur-md px-2 py-0.5 md:px-3 md:py-1 rounded-full text-white">
-                                               <Users2 size={10} className="opacity-80 md:w-3.5 md:h-3.5"/>
-                                               <span className="text-[9px] md:text-[12px] font-bold">{listing.min_capacity || 0}-{listing.max_capacity || listing.capacity}</span>
-                                           </div>
-                                       )}
-                                   </div>
-                               </div>
+                                       <button suppressHydrationWarning className="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all" onClick={e => e.preventDefault()}>
+                                           <Heart size={14} className="md:w-5 md:h-5" />
+                                       </button>
 
-                               {/* CONTENT SECTION */}
-                               <div className="p-3 md:p-6 flex flex-col flex-grow">
-                                   <div className="flex items-start justify-between mb-2 md:mb-4 gap-1 md:gap-4">
-                                       <div className="flex-grow min-w-0">
-                                           <h3 className="text-[12px] md:text-[18px] font-black text-slate-950 leading-tight mb-1 md:mb-2 line-clamp-2">{listing.name}</h3>
-                                           <p className="text-[10px] md:text-[13px] font-bold text-slate-400 flex items-center gap-0.5 md:gap-1 truncate">
-                                               <MapPin size={10} className="shrink-0 md:w-3.5 md:h-3.5"/> <span className="truncate">{listing.location || listing.area || listing.city}</span>
-                                           </p>
-                                       </div>
-                                       <div className="flex items-center gap-0.5 md:gap-1 shrink-0">
-                                           <Star size={11} className="fill-yellow-400 text-yellow-400 md:w-4 md:h-4" />
-                                           <span className="text-[10px] md:text-[14px] font-black text-slate-900">{listing.rating || '4.8'}</span>
-                                       </div>
-                                   </div>
-
-                                   <div className="hidden md:grid grid-cols-1 gap-y-4 pt-4 border-t border-slate-50">
-                                       <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
-                                               <Building size={16} className="text-slate-400"/>
-                                           </div>
-                                           <span className="text-[13px] font-bold text-slate-600 truncate">{listing.category || listing.type || listing.vendor_type}</span>
-                                       </div>
-
-                                       {(listing.veg_price_per_plate || listing.starting_price) && (
-                                           <div className="flex items-center gap-3">
-                                               <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-                                                   <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow-sm" />
+                                       <div className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4 flex items-center justify-between">
+                                           {(listing.max_capacity || listing.capacity) && (
+                                               <div className="flex items-center gap-1 md:gap-2 bg-black/50 backdrop-blur-md px-2 py-0.5 md:px-3 md:py-1 rounded-full text-white">
+                                                   <Users2 size={10} className="opacity-80 md:w-3.5 md:h-3.5"/>
+                                                   <span className="text-[9px] md:text-[12px] font-bold">{listing.min_capacity || 0}-{listing.max_capacity || listing.capacity}</span>
                                                </div>
-                                               <p className="text-[13px] font-bold text-slate-900">Rs. {listing.veg_price_per_plate || listing.starting_price} <span className="text-[11px] text-slate-400 font-medium ml-1">starting</span></p>
+                                           )}
+                                       </div>
+                                   </div>
+
+                                   {/* CONTENT SECTION */}
+                                   <div className="p-3 md:p-6 flex flex-col flex-grow">
+                                       <div className="flex items-start justify-between mb-2 md:mb-4 gap-1 md:gap-4">
+                                           <div className="flex-grow min-w-0">
+                                               <h3 className="text-[12px] md:text-[18px] font-black text-slate-950 leading-tight mb-1 md:mb-2 line-clamp-2">{listing.name}</h3>
+                                               <p className="text-[10px] md:text-[13px] font-bold text-slate-400 flex items-center gap-0.5 md:gap-1 truncate">
+                                                   <MapPin size={10} className="shrink-0 md:w-3.5 md:h-3.5"/> <span className="truncate">{listing.location || listing.area || listing.city}</span>
+                                               </p>
                                            </div>
-                                       )}
-                                   </div>
+                                           <div className="flex items-center gap-0.5 md:gap-1 shrink-0">
+                                               <Star size={11} className="fill-yellow-400 text-yellow-400 md:w-4 md:h-4" />
+                                               <span className="text-[10px] md:text-[14px] font-black text-slate-900">{listing.rating || '4.8'}</span>
+                                           </div>
+                                       </div>
 
-                                   {/* Mobile: compact bottom row */}
-                                   <div className="md:hidden mt-2 pt-2 border-t border-slate-50">
-                                       {(listing.veg_price_per_plate || listing.starting_price) && (
-                                           <p className="text-[10px] font-black text-slate-900">₹{listing.veg_price_per_plate || listing.starting_price} <span className="text-[9px] text-slate-400 font-medium">start</span></p>
-                                       )}
-                                   </div>
+                                       <div className="hidden md:grid grid-cols-1 gap-y-4 pt-4 border-t border-slate-50">
+                                           <div className="flex items-center gap-3">
+                                               <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
+                                                   <Building size={16} className="text-slate-400"/>
+                                               </div>
+                                               <span className="text-[13px] font-bold text-slate-600 truncate">{listing.category || listing.type || listing.vendor_type}</span>
+                                           </div>
+                                       </div>
 
-                                   <div className="mt-auto pt-2 md:pt-8 flex gap-2 md:gap-3">
-                                       <Link href={`/${isNearMe ? (listing.city || listing.locations?.city || citySlug).toLowerCase() : citySlug}${isVendorContext ? '/vendors' : ''}/${listing.slug}`} className="flex-1 flex items-center justify-center border border-slate-900 md:border-2 text-slate-900 h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-slate-900 hover:text-white transition-all transform active:scale-95">View</Link>
-                                       <button suppressHydrationWarning className="flex-1 bg-[#EF3E36] text-white h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-[#D9362F] transition-all transform active:scale-95 shadow-md shadow-primary/20">Price</button>
+                                       {/* Mobile compact bottom */}
+                                       <div className="md:hidden mt-2 pt-2 border-t border-slate-50">
+                                           <p className="text-[10px] font-bold text-slate-400 truncate">{listing.category || listing.type || listing.vendor_type}</p>
+                                       </div>
                                    </div>
+                               </Link>
+
+                               {/* GET QUOTE — outside link, intercepts click */}
+                               <div className="px-3 md:px-6 pb-3 md:pb-6 mt-auto" onClick={e => { e.stopPropagation(); e.preventDefault(); }}>
+                                   <GetQuoteModal
+                                       businessName={listing.name}
+                                       listingId={listing.id}
+                                       listingType={isVendorContext ? 'vendor' : 'venue'}
+                                       ownerId={listing.owner_id}
+                                       citySlug={citySlug}
+                                       imageUrl={getListingImage(listing)}
+                                       location={listing.location || listing.area || listing.city}
+                                       triggerButton={
+                                           <button className="w-full bg-[#EF3E36] text-white h-8 md:h-11 rounded-lg md:rounded-xl font-black text-[9px] md:text-[12px] uppercase tracking-wide md:tracking-widest hover:bg-[#D9362F] transition-all transform active:scale-95 shadow-md shadow-primary/20">
+                                               Get Quote
+                                           </button>
+                                       }
+                                   />
                                </div>
                            </div>
-                       ))}
+                           );
+                       })}
                    </div>
 
                    {allListings.length === 0 && (
@@ -653,27 +680,24 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
               </div>
 
               {/* Linked Areas Part — HIDDEN ON MOBILE */}
-               {!isVendorContext && (
-                 <div className="hidden md:block mt-12 pt-0 border-t-0">
-                   <h3 className="text-base md:text-lg font-black text-slate-900 mb-6 uppercase tracking-wider">More Popular Party Places in {locationLabel}</h3>
-                   <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-3 text-sm md:text-base overflow-hidden transition-all duration-300 ${showMoreAreas ? 'max-h-none' : 'max-h-[160px]'}`}>
-                         {(
-                             citySlug === 'ahmedabad' ? ['S.G. Highway', 'Satellite', 'Bodakdev', 'Prahlad Nagar', 'Navrangpura', 'Vastrapur', 'C.G. Road', 'Thaltej', 'Gota', 'Maninagar', 'Ambli', 'Bopal', 'Sindhu Bhavan Road', 'Makarba', 'South Bopal', 'Memnagar'] :
-                             citySlug === 'surat' ? ['Adajan', 'Vesu', 'Piplod', 'Varachha', 'Dumas', 'Katargam', 'City Light', 'Udhna', 'Pal', 'Parvat Patiya', 'Athwa Lines', 'Bhatar'] :
-                             ['Central Area', 'Main Market', 'Commercial Hub', 'Residental Zone', 'Industrial Park']
-                         ).map(area => (
-                             <Link key={area} href={`/${citySlug}/${area.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`} className="font-bold text-slate-400 hover:text-primary transition-colors block pb-1">
-                                 Best Venues in {area}
-                             </Link>
-                         ))}
-                     </div>
-                     <div className="text-right -mt-4">
-                         <button suppressHydrationWarning onClick={() => setShowMoreAreas(!showMoreAreas)} className="text-primary font-black hover:underline text-sm bg-white pl-4">
-                             {showMoreAreas ? 'Show Less' : 'Show More'}
-                         </button>
-                     </div>
-                 </div>
-               )}
+               <div className="hidden md:block mt-12 pt-0 border-t-0">
+                 <h3 className="text-base md:text-lg font-black text-slate-900 mb-6 uppercase tracking-wider">More Popular Party Places in {locationLabel}</h3>
+                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-3 text-sm md:text-base overflow-hidden transition-all duration-300 ${showMoreAreas ? 'max-h-none' : 'max-h-[160px]'}`}>
+                       {(
+                           citiesData.find((c: any) => c.slug === citySlug?.toLowerCase())?.localities?.map((l: string) => unslugify(l)) || 
+                           ['City Center', 'Main Market', 'Commercial Hub', 'Residential Zone']
+                       ).map(area => (
+                           <Link key={area} href={`/${citySlug}/${area.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`} className="font-bold text-slate-400 hover:text-primary transition-colors block pb-1">
+                               Best Venues in {area}
+                           </Link>
+                       ))}
+                   </div>
+                   <div className="text-right -mt-4">
+                       <button suppressHydrationWarning onClick={() => setShowMoreAreas(!showMoreAreas)} className="text-primary font-black hover:underline text-sm bg-white pl-4">
+                           {showMoreAreas ? 'Show Less' : 'Show More'}
+                       </button>
+                   </div>
+               </div>
           </div>
       </section>
 
@@ -788,14 +812,14 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                       className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-4 font-black uppercase tracking-widest text-xs appearance-none"
                       value={citySlug}
                   >
-                      {['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Vapi', 'Anand', 'Nadiad'].map(city => (
+                      {GUJARAT_CITIES.map(city => (
                           <option key={city} value={city.toLowerCase()}>{city}</option>
                       ))}
                   </select>
               </div>
 
               <div className="hidden md:flex items-center gap-4 md:gap-0 md:flex-wrap md:justify-between border-b border-slate-200 pb-3 mb-6 md:mb-8 mt-4 md:mt-10 overflow-x-auto no-scrollbar">
-                  {['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Vapi', 'Anand', 'Nadiad'].map((city, i) => (
+                  {GUJARAT_CITIES.map((city, i) => (
                       <Link key={city} href={`/${city.toLowerCase()}`} className={`text-[11px] md:text-[15px] font-black transition-all whitespace-nowrap ${city.toLowerCase() === citySlug.toLowerCase() ? 'text-black border-b-2 md:border-b-4 border-primary pb-2 md:pb-3 md:-mb-[26px]' : 'text-slate-950 hover:text-black'}`}>
                           {city}
                       </Link>

@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES } from "@/lib/constants";
-import { gujaratCities } from "@/lib/cities";
+import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES, GUJARAT_CITIES } from "@/lib/constants";
 import RequirementWizard from "@/components/home/RequirementWizard";
 
 const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
@@ -14,7 +13,8 @@ const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
 function SearchBar() {
   const router = useRouter();
   const [serviceType, setServiceType] = useState("venues");
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("all");
+
   const [searchText, setSearchText] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -34,24 +34,40 @@ function SearchBar() {
   }, []);
 
   const handleSearch = () => {
-    const citySlug = city.trim().toLowerCase().replace(/\s+/g, '-');
-    const typeSlug = serviceType.trim().toLowerCase().replace(/[\s/]+/g, '-');
+    const citySlug = (city === 'all' || !city) ? '' : city.trim().toLowerCase().replace(/\s+/g, '-');
+    let typeSlug = serviceType.trim().toLowerCase().replace(/[\s/]+/g, '-');
     const isVenueType = VENUE_TYPES.includes(serviceType) || serviceType === 'venues';
     const isVendorType = VENDOR_TYPES.includes(serviceType) || serviceType === 'vendors';
+    
     let targetPath = "/";
 
-    if (citySlug && (isVenueType || isVendorType)) {
-      if (isVenueType) targetPath = serviceType === 'venues' ? `/${citySlug}/` : `/${citySlug}/${typeSlug}/`;
-      else targetPath = serviceType === 'vendors' ? `/${citySlug}/vendors/` : `/${citySlug}/vendors/${typeSlug}/`;
+    // 1. If we have an occasion in searchText, it becomes the primary path for venues
+    if (searchText && isVenueType) {
+        let occasionSlug = searchText.trim().toLowerCase().replace(/[\s/]+/g, '-');
+        if (!occasionSlug.endsWith('-venues') && !occasionSlug.endsWith('-venue')) {
+            occasionSlug += '-venues';
+        }
+        targetPath = citySlug ? `/${citySlug}/${occasionSlug}/` : `/${occasionSlug}/`;
+    } 
+    // 2. Standard city + category routing
+    else if (isVenueType || isVendorType) {
+      if (isVenueType) {
+          if (citySlug) targetPath = serviceType === 'venues' ? `/${citySlug}/` : `/${citySlug}/${typeSlug}/`;
+          else targetPath = serviceType === 'venues' ? `/venues/` : `/${typeSlug}/`;
+      } else {
+          if (citySlug) targetPath = serviceType === 'vendors' ? `/${citySlug}/vendors/` : `/${citySlug}/vendors/${typeSlug}/`;
+          else targetPath = serviceType === 'vendors' ? `/vendors/` : `/vendors/${typeSlug}/`;
+      }
     } else if (citySlug) {
       targetPath = `/${citySlug}/`;
-    } else if (isVenueType) {
-      targetPath = serviceType === 'venues' ? '/venues/' : `/ahmedabad/${typeSlug}/`;
     } else {
-      targetPath = serviceType === 'vendors' ? '/vendors/' : `/ahmedabad/vendors/${typeSlug}/`;
+      targetPath = serviceType === 'vendors' ? '/vendors/' : '/venues/';
     }
 
-    if (searchText) targetPath = `${targetPath}?q=${encodeURIComponent(searchText.trim())}`;
+    // Only add searchText as Q if it wasn't already moved to the path
+    if (searchText && !isVenueType) {
+        targetPath = `${targetPath}?q=${encodeURIComponent(searchText.trim())}`;
+    }
     router.push(targetPath);
   };
 
@@ -108,7 +124,7 @@ function SearchBar() {
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               <SelectItem value="all">All Cities</SelectItem>
-              {gujaratCities.map(c => (
+              {GUJARAT_CITIES.map(c => (
                 <SelectItem key={c} value={c.toLowerCase()}>{c}</SelectItem>
               ))}
             </SelectContent>

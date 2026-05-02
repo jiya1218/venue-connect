@@ -29,7 +29,7 @@ export function buildSEOSlug(
   const aSlug = areaSlug ? slugify(areaSlug) : '';
 
   if (isVendor) {
-    return aSlug ? `${lSlug}/${aSlug}/${cSlug}` : `${lSlug}/vendors/${cSlug}`;
+    return aSlug ? `${lSlug}/${aSlug}/vendors/${cSlug}` : `${lSlug}/vendors/${cSlug}`;
   }
   return aSlug ? `${lSlug}/${aSlug}/${cSlug}` : `${lSlug}/${cSlug}`;
 }

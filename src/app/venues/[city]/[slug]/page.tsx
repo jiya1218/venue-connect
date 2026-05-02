@@ -212,6 +212,8 @@ export default async function VenueDetailsPage({ params }: PageProps) {
                                 listingId={venue.id}
                                 listingType="venue"
                                 ownerId={venue.owner_id}
+                                imageUrl={venue.image}
+                                location={venue.address || `${venue.location || ''}, ${venue.city}`}
                                 triggerButton={
                                     <Button className="w-full h-16 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-xl shadow-xl shadow-primary/40 transition-all active:scale-95 group">
                                         Send Free Enquiry <ChevronRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -271,6 +273,8 @@ export default async function VenueDetailsPage({ params }: PageProps) {
                     listingId={venue.id}
                     listingType="venue"
                     ownerId={venue.owner_id}
+                    imageUrl={venue.image}
+                    location={venue.address || `${venue.location || ''}, ${venue.city}`}
                     triggerButton={
                         <Button className="!h-8 w-full rounded-md bg-primary text-white font-bold text-xs shadow-md shadow-primary/20 py-0 px-3">
                             Check Availability

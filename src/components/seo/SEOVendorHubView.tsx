@@ -47,7 +47,7 @@ const BLOGS = [
 
 export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendorHubViewProps) {
     const [searchCategory, setSearchCategory] = useState("");
-    const [searchCity, setSearchCity] = useState(citySlug || 'ahmedabad');
+    const [searchCity, setSearchCity] = useState(citySlug && citySlug !== 'all' ? citySlug : 'ahmedabad');
     const [catIndex, setCatIndex] = useState(0);
 
     const handleSearch = () => {
@@ -129,7 +129,7 @@ export function SEOVendorHubView({ citySlug, locationLabel, vendors }: SEOVendor
                                suppressHydrationWarning
                            >
                                <option value="All Cities" className="text-slate-900 font-bold">ALL CITIES</option>
-                               {['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot'].map(c => (
+                               {GUJARAT_CITIES.map(c => (
                                    <option key={c} value={c} className="text-slate-900 font-sans tracking-normal">{c}</option>
                                ))}
                            </select>

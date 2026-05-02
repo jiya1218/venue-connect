@@ -271,6 +271,8 @@ export default async function VendorDetailsPage({ params }: PageProps) {
                                 listingId={vendor.id}
                                 listingType="vendor"
                                 ownerId={vendor.owner_id}
+                                imageUrl={vendor.image}
+                                location={`${vendor.city}, Gujarat`}
                                 triggerButton={
                                     <Button className="w-full h-16 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-xl shadow-xl shadow-primary/40 transition-all active:scale-95 group">
                                         Check Availability <ChevronRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -336,6 +338,8 @@ export default async function VendorDetailsPage({ params }: PageProps) {
                     listingId={vendor.id}
                     listingType="vendor"
                     ownerId={vendor.owner_id}
+                    imageUrl={vendor.image}
+                    location={`${vendor.city}, Gujarat`}
                     triggerButton={
                         <Button className="w-full h-14 rounded-2xl bg-primary text-white font-black text-lg shadow-lg shadow-primary/20">
                             Check Availability

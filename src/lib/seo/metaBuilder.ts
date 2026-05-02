@@ -189,7 +189,7 @@ export function buildMetadataFromSlugs(
   }
 
   const slug = areaSlug
-    ? `${citySlug}/${areaSlug}/${categorySlug}/`
+    ? (isVendor ? `${citySlug}/${areaSlug}/vendors/${categorySlug}/` : `${citySlug}/${areaSlug}/${categorySlug}/`)
     : (isVendor ? `${citySlug}/vendors/${categorySlug}/` : `${citySlug}/${categorySlug}/`);
   const canonicalUrl = `${SITE_URL}/${slug.replace(/\/\/+/g, '/')}`;
 

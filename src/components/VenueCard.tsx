@@ -180,6 +180,8 @@ const VenueCard = ({ venue }: VenueCardProps) => {
                             listingId={venue.id}
                             listingType="venue"
                             ownerId={venue.owner_id}
+                            imageUrl={getListingImage(venue)}
+                            location={venue.area ? `${venue.area}, ${venue.city}` : venue.city}
                             triggerButton={
                                 <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold uppercase py-3 sm:py-6 text-[10px] sm:text-sm shadow-md transition-transform active:scale-[0.98] h-auto">
                                     GET FREE QUOTES

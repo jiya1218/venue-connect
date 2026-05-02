@@ -236,7 +236,8 @@ export const generateSEOContent = (
         heroSubtitle = `Connecting you with the best professionals and spaces in ${city}.`;
     }
 
-    const introParagraph1 = `${targetKeyword} is one of the most searched terms for anyone planning a celebration in the vibrant heart of ${city}. As ${cityContext}, ${city} offers a unique blend of heritage and modernity that reflects in its event spaces. Whether you are looking for premium zones like ${citySlug.toLowerCase() === 'ahmedabad' ? 'Bodakdev or Prahlad Nagar' : 'the city center'}, VenueConnect helps you navigate the local landscape to find the perfect match for your requirements.`;
+    const premiumAreas = cityData?.localities ? cityData.localities.slice(0, 2).map(l => formatTitle(l)).join(' or ') : 'the city center';
+    const introParagraph1 = `${targetKeyword} is one of the most searched terms for anyone planning a celebration in the vibrant heart of ${city}. As ${cityContext}, ${city} offers a unique blend of heritage and modernity that reflects in its event spaces. Whether you are looking for premium zones like ${premiumAreas}, VenueConnect helps you navigate the local landscape to find the perfect match for your requirements.`;
 
     const introParagraph2 = `When choosing ${category.toLowerCase() || 'a venue'} in ${locationName}, it's essential to consider factors like guest capacity, in-house catering quality, and whether you prefer an indoor banquet hall or an outdoor party plot. In ${city}, popular areas often book up months in advance, so we recommend comparing multiple options based on their real photos and verified user reviews to ensure your event goes exactly as planned.`;
 
@@ -261,7 +262,7 @@ export const generateSEOContent = (
         },
         {
             question: `What are the best areas in ${city} for ${category.toLowerCase() || 'hosting events'}?`,
-            answer: `For premium celebrations in ${city}, areas like ${citySlug.toLowerCase() === 'ahmedabad' ? 'SG Highway, Bodakdev, and Prahlad Nagar' : 'the central business districts'} are highly recommended due to their accessibility and choice of luxury venues. Each locality offers a different vibe, from busy urban centers to serene outskirts.`
+            answer: `For premium celebrations in ${city}, areas like ${cityData?.localities ? cityData.localities.slice(0, 3).map(l => formatTitle(l)).join(', ') : 'the central business districts'} are highly recommended due to their accessibility and choice of luxury venues. Each locality offers a different vibe, from busy urban centers to serene outskirts.`
         },
         {
             question: `What should I look for in a ${category.toLowerCase() || 'venue'} in ${city}?`,

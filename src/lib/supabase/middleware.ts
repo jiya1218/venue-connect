@@ -61,7 +61,9 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  // Use getSession (reads from cookie) instead of getUser (hits auth server)
+  // to avoid triggering concurrent token refresh lock conflicts.
+  await supabase.auth.getSession()
 
   return response
 }
