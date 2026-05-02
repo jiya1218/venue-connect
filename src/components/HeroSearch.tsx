@@ -159,10 +159,10 @@ const HeroSearch = () => {
               </span>
             </div>
 
-            <h1 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-tight md:leading-[1] text-white tracking-tighter">
-              Plan Your <br className="hidden md:block" />{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-primary-foreground drop-shadow-2xl">Dream Event</span> <br className="hidden md:block" />
-              with Experts
+            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight md:leading-[1.1] text-white tracking-tighter">
+              Luxury or <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-primary-foreground drop-shadow-2xl">Small Budget,</span> <br className="hidden md:block" />
+              We Match You With the <br className="hidden md:block" />
+              Perfect Venue & Vendors.
             </h1>
 
             <p className="text-sm md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 md:px-0">
