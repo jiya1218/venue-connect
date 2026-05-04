@@ -34,7 +34,7 @@ const Navbar = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session: any) => {
+    } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setSession(session);
       if (session?.user?.id) fetchUserRole(session.user.id);
     });
