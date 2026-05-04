@@ -60,7 +60,7 @@ async function fetchData(sParams: any = {}) {
     }
 
     const { data: venues } = await query.order('rating', { ascending: false }).limit(60);
-    return (venues || []).map(v => ({ ...v, locations: { city: v.city, area: v.location } }));
+    return (venues || []).map((v: any) => ({ ...v, locations: { city: v.city, area: v.location } }));
 }
 
 export default async function VenuesPage({ searchParams }: { searchParams: Promise<any> }) {

@@ -159,7 +159,7 @@ function VendorsContent() {
                         
                         if (cat.usePerPlate) {
                             validPrices = data
-                                .map(v => {
+                                .map((v: any) => {
                                     if (!v.price_per_plate) return null;
                                     const num = typeof v.price_per_plate === 'string' 
                                         ? parseInt(v.price_per_plate.replace(/[^0-9]/g, '')) 
@@ -169,7 +169,7 @@ function VendorsContent() {
                                 .filter(v => v !== null);
                         } else {
                             validPrices = data
-                                .map(v => {
+                                .map((v: any) => {
                                     if (!v.starting_price) return null;
                                     const num = typeof v.starting_price === 'string' 
                                         ? parseInt(v.starting_price.replace(/[^0-9]/g, '')) 

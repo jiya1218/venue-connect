@@ -80,7 +80,7 @@ export default function ListingsTab() {
         if (search) q = q.ilike('name', `%${search}%`);
         
         const { data, count: c } = await q.range(from, to).order('created_at', { ascending: false });
-        finalData = [...finalData, ...(data || []).map(v => ({ ...v, type: 'venue' }))];
+        finalData = [...finalData, ...(data || []).map((v: any) => ({ ...v, type: 'venue' }))];
         totalCount += (c || 0);
       }
 
@@ -91,7 +91,7 @@ export default function ListingsTab() {
         if (search) q = q.ilike('name', `%${search}%`);
         
         const { data, count: c } = await q.range(from, to).order('created_at', { ascending: false });
-        finalData = [...finalData, ...(data || []).map(v => ({ ...v, type: 'vendor' }))];
+        finalData = [...finalData, ...(data || []).map((v: any) => ({ ...v, type: 'vendor' }))];
         totalCount += (c || 0);
       }
 
@@ -287,7 +287,7 @@ export default function ListingsTab() {
                    </td>
                 </tr>
               ) : (
-                listings.map((item) => (
+                listings.map((item: any) => (
                   <tr key={item.id} className="group hover:bg-slate-50/50 transition-all duration-300">
                     <td className="px-8 py-6">
                         <div className="flex items-center gap-4">

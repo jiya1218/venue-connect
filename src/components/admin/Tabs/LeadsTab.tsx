@@ -30,15 +30,15 @@ export default function LeadsTab() {
             if (error) throw error;
             
             // Fetch venue names manually for the leads found
-            const venueIds = Array.from(new Set(data.map(l => l.listing_id))).filter(Boolean);
+            const venueIds = Array.from(new Set(data.map((l: any) => l.listing_id))).filter(Boolean);
             if (venueIds.length > 0) {
                 const { data: venuesData } = await supabase
                     .from('venues')
                     .select('id, name')
                     .in('id', venueIds);
                 
-                const venueMap = Object.fromEntries(venuesData?.map(v => [v.id, v.name]) || []);
-                const enrichedLeads = data.map(l => ({
+                const venueMap = Object.fromEntries(venuesData?.map((v: any) => [v.id, v.name]) || []);
+                const enrichedLeads = data.map((l: any) => ({
                     ...l,
                     venue_name: venueMap[l.listing_id] || 'Unknown Venue'
                 }));
@@ -108,7 +108,7 @@ export default function LeadsTab() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {leads.map((lead) => (
+                        {leads.map((lead: any) => (
                             <TableRow key={lead.id} className="hover:bg-slate-50/50 transition-colors">
                                 <TableCell>
                                     <div className="flex flex-col gap-1">

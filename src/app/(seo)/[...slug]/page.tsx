@@ -887,7 +887,7 @@ async function fetchVenues(categorySlug: string, citySlug: string, sParams: any,
         data = cityData;
     }
 
-    return (data || []).map(v => ({ ...v, locations: { city: v.city, area: v.location } }));
+    return (data || []).map((v: any) => ({ ...v, locations: { city: v.city, area: v.location } }));
 }
 
 async function fetchVendors(categorySlug: string, citySlug: string, sParams: any, categoryId?: string | null, areaSlug?: string) {
@@ -1014,7 +1014,7 @@ async function fetchVendors(categorySlug: string, citySlug: string, sParams: any
         console.error('fetchVendors error:', error);
         // SAFE FALLBACK: Try a very minimal query
         const { data: safeData } = await supabase.from('vendors').select('*').limit(20);
-        return (safeData || []).map(v => ({ ...v, type: v.category }));
+        return (safeData || []).map((v: any) => ({ ...v, type: v.category }));
     }
 
     // FINAL FALLBACK: Global (only for 'all' city or if truly empty)
@@ -1025,9 +1025,9 @@ async function fetchVendors(categorySlug: string, citySlug: string, sParams: any
                 globalQuery = globalQuery.or(`category.ilike.%${targetType}%,category.ilike.%${unslugify(categorySlug)}%,category.ilike.%${categorySlug}%,name.ilike.%${targetType}%`);
             }
             const { data: globalData } = await globalQuery.order('rating', { ascending: false }).limit(60);
-            if (globalData && globalData.length > 0) return globalData.map(v => ({ ...v, type: v.category }));
+            if (globalData && globalData.length > 0) return globalData.map((v: any) => ({ ...v, type: v.category }));
         }
     }
 
-    return (data || []).map(v => ({ ...v, type: v.category }));
+    return (data || []).map((v: any) => ({ ...v, type: v.category }));
 }
