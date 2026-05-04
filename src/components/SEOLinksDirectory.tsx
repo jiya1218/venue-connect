@@ -17,7 +17,7 @@ function pickDeterministicCategories(seed: string, count: number): string[] {
 
   const hash = seed
     .split("")
-    .reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+    .reduce((acc: number, ch: string) => acc + ch.charCodeAt(0), 0);
 
   const firstIndex = hash % VENUE_CATEGORIES.length;
   const step = Math.max(1, (hash % (VENUE_CATEGORIES.length - 1 || 1)) + 1);

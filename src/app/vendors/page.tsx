@@ -166,7 +166,7 @@ function VendorsContent() {
                                         : v.price_per_plate;
                                     return num > 0 ? num : null;
                                 })
-                                .filter(v => v !== null);
+                                .filter((v: any) => v !== null);
                         } else {
                             validPrices = data
                                 .map((v: any) => {
@@ -176,11 +176,11 @@ function VendorsContent() {
                                         : v.starting_price;
                                     return num > 0 ? num : null;
                                 })
-                                .filter(v => v !== null);
+                                .filter((v: any) => v !== null);
                         }
 
                         if (validPrices.length > 0) {
-                            avgPrice = Math.round(validPrices.reduce((a, b) => a + b, 0) / validPrices.length);
+                            avgPrice = Math.round(validPrices.reduce((a: any, b: any) => a + b, 0) / validPrices.length);
                         }
                     }
 

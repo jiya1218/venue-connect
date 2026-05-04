@@ -79,7 +79,7 @@ const EventTypeExplorer = () => {
       "Pool Party": ["Resort", "Farmhouse"]
     };
     const dbTypes = mapping[name] || [];
-    const total = dbTypes.reduce((acc, t) => acc + (counts[t] || 0), 0);
+    const total = dbTypes.reduce((acc: number, t: string) => acc + (counts[t] || 0), 0);
     return `${total}`;
   };
 

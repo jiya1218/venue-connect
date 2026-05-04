@@ -133,7 +133,7 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
     };
 
     const averageRating = reviews.length > 0
-        ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
+        ? (reviews.reduce((acc: number, curr: any) => acc + curr.rating, 0) / reviews.length).toFixed(1)
         : "0.0";
 
     const ratingCounts = [5, 4, 3, 2, 1].map(star => ({
