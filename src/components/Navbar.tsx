@@ -25,7 +25,8 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true);
-    supabase.auth.getUser().then(({ data: { user } }: any) => {
+    supabase.auth.getUser().then((res: any) => {
+      const user = res.data?.user;
       if (user) {
         setSession({ user });
         fetchUserRole(user.id);

@@ -129,7 +129,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
     return () => clearInterval(timer);
   }, [blogs.length, autoPlay]);
 
-  const VENDOR_SLUGS = VENDOR_TYPES.map(v => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-'));
+  const VENDOR_SLUGS = VENDOR_TYPES.map((v: any) => v.toLowerCase().replace(/[\s']+/g, '-').replace(/\//g, '-'));
   const isVendorContext = forcedVendor || categorySlug === 'vendors' || categorySlug === 'all-vendors' || VENDOR_SLUGS.includes(categorySlug?.toLowerCase());
 
   const handleSearch = () => {
@@ -257,7 +257,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                 suppressHydrationWarning
                             >
                                 <option value="" className="text-slate-900">{isVendorContext ? "Search Vendors..." : "Search Venues..."}</option>
-                                {(isVendorContext ? VENDOR_TYPES : VENUE_TYPES).map(t => (
+                                {(isVendorContext ? VENDOR_TYPES : VENUE_TYPES).map((t: any) => (
                                     <option key={t} value={t} className="text-slate-900">{t}</option>
                                 ))}
                             </select>
@@ -273,7 +273,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                 suppressHydrationWarning
                             >
                                 <option value="All Cities" className="text-slate-900">All Cities</option>
-                                {GUJARAT_CITIES.map(c => (
+                                {GUJARAT_CITIES.map((c: any) => (
                                     <option key={c} value={c} className="text-slate-900">{c}</option>
                                 ))}
                             </select>
@@ -567,7 +567,7 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                                         suppressHydrationWarning
                                     >
                                         <option>Occasion</option>
-                                        {OCCASIONS.map(o => <option key={o}>{o}</option>)}
+                                        {OCCASIONS.map((o: any) => <option key={o}>{o}</option>)}
                                     </select>
                                     <input 
                                         required 

@@ -46,7 +46,7 @@ export default function SEOLinksDirectory({ city }: SEOLinksDirectoryProps) {
   const localityLinks: { text: string; url: string }[] = [];
 
   // 1. Top Category Links for the City
-  VENUE_CATEGORIES.slice(0, 8).forEach(cat => {
+  VENUE_CATEGORIES.slice(0, 8).forEach((cat: any) => {
     categoryLinks.push({
       text: `${formatTitle(cat)} in ${displayCity}`,
       url: `/${currentCitySlug}/${cat}`
@@ -54,9 +54,9 @@ export default function SEOLinksDirectory({ city }: SEOLinksDirectoryProps) {
   });
 
   // 2. Locality + Category Links (The "long-tail" gold)
-  localities.forEach(loc => {
+  localities.forEach((loc: any) => {
     const categoriesForLocality = pickDeterministicCategories(`${currentCitySlug}-${loc}`, 2);
-    categoriesForLocality.forEach(cat => {
+    categoriesForLocality.forEach((cat: any) => {
       localityLinks.push({
         text: `${formatTitle(cat)} in ${formatTitle(loc)}, ${displayCity}`,
         url: `/${currentCitySlug}/${loc}/${cat}`
@@ -102,7 +102,7 @@ export default function SEOLinksDirectory({ city }: SEOLinksDirectoryProps) {
         <div className="mt-16 pt-10 border-t border-slate-200">
            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Major Destinations in Gujarat</h4>
            <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
-              {citiesData.filter(c => c.localities).map(c => (
+              {citiesData.filter((c: any) => c.localities).map((c: any) => (
                 <Link key={c.slug} href={`/${c.slug}/banquet-halls`} className="text-slate-600 font-medium hover:text-pink-600 flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> {c.name}
                 </Link>

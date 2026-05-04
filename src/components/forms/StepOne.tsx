@@ -37,13 +37,14 @@ export function StepOne({ form, type }: Props) {
       .select('id, name, slug')
       .eq('type', type)
       .order('name')
-      .then(({ data }) => setCategories(data ?? []));
+      .then((res: any) => setCategories(res.data ?? []));
 
     supabase
       .from('locations')
       .select('id, city, city_slug')
       .order('city')
-      .then(({ data }) => {
+      .then((res: any) => {
+        const data = res.data;
         // Deduplicate cities
         const seen = new Set<string>();
         const unique = (data ?? []).filter((r: City) => {
@@ -71,7 +72,8 @@ export function StepOne({ form, type }: Props) {
       .select('id, area, area_slug')
       .eq('city_slug', city.city_slug)
       .order('area')
-      .then(({ data }) => {
+      .then((res: any) => {
+        const data = res.data;
         setAreas(data ?? []);
         setLoadingAreas(false);
       });
