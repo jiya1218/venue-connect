@@ -232,7 +232,7 @@ export default function RequirementWizard() {
                             onClick={handleNext}
                             className="w-full bg-primary hover:bg-primary/90 text-white h-11 md:h-14 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-primary/20"
                         >
-                            OK <ChevronRight className="w-3.5 h-3.5 ml-1.5 md:ml-2" />
+                            Next <ChevronRight className="w-3.5 h-3.5 ml-1.5 md:ml-2" />
                         </Button>
                     ) : (
                         <Button 
