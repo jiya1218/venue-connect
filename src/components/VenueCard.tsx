@@ -49,7 +49,7 @@ const VenueCard = ({ venue }: VenueCardProps) => {
     }, [venue.id]);
 
     const checkFavoriteStatus = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
         if (!user) {
             setIsLoading(false);
             return;
@@ -72,7 +72,7 @@ const VenueCard = ({ venue }: VenueCardProps) => {
         e.preventDefault(); // Prevent navigating to venue page
         e.stopPropagation();
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
 
         if (!user) {
             toast.error("Please login to save favorites");

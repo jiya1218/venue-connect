@@ -21,7 +21,7 @@ export default function ListingHeaderActions({ listing, type }: ListingHeaderAct
   }, [listing.id]);
 
   const checkFavoriteStatus = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await (supabase.auth.getUser() as any);
     if (!user) {
       setLoading(false);
       return;
@@ -40,7 +40,7 @@ export default function ListingHeaderActions({ listing, type }: ListingHeaderAct
   };
 
   const toggleFavorite = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await (supabase.auth.getUser() as any);
     if (!user) {
       toast.error("Please login to save favorites");
       return;

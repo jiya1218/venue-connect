@@ -18,7 +18,7 @@ export default function MyListings() {
 
     const fetchListings = async () => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await (supabase.auth.getUser() as any);
             if (!user) return;
 
             // Fetch Venues

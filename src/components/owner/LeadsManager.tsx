@@ -19,7 +19,7 @@ export default function LeadsManager() {
 
     const fetchLeads = async () => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await (supabase.auth.getUser() as any);
             console.log("Current User in Dashboard:", user?.id);
             if (!user) {
                 console.error("No user found in dashboard session");

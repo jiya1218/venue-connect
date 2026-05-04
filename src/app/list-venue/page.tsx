@@ -107,7 +107,7 @@ export default function ListVenuePage() {
             }
 
             // 2. Insert to Supabase venue_applications
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await (supabase.auth.getUser() as any);
             
             if (!user) {
                 toast.error("Please login first to list your business");

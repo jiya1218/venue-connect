@@ -37,7 +37,7 @@ const ReviewsList = ({ listingId, listingType }: ReviewsListProps) => {
     }, [listingId]);
 
     const checkUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
         if (user) {
             setCurrentUser(user);
         }

@@ -16,7 +16,7 @@ export const OwnerRoute = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const checkOwnerStatus = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
 
         if (!user) {
             setLoading(false);

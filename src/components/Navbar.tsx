@@ -25,7 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true);
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: any) => {
       if (user) {
         setSession({ user });
         fetchUserRole(user.id);
@@ -34,7 +34,7 @@ const Navbar = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session: any) => {
       setSession(session);
       if (session?.user?.id) fetchUserRole(session.user.id);
     });

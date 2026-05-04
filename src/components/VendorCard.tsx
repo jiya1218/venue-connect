@@ -45,7 +45,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
     }, [vendor.id]);
 
     const checkFavoriteStatus = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
         if (!user) {
             setIsLoading(false);
             return;
@@ -68,7 +68,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
         e.preventDefault(); // Prevent navigating to vendor page
         e.stopPropagation();
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await (supabase.auth.getUser() as any);
 
         if (!user) {
             toast.error("Please login to save favorites");
