@@ -109,7 +109,7 @@ export default function ListingFilter({
                 ]);
 
                 const processResult = (data: any[]) => {
-                    data?.forEach(v => { 
+                    data?.forEach((v: any) => { 
                         if (v.location && v.location.trim().length > 1) {
                             // Extract area name (everything before comma if present)
                             const cleanArea = v.location.split(',')[0].trim();
@@ -271,7 +271,7 @@ export default function ListingFilter({
         rating && { key: 'rating', label: rating }
     ].filter(Boolean);
 
-    cuisines.forEach(c => activeFilters.push({ key: 'cuisine', label: c, value: c }));
+    cuisines.forEach((c: any) => activeFilters.push({ key: 'cuisine', label: c, value: c }));
 
     const currentCityDisplay = location ? (GUJARAT_CITIES.find(c => c.toLowerCase() === location.toLowerCase()) || unslugify(location)) : "";
 

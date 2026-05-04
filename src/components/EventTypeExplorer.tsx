@@ -57,7 +57,7 @@ const EventTypeExplorer = () => {
       const { data } = await supabase.from('venues').select('type');
       if (data) {
         const c: Record<string, number> = {};
-        data.forEach(v => {
+        data.forEach((v: any) => {
           const t = v.type || 'Other';
           c[t] = (c[t] || 0) + 1;
         });

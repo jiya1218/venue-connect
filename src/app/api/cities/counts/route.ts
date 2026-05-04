@@ -19,7 +19,7 @@ export async function GET() {
         return c.charAt(0).toUpperCase() + c.slice(1).toLowerCase();
     };
 
-    venues?.forEach(v => {
+    venues?.forEach((v: any) => {
         const city = normalize(v.city);
         if (!city) return;
         if (!counts[city]) counts[city] = { venues: 0, vendors: 0, pending: 0, total: 0 };
@@ -27,7 +27,7 @@ export async function GET() {
         counts[city].total++;
     });
 
-    vendors?.forEach(v => {
+    vendors?.forEach((v: any) => {
         const city = normalize(v.city);
         if (!city) return;
         if (!counts[city]) counts[city] = { venues: 0, vendors: 0, pending: 0, total: 0 };
@@ -35,7 +35,7 @@ export async function GET() {
         counts[city].total++;
     });
 
-    pending?.forEach(v => {
+    pending?.forEach((v: any) => {
         const city = normalize(v.city);
         if (!city) return;
         if (!counts[city]) counts[city] = { venues: 0, vendors: 0, pending: 0, total: 0 };
