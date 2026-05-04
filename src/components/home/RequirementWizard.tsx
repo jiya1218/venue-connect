@@ -8,55 +8,34 @@ import {
     Sparkles, Phone, Mail, User, ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { GUJARAT_CITIES, OCCASIONS } from "@/lib/constants";
 
-
-const OCCASIONS = [
-    'Wedding', 'Birthday Party', 'Engagement', 'Corporate Event', 'Reception', 
-    'Sangeet Ceremony', 'Haldi Ceremony', 'Mehendi Ceremony', 'Anniversary Party', 
-    'Baby Shower', 'Bridal Shower', 'Bachelor Party', 'Kitty Party', 'Get Together', 
-    'Family Function', 'Naming Ceremony', 'Aqueeqa Ceremony', 'Christian Communion', 
-    'Cocktail Party', 'Cocktail Dinner', 'Pool Party', 'Garba Night', 'Holi Party', 
-    'Freshers Party', 'Farewell Party', 'Adventure Party', 'Corporate Party', 
-    'Corporate Training', 'Corporate Offsite', 'Conference', 'Seminar', 'Meeting', 
-    'Training', 'Team Outing', 'Product Launch', 'Brand Promotion', 'Exhibition', 
-    'Walk-in Interview', 'Business Dinner', 'Residential Conference', 'MICE', 
-    'Musical Concert', 'Fashion Show', 'Stage Event', 'Game Watch', 'Annual Fest', 
-    'Photo Shoots', 'Reunion', 'Class Reunion', 'Kids Birthday Party', 
-    'First Birthday Party', 'Engagement Party', 'Reception Party'
-];
-
-const CITIES = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'];
-const AREAS: Record<string, string[]> = {
-    'Ahmedabad': ['Prahlad Nagar', 'Sindhu Bhavan', 'Satellite', 'Bodakdev', 'SG Highway', 'C G Road'],
-    'Surat': ['Adajan', 'Vesu', 'Piplod', 'Varachha', 'Dumas'],
-    'Vadodara': ['Alkapuri', 'Gotri', 'Akota', 'Sayajigunj'],
-    'Rajkot': ['Kalavad Road', 'Yagnik Road', 'University Road'],
-    'Gandhinagar': ['Sector 21', 'Kudasan', 'Sargasan', 'Raysan']
-};
-const SPACE_TYPES = [
-    'Banquet Hall', 'Farmhouse', 'Party Plot', 'Hotel', 'Resort', 
-    'Restaurant', 'Convention Center', 'Club', 'Rooftop Venue', 
-    'Garden Venue', 'Heritage Venue', 'Luxury Venue'
-];
+const ALL_OCCASIONS = Object.values(OCCASIONS).flat();
 
 const FOOD_TYPES = ['Only Veg', 'Veg + Non-Veg', 'Pure Veg (Jain)'];
 const BUDGETS = ['Under ₹500', '₹500 - ₹1000', '₹1000 - ₹1500', '₹1500 - ₹2000', 'Above ₹2000'];
 
+
+// Removed redundant constants
+
 export default function RequirementWizard() {
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [step, setStep] = useState(1);
 
     const [formData, setFormData] = useState({
         occasion: '',
         city: '',
-        area: '',
-        space_type: '',
         food_type: '',
         budget_per_person: '',
         expected_guests: '',
         event_date: '',
+        is_date_flexible: false,
+        vendor_requirement: false,
         customer_name: '',
         customer_email: '',
         customer_phone: ''
@@ -68,29 +47,58 @@ export default function RequirementWizard() {
         setFormData(prev => ({ ...prev, ...fields }));
     };
 
-    const isSubmitDisabled = () => {
+    const isStep1Valid = () => {
         return (
-            !formData.occasion || !formData.city || !formData.area || 
-            !formData.space_type || !formData.food_type || !formData.budget_per_person || 
-            !formData.expected_guests || !formData.event_date || 
-            !formData.customer_name || !formData.customer_email || !formData.customer_phone
+            formData.occasion && formData.city && 
+            formData.food_type && formData.budget_per_person && 
+            formData.expected_guests && formData.event_date
         );
     };
 
+    const isStep2Valid = () => {
+        return (
+            formData.customer_name && formData.customer_email && formData.customer_phone
+        );
+    };
+
+    const handleNext = () => {
+        if (isStep1Valid()) {
+            setStep(2);
+        } else {
+            toast.error("Please fill all required fields");
+        }
+    };
+
     const handleFinalSubmit = async () => {
+        if (!isStep2Valid()) {
+            toast.error("Please fill all contact details");
+            return;
+        }
+
         setLoading(true);
         try {
-            // 1. Save to Supabase
-            const { error } = await supabase.from('user_requirements').insert([
-                {
-                    ...formData,
-                    expected_guests: parseInt(formData.expected_guests) || 0
-                }
-            ]);
+            // 1. Prepare data for Supabase (only standard columns to avoid schema errors)
+            const supabaseData = {
+                occasion: formData.occasion,
+                city: formData.city,
+                food_type: formData.food_type,
+                budget_per_person: formData.budget_per_person,
+                expected_guests: parseInt(formData.expected_guests) || 0,
+                event_date: formData.event_date,
+                customer_name: formData.customer_name,
+                customer_email: formData.customer_email,
+                customer_phone: formData.customer_phone
+            };
 
+            const { error } = await supabase.from('user_requirements').insert([supabaseData]);
             if (error) throw error;
 
-            // 2. Sync to Google Sheets
+            // 2. Prepare full data for Google Sheets (includes checkboxes)
+            const sheetData = {
+                ...formData,
+                expected_guests: parseInt(formData.expected_guests) || 0
+            };
+
             const GOOGLE_SHEETS_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL;
             if (GOOGLE_SHEETS_URL) {
                 try {
@@ -98,7 +106,7 @@ export default function RequirementWizard() {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(formData)
+                        body: JSON.stringify(sheetData)
                     });
                 } catch (sheetError) {
                     console.error("Sheet Sync Error:", sheetError);
@@ -140,57 +148,101 @@ export default function RequirementWizard() {
             <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-6 md:p-8 shadow-2xl md:h-[580px] flex flex-col relative overflow-hidden"
+                className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2rem] md:rounded-[2.5rem] p-4 md:p-8 shadow-2xl md:h-[580px] flex flex-col relative overflow-hidden"
             >
-                <div className="flex items-center justify-between mb-6 shrink-0">
+                <div className="flex items-center justify-between mb-3 md:mb-6 shrink-0">
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-[4px] text-primary mb-1">Instant Quote</p>
-                        <h2 className="text-2xl font-black text-white uppercase tracking-tight">Share Your Requirements</h2>
+                        <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight">Tell us your requirement</h2>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-                        <div className="col-span-2">
-                            <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={OCCASIONS} onChange={(v: string) => updateData({ occasion: v })} />
-                        </div>
-                        
-                        <SelectField label="City" icon={<MapPin />} value={formData.city} options={CITIES} onChange={(v: string) => updateData({ city: v, area: '' })} />
-                        <SelectField label="Area" icon={<MapPin />} value={formData.area} options={AREAS[formData.city] || []} onChange={(v: string) => updateData({ area: v })} disabled={!formData.city} />
-                        
-                        <SelectField label="Venue Type" icon={<Building2 />} value={formData.space_type} options={SPACE_TYPES} onChange={(v: string) => updateData({ space_type: v })} />
-                        <SelectField label="Food Type" icon={<Utensils />} value={formData.food_type} options={FOOD_TYPES} onChange={(v: string) => updateData({ food_type: v })} />
-                        
-                        <SelectField label="Budget/Person" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v: string) => updateData({ budget_per_person: v })} />
-                        <InputField label="Guests" icon={<Users />} type="number" value={formData.expected_guests} onChange={(v: string) => updateData({ expected_guests: v })} placeholder="e.g. 200" />
-                        
-                        <div className="col-span-2">
-                            <InputField label="Event Date" icon={<Calendar />} type="date" value={formData.event_date} onChange={(v: string) => updateData({ event_date: v })} />
-                        </div>
+                <div className="flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
+                    <div className="grid grid-cols-2 gap-x-3 md:gap-x-4 gap-y-3 md:gap-y-4">
+                        {step === 1 ? (
+                            <>
+                                <div className="col-span-2">
+                                    <SelectField label="Occasion" icon={<Sparkles />} value={formData.occasion} options={ALL_OCCASIONS} onChange={(v: string) => updateData({ occasion: v })} />
+                                </div>
+                                
+                                <SelectField label="City" icon={<MapPin />} value={formData.city} options={GUJARAT_CITIES} onChange={(v: string) => updateData({ city: v })} />
+                                <SelectField label="Food Type" icon={<Utensils />} value={formData.food_type} options={FOOD_TYPES} onChange={(v: string) => updateData({ food_type: v })} />
+                                
+                                <SelectField label="Budget/Person" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v: string) => updateData({ budget_per_person: v })} />
+                                <InputField label="Guests" icon={<Users />} type="number" value={formData.expected_guests} onChange={(v: string) => updateData({ expected_guests: v })} placeholder="e.g. 200" />
+                                
+                                <div className="col-span-2">
+                                    <InputField label="Event Date" icon={<Calendar />} type="date" value={formData.event_date} onChange={(v: string) => updateData({ event_date: v })} />
+                                </div>
 
-                        <div className="col-span-2">
-                            <InputField label="Full Name" icon={<User />} value={formData.customer_name} onChange={(v: string) => updateData({ customer_name: v })} placeholder="Rahul Sharma" />
-                        </div>
-                        
-                        <InputField label="Mobile" icon={<Phone />} value={formData.customer_phone} onChange={(v: string) => updateData({ customer_phone: v })} placeholder="98765 43210" />
-                        <InputField label="Email" icon={<Mail />} value={formData.customer_email} onChange={(v: string) => updateData({ customer_email: v })} placeholder="rahul@example.com" />
-                    </div>
+                                <div className="col-span-2 space-y-1.5 md:space-y-3 mt-1 md:mt-2">
+                                    <div className="flex items-center space-x-2.5 bg-white/5 p-2 md:p-3 rounded-lg md:rounded-xl border border-white/10">
+                                        <Checkbox 
+                                            id="date_flexible" 
+                                            checked={formData.is_date_flexible} 
+                                            onCheckedChange={(checked) => updateData({ is_date_flexible: checked as boolean })}
+                                            className="w-3.5 h-3.5 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                        />
+                                        <Label htmlFor="date_flexible" className="text-[9px] md:text-[11px] font-bold text-white/70 cursor-pointer">
+                                            Is date flexible?
+                                        </Label>
+                                    </div>
 
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mt-6">
-                        <p className="text-[10px] text-white/40 font-medium leading-relaxed italic text-center">
-                            By clicking submit, you agree to our terms and allow our partners to contact you with event quotes.
-                        </p>
+                                    <div className="flex items-center space-x-2.5 bg-white/5 p-2 md:p-3 rounded-lg md:rounded-xl border border-white/10">
+                                        <Checkbox 
+                                            id="vendor_req" 
+                                            checked={formData.vendor_requirement} 
+                                            onCheckedChange={(checked) => updateData({ vendor_requirement: checked as boolean })}
+                                            className="w-3.5 h-3.5 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                        />
+                                        <Label htmlFor="vendor_req" className="text-[9px] md:text-[11px] font-bold text-white/70 cursor-pointer">
+                                            Do you require any vendor?
+                                        </Label>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="col-span-2">
+                                    <InputField label="Full Name" icon={<User />} value={formData.customer_name} onChange={(v: string) => updateData({ customer_name: v })} placeholder="Rahul Sharma" />
+                                </div>
+                                <div className="col-span-2">
+                                    <InputField label="Mobile" icon={<Phone />} value={formData.customer_phone} onChange={(v: string) => updateData({ customer_phone: v })} placeholder="98765 43210" />
+                                </div>
+                                <div className="col-span-2">
+                                    <InputField label="Email" icon={<Mail />} value={formData.customer_email} onChange={(v: string) => updateData({ customer_email: v })} placeholder="rahul@example.com" />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <Button 
+                                        variant="ghost" 
+                                        onClick={() => setStep(1)}
+                                        className="text-white/40 hover:text-white hover:bg-white/5 text-[9px] md:text-[10px] font-bold uppercase tracking-wider h-auto py-2"
+                                    >
+                                        <ChevronLeft className="w-3 h-3 mr-1" /> Back to details
+                                    </Button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/5 shrink-0">
-                    <Button 
-                        onClick={handleFinalSubmit}
-                        disabled={loading || isSubmitDisabled()}
-                        className="w-full bg-primary hover:bg-primary/90 text-white h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20"
-                    >
-                        {loading ? "Submitting..." : "Submit Request"}
-                    </Button>
+                <div className="mt-3 md:mt-6 pt-3 md:pt-4 border-t border-white/5 shrink-0">
+                    {step === 1 ? (
+                        <Button 
+                            onClick={handleNext}
+                            className="w-full bg-primary hover:bg-primary/90 text-white h-11 md:h-14 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-primary/20"
+                        >
+                            OK <ChevronRight className="w-3.5 h-3.5 ml-1.5 md:ml-2" />
+                        </Button>
+                    ) : (
+                        <Button 
+                            onClick={handleFinalSubmit}
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary/90 text-white h-11 md:h-14 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-primary/20"
+                        >
+                            {loading ? "Submitting..." : "Submit Request"}
+                        </Button>
+                    )}
                 </div>
             </motion.div>
 
@@ -215,7 +267,7 @@ function SelectField({ label, icon, value, options, onChange, disabled = false }
                 <select 
                     value={value} 
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all appearance-none cursor-pointer text-[11px] md:text-xs"
+                    className="w-full h-9 md:h-11 bg-white/5 border border-white/10 rounded-lg md:rounded-xl px-3 md:px-4 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all appearance-none cursor-pointer text-[10px] md:text-xs"
                     suppressHydrationWarning
                 >
                     <option value="" className="text-slate-900">Select {label}</option>
@@ -241,7 +293,7 @@ function InputField({ label, icon, value, onChange, type = "text", placeholder }
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
-                    className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all text-[11px] md:text-xs [color-scheme:dark]"
+                    className="w-full h-9 md:h-11 bg-white/5 border border-white/10 rounded-lg md:rounded-xl px-3 md:px-4 text-white font-bold outline-none focus:ring-2 focus:ring-primary focus:bg-white/10 transition-all text-[10px] md:text-xs [color-scheme:dark]"
                     suppressHydrationWarning
                 />
             </div>

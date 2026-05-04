@@ -145,7 +145,7 @@ function SearchBar() {
 
 const HeroSearch = () => {
   return (
-    <section className="relative min-h-0 md:min-h-screen flex flex-col justify-center overflow-hidden py-12 md:py-0">
+    <section className="relative min-h-0 md:min-h-screen flex flex-col justify-center overflow-hidden py-8 md:py-0">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -160,53 +160,53 @@ const HeroSearch = () => {
       <div className="absolute inset-0 z-[1] bg-gradient-to-br from-slate-950/95 via-slate-900/70 to-slate-950/90" />
 
       {/* Decorative Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] z-[1] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] z-[1]" />
+      <div className="absolute top-1/4 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/20 rounded-full blur-[80px] md:blur-[120px] z-[1] animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-blue-500/10 rounded-full blur-[60px] md:blur-[100px] z-[1]" />
 
-      <div className="relative z-[2] container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-10">
+      <div className="relative z-[2] container mx-auto px-4 md:px-6">
+        <div className="flex flex-col lg:flex-row items-center gap-6 md:gap-10">
 
           {/* LEFT CONTENT */}
-          <div className="flex-1 text-center lg:text-left space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-              <span className="text-[9px] md:text-xs font-black uppercase tracking-[2px] md:tracking-[3px] text-white/70">
+          <div className="flex-1 text-center lg:text-left space-y-3 md:space-y-4">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="w-1 h-1 rounded-full bg-primary animate-ping" />
+              <span className="text-[8px] md:text-xs font-black uppercase tracking-[2px] md:tracking-[3px] text-white/70">
                 India's Most Trusted Venue Network
               </span>
             </div>
 
-            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight md:leading-[1.1] text-white tracking-tighter">
+            <h1 className="font-display text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black leading-[1.2] md:leading-[1.1] text-white tracking-tighter">
               Luxury or <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-primary-foreground drop-shadow-2xl">Small Budget,</span> <br className="hidden md:block" />
               We Match You With the <br className="hidden md:block" />
               Perfect Venue & Vendors.
             </h1>
 
-            <p className="text-sm md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 md:px-0">
+            <p className="text-[11px] md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 md:px-0">
               Stop hunting, start celebrating. Share your vision and receive hand-picked quotes from Gujarat's finest venues — fast.
             </p>
 
             {/* Search Section */}
-            <div className="space-y-2 pt-1">
-              <p className="text-[10px] font-black uppercase tracking-[3px] text-white/35">Find Your Perfect Match</p>
+            <div className="space-y-1.5 pt-1">
+              <p className="text-[9px] font-black uppercase tracking-[2px] text-white/35">Find Your Perfect Match</p>
               <SearchBar />
             </div>
 
             {/* Social Proof */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-1">
-              <div className="flex -space-x-1.5 scale-90 md:scale-100 origin-left">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+              <div className="flex -space-x-1.5 scale-75 md:scale-100 origin-left">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800">
+                  <div key={i} className="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800">
                     <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
                   </div>
                 ))}
-                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[9px] md:text-[10px] font-bold text-white">+2k</div>
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[8px] md:text-[10px] font-bold text-white">+2k</div>
               </div>
-              <p className="text-[9px] md:text-xs font-bold text-white/40 uppercase tracking-widest">Trusted by 50,000+ Happy Families</p>
+              <p className="text-[8px] md:text-xs font-bold text-white/40 uppercase tracking-widest">Trusted by 50,000+ Happy Families</p>
             </div>
           </div>
 
           {/* RIGHT CONTENT: WIZARD */}
-          <div className="flex-1 w-full max-w-lg">
+          <div className="flex-1 w-full max-w-lg mt-4 md:mt-0">
             <RequirementWizard />
           </div>
 

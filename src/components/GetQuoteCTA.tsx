@@ -1,11 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, Gift, Sparkles } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Building2, Headset, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { gujaratCities } from "@/lib/cities";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -24,91 +20,93 @@ const GetQuoteCTA = () => {
   }, []);
 
   return (
-    <section className="py-4 md:py-6 bg-gradient-to-br from-primary/10 via-primary/5 to-white">
-      <div className="container">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-2xl overflow-hidden"
-          >
-            <div className="grid md:grid-cols-2">
-              {/* Left Side - Form */}
-              <div className="p-5 md:p-10">
-                <div className="flex items-center gap-2 mb-3 md:mb-4">
-                  <Gift className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                  <span className="text-xs md:text-sm font-semibold text-primary uppercase tracking-wider">
-                    Get Upto 10% Discount
-                  </span>
-                </div>
-                <h3 className="font-display text-xl md:text-3xl font-semibold text-foreground mb-2 md:mb-3">
-                  Get Best <em className="italic text-primary">Suited Venues</em>
-                </h3>
-                <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
-                  Share your details & get personalized venue recommendations
-                </p>
-                <div className="space-y-3 md:space-y-4">
-                  <Input placeholder="Your Name" className="h-10 md:h-12 text-sm" />
-                  <Input type="tel" placeholder="Phone Number" className="h-10 md:h-12 text-sm" />
-                  <Input type="email" placeholder="Email Address" className="h-10 md:h-12 text-sm" />
-                  <Select>
-                    <SelectTrigger className="h-10 md:h-12 text-sm">
-                      <SelectValue placeholder="Select Event Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="wedding">Wedding</SelectItem>
-                      <SelectItem value="birthday">Birthday</SelectItem>
-                      <SelectItem value="corporate">Corporate Event</SelectItem>
-                      <SelectItem value="engagement">Engagement</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select>
-                    <SelectTrigger className="h-10 md:h-12 text-sm">
-                      <SelectValue placeholder="Select City" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {gujaratCities.map(c => (
-                        <SelectItem key={c} value={c.toLowerCase()}>{c}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button className="w-full h-10 md:h-12 bg-primary hover:bg-primary/90 text-white font-semibold text-sm">
-                    Get Free Quotes
-                  </Button>
-                </div>
+    <section className="py-8 md:py-12 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative max-w-4xl mx-auto bg-slate-950 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)] border border-white/10"
+        >
+          {/* Animated Background Orbs - Scaled Down */}
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -mr-60 -mt-60 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[80px] -ml-40 -mb-40" />
+          
+          <div className="relative z-10 text-center">
+            {/* Header */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="space-y-4 mb-10"
+            >
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[2px] text-white/70">The Gold Standard</span>
               </div>
+              <h2 className="font-display text-2xl md:text-5xl font-black text-white uppercase tracking-tighter leading-tight">
+                VenueConnect <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-foreground to-primary">Trust</span>
+              </h2>
+              <p className="text-white/40 text-[11px] md:text-sm font-medium max-w-lg mx-auto leading-relaxed">
+                Gujarat's premier venue discovery platform, ensuring excellence in every celebration since 2018.
+              </p>
+            </motion.div>
 
-              {/* Right Side - Visual (smaller on mobile) */}
-              <div className="relative bg-slate-900 p-5 md:p-10 flex items-center justify-center overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-primary/20 rounded-full -mr-24 md:-mr-32 -mt-24 md:-mt-32 blur-3xl opacity-50" />
-                <div className="text-center text-white relative z-10 w-full">
-                  <Sparkles className="w-8 h-8 md:w-12 md:h-12 mx-auto mb-4 md:mb-8 text-primary animate-pulse" />
-                  <h4 className="font-display text-lg md:text-2xl font-black mb-4 md:mb-8 uppercase tracking-widest text-[#EF3E36]">
-                    VenueConnect Trust
-                  </h4>
-                  <div className="grid grid-cols-1 gap-3 md:gap-6 text-left">
-                    {[
-                      { stat: `${venueCount}+ Venues`, sub: "Gujarat's curated network" },
-                      { stat: "Best Price Guarantee", sub: "Exclusive discounts" },
-                      { stat: "Free Expert Advice", sub: "Dedicated support team" },
-                    ].map((item) => (
-                      <div key={item.stat} className="flex items-center gap-3 md:gap-4 group">
-                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-all">
-                          <CheckCircle2 size={15} className="text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-black text-xs md:text-sm uppercase tracking-tight">{item.stat}</p>
-                          <p className="text-[10px] md:text-[11px] text-white/50 font-bold">{item.sub}</p>
-                        </div>
-                      </div>
-                    ))}
+            {/* Trust Cards Grid - More Compact */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              {[
+                { 
+                  stat: `${venueCount}+ Venues`, 
+                  sub: "Largest Network", 
+                  desc: "Verified quality & reliability.",
+                  icon: <Building2 className="w-6 h-6" />,
+                  color: "from-primary/20 to-transparent"
+                },
+                { 
+                  stat: "Best Price", 
+                  sub: "Exclusive Deals", 
+                  desc: "Zero hidden commissions.",
+                  icon: <ShieldCheck className="w-6 h-6" />,
+                  color: "from-blue-500/20 to-transparent"
+                },
+                { 
+                  stat: "Expert Advice", 
+                  sub: "24/7 Support", 
+                  desc: "Dedicated concierge team.",
+                  icon: <Headset className="w-6 h-6" />,
+                  color: "from-purple-500/20 to-transparent"
+                },
+              ].map((item, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group relative flex flex-row md:flex-col items-center md:text-center text-left p-4 md:p-6 rounded-xl md:rounded-[1.5rem] bg-white/5 border border-white/10 hover:bg-white/[0.08] transition-all duration-500 gap-4 md:gap-0"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-b ${item.color} opacity-0 group-hover:opacity-100 transition-opacity rounded-xl md:rounded-[1.5rem] pointer-events-none`} />
+                  
+                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl bg-white/5 flex items-center justify-center text-primary md:mb-4 shrink-0 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                    {item.icon}
                   </div>
-                </div>
-              </div>
+                  
+                  <div className="space-y-1 md:space-y-2 relative z-10 flex-1">
+                    <p className="text-base md:text-lg font-black text-white uppercase tracking-tight">{item.stat}</p>
+                    <p className="text-[8px] md:text-[9px] font-black text-primary uppercase tracking-[2px]">{item.sub}</p>
+                    <p className="text-[9px] md:text-[10px] text-white/30 font-medium leading-tight">{item.desc}</p>
+                  </div>
+
+                  <div className="hidden md:flex mt-6 items-center gap-1.5 text-white/10 group-hover:text-primary transition-colors">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="text-[8px] font-black uppercase tracking-widest">Verified</span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
