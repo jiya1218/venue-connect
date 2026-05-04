@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES, GUJARAT_CITIES } from "@/lib/constants";
+import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES, GUJARAT_CITIES, EVENT_SUGGESTIONS } from "@/lib/constants";
 import RequirementWizard from "@/components/home/RequirementWizard";
 
-const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
+
 
 function SearchBar() {
   const router = useRouter();

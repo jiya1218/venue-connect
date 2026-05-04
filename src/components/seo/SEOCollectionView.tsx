@@ -61,7 +61,7 @@ const ReviewCarousel = () => {
 };
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
-import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA } from "@/lib/constants";
+import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA, EVENT_SUGGESTIONS } from "@/lib/constants";
 import { citiesData } from "@/lib/citiesData";
 import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
 import GetQuoteModal from '@/components/GetQuoteModal';

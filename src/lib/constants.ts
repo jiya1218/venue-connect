@@ -38,3 +38,5 @@ export const GUJARAT_CITIES = [
   'Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Bhavnagar', 'Jamnagar',
   'Anand', 'Junagadh', 'Gandhidham', 'Navsari', 'Morbi', 'Bhuj', 'Valsad', 'Palanpur', 'Dahod'
 ];
+
+export const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
