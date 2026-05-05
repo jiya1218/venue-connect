@@ -4,7 +4,7 @@ import { GUJARAT_CITIES, VENUE_TYPES, VENDOR_TYPES, EVENT_SUGGESTIONS } from '@/
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   const host = request.headers.get('host');
   const protocol = host?.includes('localhost') ? 'http' : 'https';
