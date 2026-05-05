@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
+import { useCity } from "@/hooks/useCity";
 
 const vendors = [
   { name: "Photographers", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&q=80" },
@@ -35,6 +36,7 @@ const row2 = [...vendors.slice(11, 22)].reverse();
 
 const VendorCategories = () => {
   const [mounted, setMounted] = useState(false);
+  const city = useCity();
 
   useEffect(() => {
     setMounted(true);
@@ -45,7 +47,7 @@ const VendorCategories = () => {
     
     return (
       <Link
-        href={`/ahmedabad/vendors/${typeSlug}/`}
+        href={`/${typeSlug}-near-me/`}
         className="flex-shrink-0 w-[160px] cursor-pointer group block"
       >
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-border/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300">

@@ -4,6 +4,7 @@ import { Building2, Home, TreePine, Hotel, Waves, UtensilsCrossed, Users2, Build
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useCity } from "@/hooks/useCity";
 
 const venueTypes = [
   { icon: Building2, name: "Banquet Halls",      count: "2,400+", image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=80" },
@@ -21,6 +22,7 @@ const CARD = "w-[130px] h-[130px] flex-shrink-0 relative rounded-xl overflow-hid
 const VenueTypesBrowse = () => {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const supabase = createClient();
+  const city = useCity();
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -54,6 +56,11 @@ const VenueTypesBrowse = () => {
     return total > 0 ? `${total}+` : "10+";
   };
 
+  const getSlug = (name: string) => {
+    if (name === "Convention Centers") return "convention-centers";
+    return name.toLowerCase().replace(/\s+/g, '-');
+  };
+
   return (
     <section className="py-4 md:py-6 bg-white">
       <div className="md:container">
@@ -74,7 +81,7 @@ const VenueTypesBrowse = () => {
             {venueTypes.map((type) => {
               const Icon = type.icon;
               return (
-                <Link key={type.name} href={`/${type.name.toLowerCase().replace(/\s+/g, '-')}`} className={CARD}>
+                <Link key={type.name} href={`/${getSlug(type.name)}-near-me/`} className={CARD}>
                   <img src={type.image} alt={type.name} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
@@ -93,7 +100,7 @@ const VenueTypesBrowse = () => {
           {venueTypes.map((type) => {
             const Icon = type.icon;
             return (
-              <Link key={type.name} href={`/${type.name.toLowerCase().replace(/\s+/g, '-')}`}
+              <Link key={type.name} href={`/${getSlug(type.name)}-near-me/`}
                 className="group relative h-48 rounded-xl overflow-hidden cursor-pointer block">
                 <img src={type.image} alt={type.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:from-primary/95 group-hover:via-primary/70 transition-all duration-300" />

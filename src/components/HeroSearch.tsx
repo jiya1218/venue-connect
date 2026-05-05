@@ -24,6 +24,10 @@ function SearchBar() {
   ).slice(0, 6);
 
   useEffect(() => {
+    // Load initial city from localStorage
+    const cached = localStorage.getItem('vc_user_city');
+    if (cached) setCity(cached.toLowerCase());
+
     const handler = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
@@ -33,6 +37,13 @@ function SearchBar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const handleCityChange = (newCity: string) => {
+    setCity(newCity);
+    if (newCity !== 'all') {
+      localStorage.setItem('vc_user_city', newCity.toLowerCase());
+    }
+  };
+
   const handleSearch = () => {
     const citySlug = (city === 'all' || !city) ? '' : city.trim().toLowerCase().replace(/\s+/g, '-');
     let typeSlug = serviceType.trim().toLowerCase().replace(/[\s/]+/g, '-');
@@ -41,22 +52,31 @@ function SearchBar() {
     
     let targetPath = "/";
 
-    // 1. If we have an occasion in searchText, it becomes the primary path for venues
-    if (searchText && isVenueType) {
+    // 1. If we have a recognized occasion in searchText, it becomes the primary path for venues
+    const isRecognizedOccasion = EVENT_SUGGESTIONS.some(s => s.toLowerCase() === searchText.trim().toLowerCase());
+
+    if (searchText && isVenueType && isRecognizedOccasion) {
         let occasionSlug = searchText.trim().toLowerCase().replace(/[\s/]+/g, '-');
-        if (!occasionSlug.endsWith('-venues') && !occasionSlug.endsWith('-venue')) {
-            occasionSlug += '-venues';
+        // Match detail.txt "Near Me" pattern for occasions: {name}-venue-near-me
+        if (!occasionSlug.endsWith('-venue-near-me')) {
+            occasionSlug += '-venue-near-me';
         }
-        targetPath = citySlug ? `/${citySlug}/${occasionSlug}/` : `/${occasionSlug}/`;
+        targetPath = `/${occasionSlug}/`;
     } 
     // 2. Standard city + category routing
     else if (isVenueType || isVendorType) {
       if (isVenueType) {
-          if (citySlug) targetPath = serviceType === 'venues' ? `/${citySlug}/` : `/${citySlug}/${typeSlug}/`;
-          else targetPath = serviceType === 'venues' ? `/venues/` : `/${typeSlug}/`;
+          if (citySlug) {
+              targetPath = serviceType === 'venues' ? `/${citySlug}/` : `/${citySlug}/${typeSlug}/`;
+          } else {
+              targetPath = serviceType === 'venues' ? `/venues/` : `/${typeSlug}-near-me/`;
+          }
       } else {
-          if (citySlug) targetPath = serviceType === 'vendors' ? `/${citySlug}/vendors/` : `/${citySlug}/vendors/${typeSlug}/`;
-          else targetPath = serviceType === 'vendors' ? `/vendors/` : `/vendors/${typeSlug}/`;
+          if (citySlug) {
+              targetPath = serviceType === 'vendors' ? `/${citySlug}/vendors/` : `/${citySlug}/vendors/${typeSlug}/`;
+          } else {
+              targetPath = serviceType === 'vendors' ? `/vendors/` : `/${typeSlug}-near-me/`;
+          }
       }
     } else if (citySlug) {
       targetPath = `/${citySlug}/`;
@@ -118,7 +138,7 @@ function SearchBar() {
 
         {/* City */}
         <div className="md:w-32">
-          <Select value={city} onValueChange={setCity}>
+          <Select value={city} onValueChange={handleCityChange}>
             <SelectTrigger className="bg-transparent border-0 text-white h-9 w-full focus:ring-0 hover:bg-white/5 rounded-md px-3 text-xs">
               <SelectValue placeholder="Select city" />
             </SelectTrigger>

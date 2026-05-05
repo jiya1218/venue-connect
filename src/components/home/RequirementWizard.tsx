@@ -41,9 +41,19 @@ export default function RequirementWizard() {
         customer_phone: ''
     });
 
+    useEffect(() => {
+        const cached = localStorage.getItem('vc_user_city');
+        if (cached) {
+            setFormData(prev => ({ ...prev, city: cached.charAt(0).toUpperCase() + cached.slice(1) }));
+        }
+    }, []);
+
     const supabase = createClient();
 
     const updateData = (fields: Partial<typeof formData>) => {
+        if (fields.city) {
+            localStorage.setItem('vc_user_city', fields.city.toLowerCase());
+        }
         setFormData(prev => ({ ...prev, ...fields }));
     };
 

@@ -69,7 +69,10 @@ const VENUE_CATEGORY_SLUGS = new Set([
     'venues', 'restaurants', 'restaurant',
     'club', 'clubs', 'rooftop-venue', 'rooftop-venues', 'garden-venue', 'garden-venues',
     'heritage-venue', 'heritage-venues', 'luxury-venue', 'luxury-venues',
-    'birthday-party-venue', 'engagement-venue', 'corporate-event-venue', 'pre-wedding-shoot-venue', 'pool-party-venue',
+    'birthday-party-venue', 'engagement-venue', 'corporate-event-venue', 
+    'reception-venue', 'sangeet-ceremony-venue', 'garba-night-venue',
+    'pool-party-venue', 'kitty-party-venue', 'cocktail-party-venue',
+    'baby-shower-venue', 'anniversary-party-venue', 'pre-wedding-shoot-venue',
 ]);
 
 const VENDOR_CATEGORY_SLUGS = new Set([
@@ -779,8 +782,15 @@ const VENUE_SLUG_TO_TYPES: Record<string, string[]> = {
     'birthday-party-venue': ['Banquet Hall', 'Restaurant', 'Party Plot', 'Hotel'],
     'engagement-venue': ['Banquet Hall', 'Hotel', 'Resort', 'Lawn'],
     'corporate-event-venue': ['Hotel', 'Banquet Hall', 'Convention Center', 'Resort'],
-    'pre-wedding-shoot-venue': ['Resort', 'Farmhouse', 'Heritage Venue', 'Lawn'],
+    'reception-venue': ['Banquet Hall', 'Hotel', 'Resort', 'Party Plot'],
+    'sangeet-ceremony-venue': ['Banquet Hall', 'Hotel', 'Resort', 'Lawn'],
+    'garba-night-venue': ['Party Plot', 'Lawn', 'Convention Center'],
     'pool-party-venue': ['Resort', 'Hotel', 'Farmhouse'],
+    'kitty-party-venue': ['Restaurant', 'Cafe', 'Banquet Hall'],
+    'cocktail-party-venue': ['Hotel', 'Resort', 'Restaurant', 'Club'],
+    'baby-shower-venue': ['Banquet Hall', 'Restaurant', 'Hotel'],
+    'anniversary-party-venue': ['Banquet Hall', 'Restaurant', 'Hotel'],
+    'pre-wedding-shoot-venue': ['Resort', 'Farmhouse', 'Heritage Venue', 'Lawn'],
 };
 
 async function fetchVenues(categorySlug: string, citySlug: string, sParams: any, categoryId?: string | null, areaSlug?: string, spaceType?: string, foodType?: string) {

@@ -1,10 +1,11 @@
 "use client";
 
-import { Sparkles, Crown, TreePine, Building2, Castle, Flower2 } from "lucide-react";
+import { Sparkles, Crown, TreePine, Building2, Castle, Flower2, LayoutGrid } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useCity } from "@/hooks/useCity";
 
 const moods = [
   {
@@ -14,7 +15,7 @@ const moods = [
     count: "850+",
     image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80",
     color: "from-amber-500/80 to-yellow-600/80",
-    href: "/banquet-hall"
+    slug: "luxury-venues"
   },
   {
     icon: Castle,
@@ -23,7 +24,7 @@ const moods = [
     count: "620+",
     image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&q=80",
     color: "from-orange-500/80 to-red-600/80",
-    href: "/resort"
+    slug: "heritage-venues"
   },
   {
     icon: TreePine,
@@ -32,7 +33,7 @@ const moods = [
     count: "1,200+",
     image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80",
     color: "from-green-500/80 to-emerald-600/80",
-    href: "/lawn"
+    slug: "garden-venues"
   },
   {
     icon: Building2,
@@ -41,16 +42,16 @@ const moods = [
     count: "940+",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
     color: "from-blue-500/80 to-indigo-600/80",
-    href: "/convention-centre"
+    slug: "convention-centers"
   },
   {
-    icon: Castle,
-    name: "Heritage",
-    description: "Palace & historic venues",
+    icon: LayoutGrid,
+    name: "Rooftop",
+    description: "Skyline view celebrations",
     count: "380+",
     image: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=600&q=80",
     color: "from-purple-500/80 to-pink-600/80",
-    href: "/farmhouse"
+    slug: "rooftop-venues"
   },
   {
     icon: Flower2,
@@ -59,13 +60,14 @@ const moods = [
     count: "1,100+",
     image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80",
     color: "from-teal-500/80 to-cyan-600/80",
-    href: "/party-plot"
+    slug: "garden-venues"
   },
 ];
 
 const VenueMoodExplorer = () => {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const supabase = createClient();
+  const city = useCity();
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -88,7 +90,7 @@ const VenueMoodExplorer = () => {
       "Traditional": ["Resort", "Heritage Venue"],
       "Outdoor": ["Lawn", "Party Plot", "Farmhouse"],
       "Modern": ["Convention Center", "Convention Centre", "Banquet Hall"],
-      "Heritage": ["Heritage Venue", "Resort"],
+      "Rooftop": ["Rooftop Venue"],
       "Garden Venues": ["Lawn", "Party Plot"]
     };
     const dbTypes = mapping[name] || [];
@@ -125,6 +127,7 @@ const VenueMoodExplorer = () => {
         <div className="flex overflow-x-auto gap-4 pb-6 no-scrollbar md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 snap-x">
           {moods.map((mood, i) => {
             const Icon = mood.icon;
+            const slug = mood.slug === "convention-centers" ? "convention-centers-near-me" : `${mood.slug}-near-me`;
             return (
               <motion.div
                 key={mood.name}
@@ -135,7 +138,7 @@ const VenueMoodExplorer = () => {
                 className="min-w-[calc(60%-0.5rem)] md:min-w-0 snap-start"
               >
                 <Link
-                  href={mood.href}
+                  href={`/${slug}/`}
                   className="group relative h-64 md:h-72 rounded-2xl overflow-hidden cursor-pointer block shadow-lg"
                 >
                   <img

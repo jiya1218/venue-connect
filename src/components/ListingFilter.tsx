@@ -193,9 +193,16 @@ export default function ListingFilter({
         // Handle area routing correctly
         if (!location || location.toLowerCase() === 'all cities' || (isNearMe && rawSlug)) {
             if (selectedRegion) p.set("area", selectedRegion); else p.delete("area");
-            // If it's an occasion, we must keep it in Q if we are in 'near-me' or 'all-cities' 
-            // because we don't have a clean path structure for those yet
-            if (occasion) p.set("q", occasion);
+            
+            // Fix: Don't add q= if the occasion is already part of the Near Me slug
+            const currentSlugBase = rawSlug ? rawSlug.replace('-near-me', '').replace('-venues', '').replace('-venue', '') : '';
+            const newOccasionBase = occasion.trim().toLowerCase().replace(/[\s/]+/g, '-');
+            
+            if (occasion && currentSlugBase !== newOccasionBase) {
+                p.set("q", occasion);
+            } else {
+                p.delete("q");
+            }
         } else {
             p.delete("area");
         }

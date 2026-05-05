@@ -3,18 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCity } from "@/hooks/useCity";
 
 const occasions = [
-  { name: "Wedding",      icon: "💒", slug: "wedding-venues" },
-  { name: "Birthday",     icon: "🎂", slug: "banquet-halls" },
-  { name: "Corporate",    icon: "💼", slug: "banquet-halls" },
-  { name: "Engagement",   icon: "💍", slug: "wedding-venues" },
-  { name: "Reception",    icon: "🌸", slug: "wedding-venues" },
-  { name: "Sangeet",      icon: "🎵", slug: "banquet-halls" },
-  { name: "Banquet Hall", icon: "🏛️", slug: "banquet-halls" },
-  { name: "Pool Party",   icon: "🏊", slug: "farmhouse" },
-  { name: "Kitty Party",  icon: "👛", slug: "party-plots" },
-  { name: "Garba",        icon: "🪔", slug: "party-plots" },
+  { name: "Wedding",      icon: "💒", slug: "wedding-venue-near-me" },
+  { name: "Birthday",     icon: "🎂", slug: "birthday-party-venue-near-me" },
+  { name: "Corporate",    icon: "💼", slug: "corporate-event-venue-near-me" },
+  { name: "Engagement",   icon: "💍", slug: "engagement-venue-near-me" },
+  { name: "Reception",    icon: "🌸", slug: "reception-venue-near-me" },
+  { name: "Sangeet",      icon: "🎵", slug: "sangeet-ceremony-venue-near-me" },
+  { name: "Banquet Hall", icon: "🏛️", slug: "banquet-halls-near-me" },
+  { name: "Pool Party",   icon: "🏊", slug: "pool-party-venue-near-me" },
+  { name: "Kitty Party",  icon: "👛", slug: "kitty-party-venue-near-me" },
+  { name: "Garba",        icon: "🪔", slug: "garba-night-venue-near-me" },
 ];
 
 
@@ -22,6 +23,11 @@ const CARD = "w-[130px] h-[130px] flex-shrink-0";
 
 const OccasionSlider = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const city = useCity();
+
+  const getHref = (slug: string) => {
+    return `/${slug}/`;
+  };
 
   return (
     <section className="py-4 md:py-6 bg-background">
@@ -45,7 +51,7 @@ const OccasionSlider = () => {
             {/* Row 1 – odd indices */}
             <div className="flex gap-2">
               {occasions.filter((_, i) => i % 2 === 0).map((occasion) => (
-                  <Link key={occasion.name} href={`/${occasion.slug}`}
+                  <Link key={occasion.name} href={getHref(occasion.slug)}
                     className={`${CARD} bg-white rounded-xl border-2 border-border hover:border-primary transition-all flex flex-col items-center justify-center gap-1.5`}>
                     <span className="text-3xl">{occasion.icon}</span>
                     <span className="text-[9px] font-bold text-center text-foreground leading-tight px-1">{occasion.name}</span>
@@ -55,7 +61,7 @@ const OccasionSlider = () => {
             {/* Row 2 – even indices */}
             <div className="flex gap-2">
               {occasions.filter((_, i) => i % 2 === 1).map((occasion) => (
-                  <Link key={occasion.name} href={`/${occasion.slug}`}
+                  <Link key={occasion.name} href={getHref(occasion.slug)}
                     className={`${CARD} bg-white rounded-xl border-2 border-border hover:border-primary transition-all flex flex-col items-center justify-center gap-1.5`}>
                     <span className="text-3xl">{occasion.icon}</span>
                     <span className="text-[9px] font-bold text-center text-foreground leading-tight px-1">{occasion.name}</span>
@@ -79,7 +85,7 @@ const OccasionSlider = () => {
           
           <div id="occasion-scroll" className="flex gap-6 overflow-x-auto no-scrollbar py-6 snap-x">
             {occasions.map((occasion, index) => (
-                <Link key={index} href={`/${occasion.slug}`}
+                <Link key={index} href={getHref(occasion.slug)}
                   className="min-w-[240px] snap-start group bg-white rounded-2xl p-6 border-2 border-border hover:border-primary hover:shadow-2xl transition-all duration-500 h-[200px] flex flex-col items-center justify-center">
                   <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">{occasion.icon}</div>
                   <div className="text-lg font-black text-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tight">{occasion.name}</div>

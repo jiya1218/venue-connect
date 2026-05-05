@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useCity } from "@/hooks/useCity";
 
 const eventTypes = [
   {
@@ -51,6 +52,7 @@ const eventTypes = [
 const EventTypeExplorer = () => {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const supabase = createClient();
+  const city = useCity();
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -112,14 +114,22 @@ const EventTypeExplorer = () => {
         <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 snap-x">
           {eventTypes.map((event, i) => {
               const slug = event.name === "Birthday" 
-                ? "banquet-halls" 
+                ? "birthday-party-venue-near-me" 
                 : event.name === "Corporate Event"
-                ? "banquet-halls"
-                : event.name === "Wedding" || event.name === "Engagement" || event.name === "Reception"
-                ? "wedding-venues"
+                ? "corporate-event-venue-near-me"
+                : event.name === "Wedding"
+                ? "wedding-venue-near-me"
+                : event.name === "Engagement"
+                ? "engagement-venue-near-me"
+                : event.name === "Reception"
+                ? "reception-venue-near-me"
                 : event.name === "Pool Party"
-                ? "farmhouse"
-                : "banquet-halls";
+                ? "pool-party-venue-near-me"
+                : event.name === "Garba Event"
+                ? "garba-night-venue-near-me"
+                : event.name === "Kitty Party"
+                ? "kitty-party-venue-near-me"
+                : "banquet-halls-near-me";
 
               return (
                 <motion.div
@@ -131,7 +141,7 @@ const EventTypeExplorer = () => {
                   className="min-w-[calc(70%-1rem)] md:min-w-0 snap-start"
                 >
                   <Link
-                    href={`/${slug}`}
+                    href={`/${slug}/`}
                     className="group relative h-52 md:h-80 rounded-2xl overflow-hidden cursor-pointer block"
                   >
                     <img
