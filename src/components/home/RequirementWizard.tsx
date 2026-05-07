@@ -16,8 +16,7 @@ import { GUJARAT_CITIES, OCCASIONS } from "@/lib/constants";
 
 const ALL_OCCASIONS = Object.values(OCCASIONS).flat();
 
-const FOOD_TYPES = ['Only Veg', 'Veg + Non-Veg', 'Pure Veg (Jain)'];
-const BUDGETS = ['Under ₹500', '₹500 - ₹1000', '₹1000 - ₹1500', '₹1500 - ₹2000', 'Above ₹2000'];
+const BUDGETS = ['Below ₹5,000', '₹5,000 - ₹10,000', '₹10,000 - ₹20,000', '₹20,000 - ₹50,000', '₹50,000 - ₹1,00,000', 'Above ₹1,00,000'];
 
 
 // Removed redundant constants
@@ -30,7 +29,6 @@ export default function RequirementWizard() {
     const [formData, setFormData] = useState({
         occasion: '',
         city: '',
-        food_type: '',
         budget_per_person: '',
         expected_guests: '',
         event_date: '',
@@ -60,7 +58,7 @@ export default function RequirementWizard() {
     const isStep1Valid = () => {
         return (
             formData.occasion && formData.city && 
-            formData.food_type && formData.budget_per_person && 
+            formData.budget_per_person && 
             formData.expected_guests && formData.event_date
         );
     };
@@ -91,7 +89,6 @@ export default function RequirementWizard() {
             const supabaseData = {
                 occasion: formData.occasion,
                 city: formData.city,
-                food_type: formData.food_type,
                 budget_per_person: formData.budget_per_person,
                 expected_guests: parseInt(formData.expected_guests) || 0,
                 event_date: formData.event_date,
@@ -175,10 +172,11 @@ export default function RequirementWizard() {
                                 </div>
                                 
                                 <SelectField label="City" icon={<MapPin />} value={formData.city} options={GUJARAT_CITIES} onChange={(v: string) => updateData({ city: v })} />
-                                <SelectField label="Food Type" icon={<Utensils />} value={formData.food_type} options={FOOD_TYPES} onChange={(v: string) => updateData({ food_type: v })} />
-                                
-                                <SelectField label="Budget/Person" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v: string) => updateData({ budget_per_person: v })} />
                                 <InputField label="Guests" icon={<Users />} type="number" value={formData.expected_guests} onChange={(v: string) => updateData({ expected_guests: v })} placeholder="e.g. 200" />
+                                
+                                <div className="col-span-2">
+                                    <SelectField label="Venue Budget" icon={<IndianRupee />} value={formData.budget_per_person} options={BUDGETS} onChange={(v: string) => updateData({ budget_per_person: v })} />
+                                </div>
                                 
                                 <div className="col-span-2">
                                     <InputField label="Event Date" icon={<Calendar />} type="date" value={formData.event_date} onChange={(v: string) => updateData({ event_date: v })} />
