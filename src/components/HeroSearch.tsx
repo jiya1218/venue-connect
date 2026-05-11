@@ -165,7 +165,7 @@ function SearchBar() {
 
 const HeroSearch = () => {
   return (
-    <section className="relative min-h-0 md:min-h-screen flex flex-col justify-center overflow-hidden py-8 md:py-0">
+    <section className="relative min-h-[60vh] md:min-h-[85vh] flex flex-col justify-center overflow-hidden py-12 md:py-20">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -201,27 +201,21 @@ const HeroSearch = () => {
               Perfect Venue & Vendors.
             </h1>
 
-            <p className="text-[11px] md:text-lg text-white/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 md:px-0">
+            <p className="text-[11px] md:text-lg text-white/50 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed px-2 md:px-0">
               Stop hunting, start celebrating. Share your vision and receive hand-picked quotes from Gujarat's finest venues — fast.
             </p>
 
-            {/* Search Section */}
-            <div className="space-y-1.5 pt-1">
-              <p className="text-[9px] font-black uppercase tracking-[2px] text-white/35">Find Your Perfect Match</p>
-              <SearchBar />
-            </div>
-
             {/* Social Proof */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
-              <div className="flex -space-x-1.5 scale-75 md:scale-100 origin-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-center lg:justify-start gap-4 sm:gap-3 pt-2">
+              <div className="flex -space-x-2 sm:scale-100 justify-center sm:justify-start">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800">
+                  <div key={i} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800 flex-shrink-0">
                     <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
                   </div>
                 ))}
-                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[8px] md:text-[10px] font-bold text-white">+2k</div>
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[10px] md:text-xs font-bold text-white flex-shrink-0">+2k</div>
               </div>
-              <p className="text-[8px] md:text-xs font-bold text-white/40 uppercase tracking-widest">Trusted by 50,000+ Happy Families</p>
+              <p className="text-[9px] md:text-xs font-bold text-white/50 uppercase tracking-wide text-center sm:text-left">Trusted by 50,000+ Happy Families</p>
             </div>
           </div>
 
