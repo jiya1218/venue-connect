@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
     MapPin, Star, ChevronRight, Sparkles, Building2, 
     ShieldCheck, ArrowRight, Grid3X3, ArrowUpDown, Filter,
@@ -77,9 +78,11 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
             {/* 1. CINEMATIC HERO HEADER | Optimized for Mobile */}
             <section className="relative h-[180px] md:h-[320px] flex items-center overflow-hidden bg-slate-900 border-b border-white/5">
                 <div className="absolute inset-0 z-0">
-                    <img 
+                    <Image 
                       src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1600&q=80" 
-                      className="w-full h-full object-cover opacity-30 md:opacity-40 scale-105" 
+                      fill
+                      priority
+                      className="object-cover opacity-30 md:opacity-40 scale-105" 
                       alt="Venues Background" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/40 to-slate-950/80" />
@@ -134,7 +137,8 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
                                 <SafeImage 
                                     src={v.image || (v.images && v.images[0])} 
                                     alt={v.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                                 <button className="absolute top-2 md:top-4 right-2 md:right-4 z-10 w-7 md:w-9 h-7 md:h-9 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-[#EF3E36] transition-all">
                                     <Heart size={16} />
@@ -182,7 +186,8 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
                                     <SafeImage 
                                         src={v.image || (v.images && v.images[0])} 
                                         alt={v.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        fill
+                                        className="object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
                                     <div className="absolute top-2 md:top-4 right-2 md:right-4 bg-white/95 px-2 md:px-3 py-0.5 md:py-1 rounded-full flex items-center gap-1 shadow-lg">
                                         <Star size={10} className="fill-yellow-400 text-yellow-400" />

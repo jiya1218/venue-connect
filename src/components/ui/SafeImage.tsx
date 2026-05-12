@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { getVarietyFallback } from "@/lib/imageUtils";
 
 interface SafeImageProps {
@@ -8,23 +9,41 @@ interface SafeImageProps {
     alt: string;
     className?: string;
     fallback?: string;
+    fill?: boolean;
+    width?: number;
+    height?: number;
+    priority?: boolean;
+    sizes?: string;
 }
 
-export function SafeImage({ src, alt, className, fallback }: SafeImageProps) {
-    const [imgSrc, setImgSrc] = useState(src || fallback || getVarietyFallback(alt));
-    const [hasError, setHasError] = useState(false);
+export function SafeImage({ 
+    src, 
+    alt, 
+    className, 
+    fallback, 
+    fill, 
+    width, 
+    height, 
+    priority = false,
+    sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+}: SafeImageProps) {
+    const [errorSrc, setErrorSrc] = useState<string | null>(null);
+    const finalSrc = errorSrc || src || fallback || getVarietyFallback(alt);
+
+    const handleError = () => {
+        if (!errorSrc) {
+            setErrorSrc(fallback || getVarietyFallback(alt));
+        }
+    };
 
     return (
-        <img
-            src={imgSrc}
+        <Image 
+            src={finalSrc}
             alt={alt}
             className={className}
-            onError={() => {
-                if (!hasError) {
-                    setHasError(true);
-                    setImgSrc(fallback || getVarietyFallback(alt));
-                }
-            }}
+            onError={handleError}
+            priority={priority}
+            {...(fill ? { fill: true, sizes } : { width: width || 800, height: height || 600 })}
         />
     );
 }

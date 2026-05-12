@@ -1,21 +1,24 @@
+import dynamic from "next/dynamic";
 import HeroSearch from "@/components/HeroSearch";
 import OccasionSlider from "@/components/OccasionSlider";
-import EventTypeExplorer from "@/components/EventTypeExplorer";
 import VendorCategories from "@/components/VendorCategories";
-import PopularCities from "@/components/PopularCities";
-import TrendingVenues from "@/components/TrendingVenues";
-import VenueTypesBrowse from "@/components/VenueTypesBrowse";
-import FeaturedVenues from "@/components/FeaturedVenues";
-import VenueMoodExplorer from "@/components/VenueMoodExplorer";
-import GetQuoteCTA from "@/components/GetQuoteCTA";
-import RecentlyAddedVenues from "@/components/RecentlyAddedVenues";
-import HowItWorks from "@/components/HowItWorks";
-import VenueOwnerCTA from "@/components/VenueOwnerCTA";
-import LocalAreaDiscovery from "@/components/LocalAreaDiscovery";
-import EventGallery from "@/components/EventGallery";
-import Testimonials from "@/components/Testimonials";
-import PopularSearches from "@/components/PopularSearches";
-import StatsBand from "@/components/StatsBand";
+
+// Dynamically import components below the fold for better performance
+const EventTypeExplorer = dynamic(() => import("@/components/EventTypeExplorer"));
+const PopularCities = dynamic(() => import("@/components/PopularCities"));
+const TrendingVenues = dynamic(() => import("@/components/TrendingVenues"));
+const VenueTypesBrowse = dynamic(() => import("@/components/VenueTypesBrowse"));
+const FeaturedVenues = dynamic(() => import("@/components/FeaturedVenues"));
+const VenueMoodExplorer = dynamic(() => import("@/components/VenueMoodExplorer"));
+const GetQuoteCTA = dynamic(() => import("@/components/GetQuoteCTA"));
+const RecentlyAddedVenues = dynamic(() => import("@/components/RecentlyAddedVenues"));
+const HowItWorks = dynamic(() => import("@/components/HowItWorks"));
+const VenueOwnerCTA = dynamic(() => import("@/components/VenueOwnerCTA"));
+const LocalAreaDiscovery = dynamic(() => import("@/components/LocalAreaDiscovery"));
+const EventGallery = dynamic(() => import("@/components/EventGallery"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const PopularSearches = dynamic(() => import("@/components/PopularSearches"));
+const StatsBand = dynamic(() => import("@/components/StatsBand"));
 
 export default function Home() {
   return (

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Users, Building, LayoutDashboard, Settings, LogOut, X, Sparkles } from "lucide-react";
+import { Users, Building, LayoutDashboard, Settings, LogOut, X as CloseIcon, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import LeadsManager from "@/components/owner/LeadsManager";
 import MyListings from "@/components/owner/MyListings";
@@ -47,7 +47,7 @@ export default function OwnerDashboardPage() {
                     <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                         <div className="bg-amber-500 p-6 text-white text-center relative">
                             <button onClick={closeWelcome} className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
-                                <X className="w-5 h-5" />
+                                <CloseIcon className="w-5 h-5" />
                             </button>
                             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
                                 <Sparkles className="w-8 h-8 text-white" />

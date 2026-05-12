@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { RelatedSearches } from '@/components/seo/RelatedSearches';
+import { SafeImage } from '@/components/ui/SafeImage';
+import { cache } from 'react';
 
 import ReviewsList from "@/components/ReviewsList";
 import GetQuoteModal from "@/components/GetQuoteModal";
@@ -47,6 +49,17 @@ import { VendorQuickStats, VendorServices, VendorPortfolio, VendorServiceAreas }
 import VendorEnquiryForm from "@/components/listing/VendorEnquiryForm";
 import SimilarVendors from "@/components/listing/SimilarVendors";
 import { enrichListings, getEnrichedImage, cleanName } from '@/lib/imageEnricher';
+
+// Cache critical lookups to share across generateMetadata and the Page component
+const cachedGetSEOPageBySlug = cache(getSEOPageBySlug);
+const cachedGetVenueBySlug = cache(async (slug: string) => {
+    const supabase = await createClient();
+    return supabase.from('venues').select('*').ilike('slug', slug).maybeSingle();
+});
+const cachedGetVendorBySlug = cache(async (slug: string) => {
+    const supabase = await createClient();
+    return supabase.from('vendors').select('*').ilike('slug', slug).maybeSingle();
+});
 
 export const revalidate = 3600;
 
@@ -185,8 +198,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!parsed) return {};
 
     const supabase = await createClient();
-    // Check for listing first
-    const { data: listing } = await supabase.from('venues').select('name, city, description, image').eq('slug', parsed.categorySlug).maybeSingle();
+    // Check for listing first using cached lookups
+    const { data: listing } = await cachedGetVenueBySlug(parsed.categorySlug);
     if (listing) {
         return {
             title: `${listing.name} - ${listing.city} | VenueConnect`,
@@ -203,7 +216,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const displayCity = parsed.citySlug;
     const targetCityForMeta = (isNearMe && displayCity === 'gujarat') ? 'gujarat' : displayCity;
 
-    const page = await getSEOPageBySlug(parsed.rawSlug);
+    const page = await cachedGetSEOPageBySlug(parsed.rawSlug);
     
     if (page && isNearMe && displayCity !== 'gujarat' && page.custom_content) {
         const content = page.custom_content as Record<string, any>;
@@ -249,6 +262,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TopLevelRouter({ params, searchParams }: PageProps) {
     const { slug: slugArr } = await params;
     const sParams = await searchParams;
+
+    // Guard against static files being caught by the catch-all route
+    const firstSegment = slugArr?.[0]?.toLowerCase();
+    if (firstSegment && (
+        firstSegment.endsWith('.ico') || 
+        firstSegment.endsWith('.xml') || 
+        firstSegment.endsWith('.txt') ||
+        firstSegment.endsWith('.png') ||
+        firstSegment.endsWith('.jpg') ||
+        firstSegment.endsWith('.webmanifest')
+    )) {
+        return notFound();
+    }
+
     const parsed = parseSlug(slugArr);
     if (!parsed) return notFound();
 
@@ -269,11 +296,7 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
 
     // 1. IS IT A VENUE? (Check 2-segment slug if it's potentially a property)
     if (slugArr.length === 2) {
-        const { data: venue } = await supabase
-            .from('venues')
-            .select('*')
-            .ilike('slug', categorySlug)
-            .maybeSingle();
+        const { data: venue } = await cachedGetVenueBySlug(categorySlug);
 
         if (venue) {
             const { data: profile } = venue.owner_id
@@ -289,11 +312,7 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
     const isVendorSlugPath = (parsed as any).isVendorSlugPath;
     if (slugArr.length === 2 || (isVendorSlugPath && slugArr.length === 3)) {
         const targetSlug = categorySlug;
-        const { data: vendor } = await supabase
-            .from('vendors')
-            .select('*')
-            .ilike('slug', targetSlug)
-            .maybeSingle();
+        const { data: vendor } = await cachedGetVendorBySlug(targetSlug);
 
         if (vendor) {
             const { data: profile } = vendor.owner_id
@@ -308,7 +327,7 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
 
     // 3. IS IT AN SEO PAGE OR CATEGORY?
     const [seoPage, catRow, cityRow] = await Promise.all([
-        getSEOPageBySlug(rawSlug),
+        cachedGetSEOPageBySlug(rawSlug),
         supabase.from('categories').select('id, type').ilike('slug', categorySlug).maybeSingle().then(r => r.data),
         supabase.from('locations').select('id').ilike('city_slug', citySlug).maybeSingle().then(r => r.data),
     ]);
@@ -727,8 +746,8 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                             { t: 'Best Decor Themes for Outdoors', i: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' }
                         ].map((post, i) => (
                             <div key={i} className="group cursor-pointer">
-                                <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-4 border border-slate-100">
-                                    <img src={post.i} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-4 border border-slate-100 relative">
+                                    <SafeImage src={post.i} alt={post.t} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                                 </div>
                                 <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors">{post.t}</h4>
                                 <p className="text-xs text-slate-400 mt-2 font-medium">Read more insights from experts <ArrowRight size={10} className="inline ml-1" /></p>

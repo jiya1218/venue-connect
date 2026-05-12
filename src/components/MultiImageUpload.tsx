@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
@@ -9,13 +9,23 @@ import { createClient } from "@/lib/supabase/client";
 interface MultiImageUploadProps {
   onImagesChange: (urls: string[]) => void;
   maxImages?: number;
+  initialImages?: string[];
 }
 
-export default function MultiImageUpload({ onImagesChange, maxImages = 5 }: MultiImageUploadProps) {
-  const [images, setImages] = useState<string[]>([]);
+export default function MultiImageUpload({ onImagesChange, maxImages = 5, initialImages = [] }: MultiImageUploadProps) {
+  const [images, setImages] = useState<string[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
+
+  // Update internal state if initialImages changes (e.g. when opening a different modal)
+  useEffect(() => {
+    if (initialImages && initialImages.length > 0) {
+      setImages(initialImages);
+    } else {
+      setImages([]);
+    }
+  }, [JSON.stringify(initialImages)]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -38,13 +48,13 @@ export default function MultiImageUpload({ onImagesChange, maxImages = 5 }: Mult
         if (!supabase) throw new Error("Supabase client not initialized");
         
         const { error: uploadError, data } = await supabase.storage
-          .from('venue-images')
+          .from('venue-gallery')
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
-          .from('venue-images')
+          .from('venue-gallery')
           .getPublicUrl(filePath);
 
         newUrls.push(publicUrl);

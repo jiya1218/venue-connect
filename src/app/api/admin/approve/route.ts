@@ -45,30 +45,48 @@ export async function POST(req: NextRequest) {
       is_verified: true
     };
 
+    const getLeadsQuota = (plan: string) => {
+      switch(plan?.toLowerCase()) {
+        case 'starter': return 50;
+        case 'growth': return 150;
+        case 'premium': return 999999;
+        default: return 50;
+      }
+    };
+
     let specificData = {};
     if (isVendor) {
       specificData = {
         category: app.vendor_category || 'Other',
+        selected_plan: app.selected_plan || 'Starter',
+        leads_quota: getLeadsQuota(app.selected_plan),
+        leads_used: 0
       };
     } else {
       specificData = {
         type: app.venue_type,
+        area: app.area || '',
         min_capacity: app.min_capacity || 0,
         max_capacity: app.max_capacity || app.capacity || 0,
-        rooms_count: app.rooms_count || 0,
-        veg_price_per_plate: app.veg_price_per_plate || app.price_per_plate || 0,
+        food_type: app.food_type || 'veg',
+        veg_price_per_plate: app.veg_price_per_plate || 0,
         nonveg_price_per_plate: app.nonveg_price_per_plate || 0,
-        has_ac: app.has_ac || false,
-        has_wifi: app.has_wifi || false,
-        alcohol_served: app.alcohol_served || false,
-        cuisines: app.cuisines || [],
-        amenities: app.amenities || [],
-        indoor_spaces: app.indoor_spaces || 0,
-        outdoor_spaces: app.outdoor_spaces || 0,
-        payment_methods: app.payment_methods || [],
+        rooms_count: app.rooms_count || 0,
+        space_info: app.space_info || {},
+        occasions: app.occasions || [],
+        decoration_info: app.decoration_info || {},
+        liquor_info: app.liquor_info || {},
+        dj_info: app.dj_info || {},
         catering_policy: app.catering_policy || '',
-        advance_payment_percentage: app.advance_payment_percentage || 0,
-        operating_hours: app.operating_hours || '',
+        booking_policy: app.booking_policy || '',
+        terms_conditions: app.terms_conditions || '',
+        cancellation_policy: app.cancellation_policy || '',
+        parking_details: app.parking_details || {},
+        amenities: app.amenities || [],
+        cuisines: app.cuisines || [],
+        selected_plan: app.selected_plan || 'Starter',
+        leads_quota: getLeadsQuota(app.selected_plan),
+        leads_used: 0
       };
     }
 

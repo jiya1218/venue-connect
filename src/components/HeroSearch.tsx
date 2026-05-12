@@ -3,10 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { OCCASIONS, VENDOR_TYPES, VENUE_TYPES, GUJARAT_CITIES, EVENT_SUGGESTIONS } from "@/lib/constants";
-import RequirementWizard from "@/components/home/RequirementWizard";
+import dynamic from "next/dynamic";
+
+const RequirementWizard = dynamic(() => import("@/components/home/RequirementWizard"), {
+  loading: () => <div className="w-full h-[580px] bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] animate-pulse" />
+});
 
 
 
@@ -168,11 +173,13 @@ const HeroSearch = () => {
     <section className="relative min-h-[60vh] md:min-h-[85vh] flex flex-col justify-center overflow-hidden py-12 md:py-20">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80"
           alt="Luxury Event Venue"
-          className="w-full h-full object-cover animate-[zoomOut_20s_ease_forwards]"
-          loading="eager"
+          fill
+          className="object-cover animate-[zoomOut_20s_ease_forwards]"
+          priority
+          sizes="100vw"
         />
       </div>
 
@@ -209,8 +216,13 @@ const HeroSearch = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-center lg:justify-start gap-4 sm:gap-3 pt-2">
               <div className="flex -space-x-2 sm:scale-100 justify-center sm:justify-start">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800 flex-shrink-0">
-                    <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
+                  <div key={i} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-800 flex-shrink-0 relative">
+                    <Image 
+                      src={`https://i.pravatar.cc/100?img=${i+10}`} 
+                      alt="User" 
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 ))}
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-slate-900 bg-primary flex items-center justify-center text-[10px] md:text-xs font-bold text-white flex-shrink-0">+2k</div>

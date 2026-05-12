@@ -1,18 +1,36 @@
 import { createBrowserClient } from '@supabase/ssr'
 
+const noopLock = {
+  async acquire() {
+    return () => {};
+  },
+};
+
 let _client: ReturnType<typeof createBrowserClient> | null = null;
 
 export function createClient() {
-  // Singleton — reuse the same instance to avoid concurrent auth lock conflicts
-  if (_client) return _client;
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!url || !key) {
-    throw new Error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set.')
+  if (typeof window === 'undefined') {
+    return createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
   }
 
-  _client = createBrowserClient(url, key)
+  if (!_client) {
+    _client = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          flowType: 'pkce',
+          storageKey: 'venueconnect-auth-token'
+        }
+      }
+    )
+  }
+
   return _client
 }

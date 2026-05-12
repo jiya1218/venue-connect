@@ -40,3 +40,53 @@ export const GUJARAT_CITIES = [
 ];
 
 export const EVENT_SUGGESTIONS = Object.values(OCCASIONS).flat();
+
+export const PRICING_PLANS = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    price: 0,
+    priceLabel: 'Free',
+    duration: '/ month',
+    leads: 50,
+    features: [
+      'Basic listing profile',
+      'Standard search placement',
+      'Enquiry notifications',
+      'Email support'
+    ]
+  },
+  {
+    id: 'growth',
+    name: 'Growth',
+    price: 999,
+    priceLabel: '₹999',
+    duration: '/ month',
+    leads: 150,
+    popular: true,
+    features: [
+      'Featured listing + badge',
+      'Priority search ranking',
+      'WhatsApp lead alerts',
+      'Analytics dashboard',
+      'Social media promo'
+    ]
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    price: 1999,
+    priceLabel: '₹1,999',
+    duration: '/ month',
+    leads: 'Unlimited',
+    bestValue: true,
+    features: [
+      'Top placement always',
+      'Homepage featured slot',
+      'Dedicated account manager',
+      'Brand ambassador ready',
+      'Bulk WhatsApp campaigns'
+    ]
+  }
+];
+

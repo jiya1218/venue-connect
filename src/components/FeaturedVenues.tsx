@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getListingImage } from "@/lib/imageUtils";
 
+import { SafeImage } from "./ui/SafeImage";
+
 const FeaturedVenues = () => {
   const [venues, setVenues] = useState<any[]>([]);
 
@@ -68,14 +70,11 @@ const FeaturedVenues = () => {
                   className="group bg-white rounded-xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 cursor-pointer block h-full shadow-sm"
                 >
                   <div className="relative h-32 md:h-52 overflow-hidden">
-                    <img 
+                    <SafeImage 
                       src={imgSrc} 
                       alt={venue.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80';
-                      }}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500" 
                     />
 
                     <div className="absolute top-2 right-2 md:top-3 md:right-3 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-sm">

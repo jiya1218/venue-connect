@@ -55,9 +55,9 @@ export default function ApplicationsTab() {
       if (error) throw error;
       setApplications(data || []);
       setSelectedIds([]); // Reset selection on refresh
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load applications");
+    } catch (error: any) {
+      console.error("Applications fetch error:", error);
+      toast.error(error.message || "Failed to load applications");
     } finally {
       setLoading(false);
     }
@@ -199,9 +199,18 @@ export default function ApplicationsTab() {
                                 <div className="flex-grow">
                                     <div className="flex items-center gap-3 mb-1">
                                         <h3 className="font-bold text-xl text-slate-900 font-display">{app.business_name}</h3>
-                                        <Badge variant="outline" className={`rounded-lg border font-bold text-[9px] px-2 py-0.5 ${app.venue_type === 'vendor' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
-                                            {app.venue_type.toUpperCase()}
-                                        </Badge>
+                                        <div className="flex gap-2">
+                                            <Badge variant="outline" className={`rounded-lg border font-bold text-[9px] px-2 py-0.5 ${app.venue_type === 'vendor' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                                                {app.venue_type.toUpperCase()}
+                                            </Badge>
+                                            <Badge className={`rounded-lg border font-bold text-[9px] px-2 py-0.5 ${
+                                                app.selected_plan?.toLowerCase() === 'premium' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+                                                app.selected_plan?.toLowerCase() === 'growth' ? 'bg-green-100 text-green-700 border-green-200' :
+                                                'bg-slate-100 text-slate-700 border-slate-200'
+                                            }`}>
+                                                {app.selected_plan?.toUpperCase() || 'STARTER'}
+                                            </Badge>
+                                        </div>
                                     </div>
                                     <div className="flex flex-wrap items-center gap-6 text-slate-400 text-xs font-bold uppercase tracking-wider">
                                         <div className="flex items-center gap-2"><MapPin size={12} className="text-primary" /> {app.city}</div>

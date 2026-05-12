@@ -15,11 +15,9 @@ import { toast } from "sonner";
 import { GUJARAT_CITIES, OCCASIONS } from "@/lib/constants";
 
 const ALL_OCCASIONS = Object.values(OCCASIONS).flat();
-
 const BUDGETS = ['Below ₹5,000', '₹5,000 - ₹10,000', '₹10,000 - ₹20,000', '₹20,000 - ₹50,000', '₹50,000 - ₹1,00,000', 'Above ₹1,00,000'];
 
-
-// Removed redundant constants
+const supabase = createClient();
 
 export default function RequirementWizard() {
     const [loading, setLoading] = useState(false);
@@ -45,8 +43,6 @@ export default function RequirementWizard() {
             setFormData(prev => ({ ...prev, city: cached.charAt(0).toUpperCase() + cached.slice(1) }));
         }
     }, []);
-
-    const supabase = createClient();
 
     const updateData = (fields: Partial<typeof formData>) => {
         if (fields.city) {

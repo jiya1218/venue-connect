@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { citiesData } from "@/lib/citiesData";
 import { useEffect, useState } from "react";
+import { SafeImage } from "./ui/SafeImage";
 
 const CARD = "w-[130px] h-[130px] flex-shrink-0 rounded-xl overflow-hidden relative";
 
@@ -43,7 +44,7 @@ const PopularCities = () => {
                                 const stats = cityStats[key] || cityStats[city.name] || { venues: 0 };
                                 return (
                                     <Link key={city.slug} href={`/${city.name.toLowerCase()}`} className={CARD}>
-                                        <img src={city.image} alt={city.name} className="w-full h-full object-cover" />
+                                        <SafeImage src={city.image} alt={city.name} fill className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                                         <div className="absolute inset-0 flex flex-col justify-end p-2">
                                             <p className="text-white text-[10px] font-black leading-tight">{city.name}</p>
@@ -59,7 +60,7 @@ const PopularCities = () => {
                                 const stats = cityStats[key] || cityStats[city.name] || { venues: 0 };
                                 return (
                                     <Link key={city.slug} href={`/${city.name.toLowerCase()}`} className={CARD}>
-                                        <img src={city.image} alt={city.name} className="w-full h-full object-cover" />
+                                        <SafeImage src={city.image} alt={city.name} fill className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                                         <div className="absolute inset-0 flex flex-col justify-end p-2">
                                             <p className="text-white text-[10px] font-black leading-tight">{city.name}</p>
@@ -80,7 +81,7 @@ const PopularCities = () => {
                         return (
                             <Link key={city.slug} href={`/${encodeURIComponent(city.name.toLowerCase())}`}
                                 className="group block relative rounded-2xl overflow-hidden aspect-square shadow-lg hover:shadow-2xl transition-all duration-300">
-                                <img src={city.image} alt={city.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                <SafeImage src={city.image} alt={city.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                                 <div className="absolute inset-0 flex flex-col justify-end p-6">
                                     <h3 className="text-2xl font-display font-semibold text-white leading-tight">{city.name}</h3>

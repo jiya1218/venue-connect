@@ -31,6 +31,7 @@ import {
   SheetDescription,
   SheetFooter
 } from "@/components/ui/sheet";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -65,23 +66,18 @@ export default function ListingsTab() {
       const from = page * ITEMS_PER_PAGE;
       const to = from + ITEMS_PER_PAGE - 1;
 
-      // Since venues and vendors are separate tables, searching across both with pagination is tricky.
-      // Usually, we'd use a view or combined query. 
-      // For simplicity in this demo, if 'all' is selected, we fetch both and merge (up to 20 each).
-      // If a specific type is selected, we use range correctly.
-      
-      let finalData: any[] = [];
-      let totalCount = 0;
+      let venuePromise = Promise.resolve({ data: [] as any[], count: 0 });
+      let vendorPromise = Promise.resolve({ data: [] as any[], count: 0 });
 
       if (typeFilter === 'venue' || typeFilter === 'all') {
         let q = supabase.from('venues').select('*', { count: 'exact' });
         if (cityFilter !== 'all') q = q.eq('city', cityFilter);
         if (statusFilter !== 'all') q = q.eq('is_approved', statusFilter === 'approved');
         if (search) q = q.ilike('name', `%${search}%`);
-        
-        const { data, count: c } = await q.range(from, to).order('created_at', { ascending: false });
-        finalData = [...finalData, ...(data || []).map((v: any) => ({ ...v, type: 'venue' }))];
-        totalCount += (c || 0);
+        venuePromise = q.range(from, to).order('created_at', { ascending: false }).then(res => ({
+            data: (res.data || []).map((v: any) => ({ ...v, type: 'venue' })),
+            count: res.count || 0
+        }));
       }
 
       if (typeFilter === 'vendor' || typeFilter === 'all') {
@@ -89,11 +85,15 @@ export default function ListingsTab() {
         if (cityFilter !== 'all') q = q.eq('city', cityFilter);
         if (statusFilter !== 'all') q = q.eq('is_approved', statusFilter === 'approved');
         if (search) q = q.ilike('name', `%${search}%`);
-        
-        const { data, count: c } = await q.range(from, to).order('created_at', { ascending: false });
-        finalData = [...finalData, ...(data || []).map((v: any) => ({ ...v, type: 'vendor' }))];
-        totalCount += (c || 0);
+        vendorPromise = q.range(from, to).order('created_at', { ascending: false }).then(res => ({
+            data: (res.data || []).map((v: any) => ({ ...v, type: 'vendor' })),
+            count: res.count || 0
+        }));
       }
+
+      const [venueRes, vendorRes] = await Promise.all([venuePromise, vendorPromise]);
+      const finalData = [...venueRes.data, ...vendorRes.data];
+      const totalCount = venueRes.count + vendorRes.count;
 
       // Sort combined results if necessary
       setListings(finalData.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, ITEMS_PER_PAGE));
@@ -267,6 +267,7 @@ export default function ListingsTab() {
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Listing</th>
                 <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
                 <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</th>
+                <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Plan</th>
                 <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                 <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Featured</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -291,8 +292,8 @@ export default function ListingsTab() {
                   <tr key={item.id} className="group hover:bg-slate-50/50 transition-all duration-300">
                     <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl overflow-hidden border border-slate-100 bg-slate-100 shrink-0">
-                                <img src={item.image || item.images?.[0] || 'https://via.placeholder.com/150'} className="w-full h-full object-cover" />
+                            <div className="w-14 h-14 rounded-2xl overflow-hidden border border-slate-100 bg-slate-100 shrink-0 relative">
+                                <SafeImage src={item.image || item.images?.[0] || ''} alt={item.name} fill className="object-cover" />
                             </div>
                             <div>
                                 <p className="font-bold text-slate-900 group-hover:text-primary transition-colors leading-tight">{item.name}</p>
@@ -309,6 +310,15 @@ export default function ListingsTab() {
                       <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
                         <MapPin size={14} className="text-slate-300" /> {item.city}
                       </div>
+                    </td>
+                    <td className="px-6 py-6">
+                      <Badge className={`rounded-lg border font-bold text-[9px] px-2 py-0.5 ${
+                          item.selected_plan?.toLowerCase() === 'premium' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+                          item.selected_plan?.toLowerCase() === 'growth' ? 'bg-green-100 text-green-700 border-green-200' :
+                          'bg-slate-100 text-slate-700 border-slate-200'
+                      }`}>
+                          {item.selected_plan?.toUpperCase() || 'STARTER'}
+                      </Badge>
                     </td>
                     <td className="px-6 py-6">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest leading-none ${item.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>

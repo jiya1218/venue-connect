@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import GetQuoteModal from "./GetQuoteModal";
 import { getListingImage } from "@/lib/imageUtils";
 
+import { SafeImage } from "./ui/SafeImage";
+
 export interface VenueData {
     id: string;
     slug?: string;
@@ -128,10 +130,11 @@ const VenueCard = ({ venue }: VenueCardProps) => {
                 </button>
 
                 <div className="relative h-32 sm:h-56 overflow-hidden">
-                    <img
+                    <SafeImage
                         src={getListingImage(venue)}
                         alt={venue.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     {venue.featured && (
                         <span className="absolute top-2 left-2 sm:top-3 sm:left-3 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-primary text-[8px] sm:text-xs font-semibold text-white z-10">

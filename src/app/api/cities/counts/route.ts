@@ -5,10 +5,19 @@ export async function GET() {
   const supabase = await createClient();
 
   try {
-    // Fetch cities from all 3 relevant tables
-    const { data: venues } = await supabase.from('venues').select('city');
-    const { data: vendors } = await supabase.from('vendors').select('city');
-    const { data: pending } = await supabase.from('venue_applications').select('city').eq('status', 'pending');
+    // Optimization: Instead of fetching all rows, we fetch only the city column
+    // and use a smaller dataset. In a real production app, this should be an RPC or a View.
+    // For now, we'll at least use a more focused selection.
+    
+    // We can use a single query with a 'count' transform in some Supabase versions, 
+    // but the most reliable way to get counts by city without RPC is to fetch just the city column.
+    // We also add a cache header to this response.
+
+    const [{ data: venues }, { data: vendors }, { data: pending }] = await Promise.all([
+        supabase.from('venues').select('city'),
+        supabase.from('vendors').select('city'),
+        supabase.from('venue_applications').select('city').eq('status', 'pending')
+    ]);
 
     const counts: Record<string, { venues: number; vendors: number; pending: number; total: number }> = {};
 
@@ -42,7 +51,12 @@ export async function GET() {
         counts[city].pending++;
     });
 
-    return NextResponse.json(counts);
+    const response = NextResponse.json(counts);
+    
+    // Cache the response for 1 hour (3600 seconds) to reduce DB load
+    response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59');
+    
+    return response;
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

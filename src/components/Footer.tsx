@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   Mail, Phone, Instagram, Facebook, Twitter, Linkedin,
@@ -32,7 +33,7 @@ const Footer = () => {
 
         {/* Logo */}
         <Link href="/" className="block mb-3">
-          <img src="/logo.webp" alt="VenueConnect" className="h-10 w-auto" />
+          <Image src="/logo.webp" alt="VenueConnect" width={160} height={40} className="h-10 w-auto" />
         </Link>
         <p className="text-slate-400 text-[11px] leading-relaxed mb-4 font-medium">
           Gujarat&apos;s most loved Event Planning platform — venues, vendors, photographers, decorators and more.{" "}
@@ -199,7 +200,7 @@ const Footer = () => {
 
           <div className="space-y-8">
             <div className="space-y-4">
-              <Link href="/"><img src="/logo.webp" alt="VenueConnect" className="h-16 w-auto" /></Link>
+              <Link href="/"><Image src="/logo.webp" alt="VenueConnect" width={200} height={80} className="h-16 w-auto" /></Link>
               <p className="text-slate-300 text-[13px] leading-relaxed max-w-xl font-medium">
                 VenueConnect is Gujarat&apos;s most loved Event Planning platform!
                 <Link href="/about" className="text-primary font-bold ml-1 hover:underline">More about VenueConnect</Link>

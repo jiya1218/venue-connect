@@ -26,24 +26,51 @@ export default function ListVenuePage() {
         // Step 3: Detailed info
         businessName: "",
         city: "",
+        area: "",
         address: "",
         venueType: "Banquet Hall",
         minCapacity: "",
         maxCapacity: "",
-        roomsCount: "",
+        foodType: "both", // 'veg', 'non-veg', 'both'
         vegPrice: "",
         nonVegPrice: "",
+        roomsCount: "",
+        spaceInfo: {
+            party_halls: 0,
+            banquet_halls: 0,
+            rooms: 0,
+            outdoor_lawn: 0
+        },
+        occasions: [] as string[],
+        decorationInfo: {
+            description: "Decoration starts from 5000/- onwards",
+            policy: "Decorations should be chosen only from our Panel"
+        },
+        liquorInfo: {
+            served: "No",
+            permitted: "No"
+        },
+        djInfo: {
+            available: "No",
+            starting_price: 5000
+        },
+        cateringPolicy: "Inhouse catering only. Outside caterers not allowed",
+        bookingPolicy: "25% advance. Balance on day of event before commencement.",
+        termsConditions: "No arms & ammunition allowed. Dress code - smart attire. Any Breakage by customer will be charged.",
+        cancellationPolicy: "Non-refundable if cancelled within 15 days of event.",
+        parkingDetails: {
+            count: 0,
+            valet: false
+        },
         description: "",
-        hasAc: false,
-        hasWifi: false,
-        alcoholServed: false,
-        cateringPolicy: "Internal & External",
-        advancePayment: "25",
-        operatingHours: "09:00 AM - 11:00 PM",
         amenities: [] as string[],
         cuisines: [] as string[],
         images: [] as string[]
     });
+
+    const generateAutoSummary = (data: typeof formData) => {
+        return `${data.businessName} is a premier ${data.venueType} located in ${data.area}, ${data.city}. With a capacity ranging from ${data.minCapacity} to ${data.maxCapacity} guests, it's perfect for ${data.occasions.slice(0, 3).join(', ')}. We offer ${data.foodType === 'both' ? 'both Veg and Non-Veg' : data.foodType === 'veg' ? 'Veg-only' : 'Non-Veg'} catering starting at ₹${data.vegPrice || data.nonVegPrice}. Facilities include ${data.amenities.slice(0, 5).join(', ')}. Our policy follows ${data.cateringPolicy}.`;
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as any;
@@ -123,22 +150,29 @@ export default function ListVenuePage() {
                 business_phone: formData.mobile,
                 address: formData.address,
                 city: formData.city,
+                area: formData.area,
                 venue_type: formData.venueType,
                 min_capacity: parseInt(formData.minCapacity) || 0,
                 max_capacity: parseInt(formData.maxCapacity) || 0,
-                rooms_count: parseInt(formData.roomsCount) || 0,
+                food_type: formData.foodType,
                 veg_price_per_plate: parseInt(formData.vegPrice) || 0,
                 nonveg_price_per_plate: parseInt(formData.nonVegPrice) || 0,
-                description: formData.description + `\n\nSelected Package: ${pkg}`,
-                has_ac: formData.hasAc,
-                has_wifi: formData.hasWifi,
-                alcohol_served: formData.alcoholServed,
+                rooms_count: parseInt(formData.roomsCount) || 0,
+                space_info: formData.spaceInfo,
+                occasions: formData.occasions,
+                decoration_info: formData.decorationInfo,
+                liquor_info: formData.liquorInfo,
+                dj_info: formData.djInfo,
                 catering_policy: formData.cateringPolicy,
-                advance_payment_percentage: parseInt(formData.advancePayment) || 0,
-                operating_hours: formData.operatingHours,
+                booking_policy: formData.bookingPolicy,
+                terms_conditions: formData.termsConditions,
+                cancellation_policy: formData.cancellationPolicy,
+                parking_details: formData.parkingDetails,
+                description: formData.description || generateAutoSummary(formData),
                 amenities: formData.amenities,
                 cuisines: formData.cuisines,
                 images: formData.images,
+                selected_plan: pkg,
                 status: 'pending'
             }]);
 
@@ -268,13 +302,13 @@ export default function ListVenuePage() {
                                         </div>
                                     </div>
 
-                                    <form onSubmit={handleDetailsSubmit} className="space-y-10">
+                                    <form onSubmit={handleDetailsSubmit} className="space-y-12">
                                         
-                                        {/* Basic Info Section */}
-                                        <div className="grid md:grid-cols-2 gap-8">
-                                            <div className="space-y-6">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><Building2 className="w-5 h-5 text-red-600"/> General Information</h3>
-                                                
+                                        {/* General Information */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><Building2 className="w-5 h-5 text-red-600"/> General Information</h3>
+                                            
+                                            <div className="grid md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label className={labelCls}>Venue / Business Name *</label>
                                                     <input type="text" name="businessName" value={formData.businessName} onChange={handleChange} placeholder="e.g. Royal Grand Palace" className={inputCls} required />
@@ -292,197 +326,259 @@ export default function ListVenuePage() {
                                                         <option value="Rooftop">Rooftop</option>
                                                     </select>
                                                 </div>
+                                            </div>
 
+                                            <div className="grid md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label className={labelCls}>District & City *</label>
                                                     <DistrictCitySelect 
-                                                        onSelect={(val) => setFormData({ ...formData, city: val })}
+                                                        onSelect={(val) => setFormData(prev => ({ ...prev, city: val }))}
                                                         initialValue={formData.city}
                                                     />
-                                                    <input type="hidden" name="city" value={formData.city} required />
                                                 </div>
-                                            </div>
-
-                                            <div className="space-y-6">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><MapPin className="w-5 h-5 text-red-600"/> Location Details</h3>
-                                                
                                                 <div>
-                                                    <label className={labelCls}>Full Address *</label>
-                                                    <textarea 
-                                                        name="address" 
-                                                        value={formData.address} 
+                                                    <label className={labelCls}>City Area *</label>
+                                                    <select 
+                                                        name="area" 
+                                                        value={formData.area} 
                                                         onChange={handleChange} 
-                                                        placeholder="Building No, Street name, Near Landmark, Pincode" 
-                                                        className={`${inputCls} h-[135px] resize-none`} 
-                                                        required 
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <hr className="border-slate-100" />
-
-                                        {/* Capacity & Pricing */}
-                                        <div className="grid md:grid-cols-2 gap-10">
-                                            <div className="space-y-6">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><Users className="w-5 h-5 text-red-600"/> Guest Capacity</h3>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className={labelCls}>Min Guest *</label>
-                                                        <input type="number" name="minCapacity" value={formData.minCapacity} onChange={handleChange} placeholder="e.g. 100" className={inputCls} required />
-                                                    </div>
-                                                    <div>
-                                                        <label className={labelCls}>Max Guest *</label>
-                                                        <input type="number" name="maxCapacity" value={formData.maxCapacity} onChange={handleChange} placeholder="e.g. 1500" className={inputCls} required />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <label className={labelCls}>Room Count (If any)</label>
-                                                    <input type="number" name="roomsCount" value={formData.roomsCount} onChange={handleChange} placeholder="Total rooms for stay" className={inputCls} />
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-6">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><IndianRupee className="w-5 h-5 text-red-600"/> Plate Pricing</h3>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className={labelCls}>Veg. Plate Price *</label>
-                                                        <input type="number" name="vegPrice" value={formData.vegPrice} onChange={handleChange} placeholder="₹ Per Plate" className={`${inputCls} text-green-700 font-bold`} required />
-                                                    </div>
-                                                    <div>
-                                                        <label className={labelCls}>Non-Veg. Plate Price</label>
-                                                        <input type="number" name="nonVegPrice" value={formData.nonVegPrice} onChange={handleChange} placeholder="₹ Per Plate" className={`${inputCls} text-red-700 font-bold`} />
-                                                    </div>
-                                                </div>
-                                                <p className="text-[11px] text-slate-400 italic bg-slate-50 p-2 rounded border border-dashed">
-                                                    * Base prices used for initial search comparisons.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <hr className="border-slate-100" />
-
-                                        {/* Amenities & Features */}
-                                        <div className="space-y-8">
-                                            <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><Info className="w-5 h-5 text-red-600"/> Amenities & Facilities</h3>
-                                            
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                                {["Air Conditioned", "Free WiFi", "Parking Space", "Alcohol Served", "Valet Parking", "Power Backup", "Changing Rooms", "Lift", "Live Music", "Dj Space", "Decoration Provided", "Security"].map((item) => (
-                                                    <label key={item} className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                                                        formData.amenities.includes(item) ? "bg-red-50 border-red-500 text-red-700 font-semibold" : "bg-white border-slate-100 text-slate-600 hover:border-slate-200"
-                                                    }`}>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            className="hidden" 
-                                                            checked={formData.amenities.includes(item)}
-                                                            onChange={() => handleAmenityToggle(item)}
-                                                        />
-                                                        <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 ${formData.amenities.includes(item) ? "bg-red-600 border-red-600" : "bg-white border-slate-300"}`}>
-                                                            {formData.amenities.includes(item) && <Check className="w-3 h-3 text-white" strokeWidth={4} />}
-                                                        </div>
-                                                        <span className="text-sm">{item}</span>
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* Cuisines */}
-                                        <div className="space-y-6">
-                                            <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><Utensils className="w-5 h-5 text-red-600"/> Cuisines Available</h3>
-                                            <div className="flex flex-wrap gap-3">
-                                                {["Gujarati", "North Indian", "South Indian", "Chinese", "Italian", "Mughlai", "Continental", "Mexican", "Street Food"].map((c) => (
-                                                    <button 
-                                                        key={c}
-                                                        type="button"
-                                                        onClick={() => handleCuisineToggle(c)}
-                                                        className={`px-5 py-2 rounded-full text-sm font-medium border-2 transition-all ${
-                                                            formData.cuisines.includes(c) ? "bg-red-600 border-red-600 text-white shadow-md shadow-red-200" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
-                                                        }`}
+                                                        className={inputCls} 
+                                                        required
                                                     >
-                                                        {c}
+                                                        <option value="">Select Area...</option>
+                                                        {(citiesData.find(c => {
+                                                            const cityPart = formData.city?.split(" - ")[1] || formData.city;
+                                                            return c.name.toLowerCase() === cityPart?.toLowerCase();
+                                                        })?.localities || []).map(loc => (
+                                                            <option key={loc} value={loc}>{loc}</option>
+                                                        ))}
+                                                        {/* Fallback for manual entry if city not found */}
+                                                        {formData.area && !(citiesData.find(c => c.name.toLowerCase() === (formData.city?.split(" - ")[1] || formData.city)?.toLowerCase())?.localities?.includes(formData.area)) && (
+                                                            <option value={formData.area}>{formData.area}</option>
+                                                        )}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className={labelCls}>Full Address *</label>
+                                                <textarea 
+                                                    name="address" 
+                                                    value={formData.address} 
+                                                    onChange={handleChange} 
+                                                    placeholder="Building No, Street name, Near Landmark, Pincode" 
+                                                    className={`${inputCls} h-24 resize-none`} 
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Capacity & Space Management */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><Users className="w-5 h-5 text-red-600"/> Capacity & Space Availability</h3>
+                                            
+                                            <div className="grid md:grid-cols-2 gap-8">
+                                                <div className="space-y-4">
+                                                    <label className={labelCls}>Overall Guest Capacity *</label>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <input type="number" name="minCapacity" value={formData.minCapacity} onChange={handleChange} placeholder="Min" className={inputCls} required />
+                                                        <input type="number" name="maxCapacity" value={formData.maxCapacity} onChange={handleChange} placeholder="Max" className={inputCls} required />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <label className={labelCls}>Space Type Quantities</label>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[10px] font-black uppercase text-slate-400">Banquet Halls</span>
+                                                            <input type="number" value={formData.spaceInfo.banquet_halls} onChange={(e) => setFormData(prev => ({ ...prev, spaceInfo: { ...prev.spaceInfo, banquet_halls: parseInt(e.target.value) || 0 } }))} className={inputCls} />
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[10px] font-black uppercase text-slate-400">Party Halls</span>
+                                                            <input type="number" value={formData.spaceInfo.party_halls} onChange={(e) => setFormData(prev => ({ ...prev, spaceInfo: { ...prev.spaceInfo, party_halls: parseInt(e.target.value) || 0 } }))} className={inputCls} />
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[10px] font-black uppercase text-slate-400">Outdoor Lawn</span>
+                                                            <input type="number" value={formData.spaceInfo.outdoor_lawn} onChange={(e) => setFormData(prev => ({ ...prev, spaceInfo: { ...prev.spaceInfo, outdoor_lawn: parseInt(e.target.value) || 0 } }))} className={inputCls} />
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[10px] font-black uppercase text-slate-400">Guest Rooms</span>
+                                                            <input type="number" value={formData.spaceInfo.rooms} onChange={(e) => setFormData(prev => ({ ...prev, spaceInfo: { ...prev.spaceInfo, rooms: parseInt(e.target.value) || 0 }, roomsCount: e.target.value }))} className={inputCls} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Catering & Food Selection */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><Utensils className="w-5 h-5 text-red-600"/> Catering & Food Options</h3>
+                                            
+                                            <div className="grid md:grid-cols-3 gap-6">
+                                                <div>
+                                                    <label className={labelCls}>Food Availability *</label>
+                                                    <select name="foodType" value={formData.foodType} onChange={handleChange} className={inputCls} required>
+                                                        <option value="both">Veg & Non-Veg Both</option>
+                                                        <option value="veg">Veg Only</option>
+                                                        <option value="non-veg">Non-Veg Only</option>
+                                                    </select>
+                                                </div>
+                                                {(formData.foodType === 'veg' || formData.foodType === 'both') && (
+                                                    <div>
+                                                        <label className={labelCls}>Veg Plate Price *</label>
+                                                        <input type="number" name="vegPrice" value={formData.vegPrice} onChange={handleChange} placeholder="₹ Per Plate" className={inputCls} required />
+                                                    </div>
+                                                )}
+                                                {(formData.foodType === 'non-veg' || formData.foodType === 'both') && (
+                                                    <div>
+                                                        <label className={labelCls}>Non-Veg Plate Price *</label>
+                                                        <input type="number" name="nonVegPrice" value={formData.nonVegPrice} onChange={handleChange} placeholder="₹ Per Plate" className={inputCls} required />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <label className={labelCls}>Catering Policy *</label>
+                                                <select 
+                                                    name="cateringPolicy" 
+                                                    value={formData.cateringPolicy} 
+                                                    onChange={handleChange} 
+                                                    className={inputCls} 
+                                                    required
+                                                >
+                                                    <option value="">Select Policy...</option>
+                                                    <option value="In-house catering only">In-house catering only</option>
+                                                    <option value="Outside catering allowed">Outside catering allowed</option>
+                                                    <option value="Both In-house & Outside allowed">Both In-house & Outside allowed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        {/* Occasions Support */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
+                                            <h3 className="text-xl font-bold text-slate-900">Good for which occasions?</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {["Wedding", "Engagement", "Reception", "Birthday", "Corporate Event", "Anniversary", "Cocktail Party", "Baby Shower"].map(occ => (
+                                                    <button 
+                                                        key={occ} type="button"
+                                                        onClick={() => setFormData(prev => ({ ...prev, occasions: prev.occasions.includes(occ) ? prev.occasions.filter(o => o !== occ) : [...prev.occasions, occ] }))}
+                                                        className={`px-4 py-2 rounded-full text-xs font-bold transition-all border-2 ${formData.occasions.includes(occ) ? 'bg-red-600 border-red-600 text-white' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200'}`}
+                                                    >
+                                                        {occ}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
 
-                                        {/* Policies */}
-                                        <div className="grid md:grid-cols-2 gap-8">
-                                            <div className="space-y-6">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><Clock className="w-5 h-5 text-red-600"/> Operating Policies</h3>
-                                                
-                                                <div>
-                                                    <label className={labelCls}>Business Hours</label>
-                                                    <input type="text" name="operatingHours" value={formData.operatingHours} onChange={handleChange} className={inputCls} />
+                                        {/* Detailed Policies & Information */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><Info className="w-5 h-5 text-red-600"/> More Information & Policies</h3>
+                                            
+                                            <div className="grid md:grid-cols-2 gap-8">
+                                                <div className="space-y-4">
+                                                    <label className={labelCls}>Decoration Description</label>
+                                                    <input type="text" value={formData.decorationInfo.description} onChange={(e) => setFormData(prev => ({ ...prev, decorationInfo: { ...prev.decorationInfo, description: e.target.value } }))} className={inputCls} />
+                                                    <label className={labelCls}>Decoration Policy</label>
+                                                    <input type="text" value={formData.decorationInfo.policy} onChange={(e) => setFormData(prev => ({ ...prev, decorationInfo: { ...prev.decorationInfo, policy: e.target.value } }))} className={inputCls} />
                                                 </div>
-
-                                                <div>
-                                                    <label className={labelCls}>Catering Policy</label>
-                                                    <select name="cateringPolicy" value={formData.cateringPolicy} onChange={handleChange} className={inputCls}>
-                                                        <option value="Only Internal">Only Internal Catering</option>
-                                                        <option value="Only External">External Catering Allowed</option>
-                                                        <option value="Internal & External">Both Allowed</option>
-                                                    </select>
+                                                <div className="space-y-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className={labelCls}>Liquor Served</label>
+                                                            <select value={formData.liquorInfo.served} onChange={(e) => setFormData(prev => ({ ...prev, liquorInfo: { ...prev.liquorInfo, served: e.target.value } }))} className={inputCls}>
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No">No</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label className={labelCls}>Outside Liquor Allowed</label>
+                                                            <select value={formData.liquorInfo.permitted} onChange={(e) => setFormData(prev => ({ ...prev, liquorInfo: { ...prev.liquorInfo, permitted: e.target.value } }))} className={inputCls}>
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-6">
-                                                <h3 className="text-lg font-bold text-white opacity-0">Spacer</h3>
-                                                
+                                            <div className="grid md:grid-cols-2 gap-8">
+                                                <div className="space-y-4">
+                                                    <label className={labelCls}>DJ Availability & Price</label>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <select value={formData.djInfo.available} onChange={(e) => setFormData(prev => ({ ...prev, djInfo: { ...prev.djInfo, available: e.target.value } }))} className={inputCls}>
+                                                            <option value="Yes">Available</option>
+                                                            <option value="No">Not Available</option>
+                                                        </select>
+                                                        <input type="number" value={formData.djInfo.starting_price} onChange={(e) => setFormData(prev => ({ ...prev, djInfo: { ...prev.djInfo, starting_price: parseInt(e.target.value) || 0 } }))} className={inputCls} placeholder="Price" />
+                                                    </div>
+                                                </div>
                                                 <div>
-                                                    <label className={labelCls}>Advance Payment Required (%)</label>
-                                                    <div className="relative">
-                                                        <input type="number" name="advancePayment" value={formData.advancePayment} onChange={handleChange} className={inputCls} />
-                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
-                                                    </div>
+                                                    <label className={labelCls}>Booking Policy</label>
+                                                    <input type="text" value={formData.bookingPolicy} onChange={(e) => setFormData(prev => ({ ...prev, bookingPolicy: e.target.value }))} className={inputCls} />
                                                 </div>
+                                            </div>
 
-                                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-                                                    <div>
-                                                        <p className="font-bold text-slate-800 text-sm">Alcohol Allowed?</p>
-                                                        <p className="text-xs text-slate-500">Do you permit serving alcohol at events?</p>
-                                                    </div>
-                                                    <label className="relative inline-flex items-center cursor-pointer">
-                                                        <input type="checkbox" name="alcoholServed" checked={formData.alcoholServed} onChange={handleChange} className="sr-only peer" />
-                                                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                                                    </label>
-                                                </div>
+                                            <div>
+                                                <label className={labelCls}>Terms & Conditions</label>
+                                                <textarea value={formData.termsConditions} onChange={(e) => setFormData(prev => ({ ...prev, termsConditions: e.target.value }))} className={`${inputCls} h-20`} />
                                             </div>
                                         </div>
 
-                                            <div className="space-y-4">
-                                                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800"><ImageIcon className="w-5 h-5 text-red-600"/> Venue Gallery / Photos</h3>
-                                                <MultiImageUpload 
-                                                    onImagesChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))} 
-                                                    maxImages={8} 
-                                                />
+                                        {/* Amenities & Parking */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><ShieldCheck className="w-5 h-5 text-red-600"/> Amenities & Parking</h3>
+                                            
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                {["Air Conditioned", "Free WiFi", "Parking Space", "Valet Parking", "Power Backup", "Changing Rooms", "Lift", "Live Music"].map((item) => (
+                                                    <label key={item} className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                                                        formData.amenities.includes(item) ? "bg-red-50 border-red-500 text-red-700 font-semibold" : "bg-white border-slate-100 text-slate-600 hover:border-slate-200"
+                                                    }`}>
+                                                        <input type="checkbox" className="hidden" checked={formData.amenities.includes(item)} onChange={() => handleAmenityToggle(item)} />
+                                                        <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 ${formData.amenities.includes(item) ? "bg-red-600 border-red-600" : "bg-white border-slate-300"}`}>
+                                                            {formData.amenities.includes(item) && <Check className="w-3 h-3 text-white" strokeWidth={4} />}
+                                                        </div>
+                                                        <span className="text-xs">{item}</span>
+                                                    </label>
+                                                ))}
                                             </div>
 
-                                        {/* Description */}
-                                        <div className="space-y-4">
-                                            <label className={labelCls}>Business Description / Highlights</label>
-                                            <textarea 
-                                                name="description" 
-                                                value={formData.description} 
-                                                onChange={handleChange} 
-                                                placeholder="Describe your venue, unique features, awards, or special packages..." 
-                                                className={`${inputCls} h-32`} 
+                                            {formData.amenities.includes("Parking Space") && (
+                                                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 grid md:grid-cols-2 gap-6 animate-in slide-in-from-top duration-300">
+                                                    <div>
+                                                        <label className={labelCls}>How many vehicles can be parked?</label>
+                                                        <input type="number" value={formData.parkingDetails.count} onChange={(e) => setFormData(prev => ({ ...prev, parkingDetails: { ...prev.parkingDetails, count: parseInt(e.target.value) || 0 } }))} className={inputCls} />
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <input type="checkbox" id="valet_opt" checked={formData.parkingDetails.valet} onChange={(e) => setFormData(prev => ({ ...prev, parkingDetails: { ...prev.parkingDetails, valet: e.target.checked }, amenities: e.target.checked ? [...prev.amenities, "Valet Parking"] : prev.amenities }))} className="w-5 h-5 accent-red-600" />
+                                                        <label htmlFor="valet_opt" className="text-sm font-bold text-slate-700">Valet Parking Available?</label>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Photos & Summary */}
+                                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8">
+                                            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900"><ImageIcon className="w-5 h-5 text-red-600"/> Venue Gallery / Photos</h3>
+                                            <MultiImageUpload 
+                                                onImagesChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))} 
+                                                maxImages={15} 
                                             />
+                                            
+                                            <div>
+                                                <label className={labelCls}>Business Description (Optional - will be auto-generated if left blank)</label>
+                                                <textarea 
+                                                    name="description" 
+                                                    value={formData.description} 
+                                                    onChange={handleChange} 
+                                                    placeholder="Describe your venue..." 
+                                                    className={`${inputCls} h-32`} 
+                                                />
+                                            </div>
                                         </div>
 
                                         <div className="pt-8 flex flex-col sm:flex-row gap-4">
-                                            <button 
-                                                type="button" 
-                                                onClick={() => setStep(1)}
-                                                className="w-full sm:w-1/3 h-14 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all"
-                                            >
-                                                Edit Contact Info
-                                            </button>
-                                            <button 
-                                                type="submit" 
-                                                className="w-full sm:w-2/3 h-14 bg-red-600 hover:bg-red-700 text-white font-bold text-xl rounded-xl shadow-xl shadow-red-100 transition-all flex items-center justify-center gap-2"
-                                            >
-                                                Choose Package
-                                            </button>
+                                            <button type="button" onClick={() => setStep(1)} className="w-full sm:w-1/3 h-14 bg-slate-100 text-slate-700 font-bold rounded-xl transition-all">Back</button>
+                                            <button type="submit" className="w-full sm:w-2/3 h-14 bg-red-600 hover:bg-red-700 text-white font-bold text-xl rounded-xl shadow-xl shadow-red-100 transition-all flex items-center justify-center gap-2">Choose Package</button>
                                         </div>
 
                                     </form>

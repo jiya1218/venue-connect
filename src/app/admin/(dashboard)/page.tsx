@@ -2,12 +2,30 @@
 
 import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import DashboardTab from "@/components/admin/Tabs/DashboardTab";
-import ListingsTab from "@/components/admin/Tabs/ListingsTab";
-import ApplicationsTab from "@/components/admin/Tabs/ApplicationsTab";
-import UsersTab from "@/components/admin/Tabs/UsersTab";
-import CitiesTab from "@/components/admin/Tabs/CitiesTab";
-import LeadsTab from "@/components/admin/Tabs/LeadsTab";
+import dynamic from "next/dynamic";
+
+const DashboardTab = dynamic(() => import("@/components/admin/Tabs/DashboardTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+const ListingsTab = dynamic(() => import("@/components/admin/Tabs/ListingsTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+const ApplicationsTab = dynamic(() => import("@/components/admin/Tabs/ApplicationsTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+const UsersTab = dynamic(() => import("@/components/admin/Tabs/UsersTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+const CitiesTab = dynamic(() => import("@/components/admin/Tabs/CitiesTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+const LeadsTab = dynamic(() => import("@/components/admin/Tabs/LeadsTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
+
+const EditRequestsTab = dynamic(() => import("@/components/admin/Tabs/EditRequestsTab"), { 
+    loading: () => <div className="animate-pulse bg-slate-100 h-96 rounded-[2.5rem]" /> 
+});
 
 function AdminDashboardContent() {
   const searchParams = useSearchParams();
@@ -17,6 +35,7 @@ function AdminDashboardContent() {
     <div className="animate-in fade-in duration-700">
       {activeTab === 'dashboard' && <DashboardTab />}
       {activeTab === 'listings' && <ListingsTab />}
+      {activeTab === 'edit-requests' && <EditRequestsTab />}
       {activeTab === 'leads' && <LeadsTab />}
       {activeTab === 'applications' && <ApplicationsTab />}
       {activeTab === 'users' && <UsersTab />}

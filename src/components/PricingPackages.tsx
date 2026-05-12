@@ -10,68 +10,63 @@ export default function PricingPackages({ onSelect, isLoading }: PricingPackages
     const packages = [
         {
             name: "Starter",
-            originalPrice: "₹999",
-            price: "Free",
-            period: "for now",
-            leads: "10 leads / month",
+            originalPrice: null,
+            price: "₹0",
+            period: "free / month",
+            leads: "Up to 50 Leads/mo",
             features: [
-                "10 leads forwarded to your WhatsApp every month",
-                "Each lead includes: name, phone number & event type",
-                "Basic listing on VenueConnect (name, city, category)",
-                "Appear in city & category search results"
+                "Basic listing profile",
+                "Standard search placement",
+                "Enquiry notifications",
+                "Email support"
             ],
             notIncluded: [
-                "Verified badge on listing",
-                "Budget & guest count in lead details",
-                "Priority leads (high-intent enquiries)",
-                "Top-up extra leads",
-                "Featured placement"
+                "Featured listing + badge",
+                "WhatsApp lead alerts",
+                "Analytics dashboard",
+                "Top placement always"
             ],
             extraLeads: null
         },
         {
-            name: "Professional",
-            badge: "Most popular",
+            name: "Growth",
+            badge: "MOST POPULAR",
             verifiedBadge: true,
             originalPrice: null,
-            price: "₹2,499",
+            price: "₹999",
             period: "/ month",
-            leads: "30 leads / month",
+            leads: "Up to 150 Leads/mo",
             features: [
-                "30 leads forwarded to your WhatsApp every month",
-                "Full lead details — name, phone, event type, budget & guest count",
-                "Verified badge shown on your listing page",
-                "Priority leads — high-intent enquiries forwarded first",
-                "Enhanced listing — more photos & description",
-                "Featured placement in category page",
-                "Top-up extra leads at ₹150/lead"
+                "Featured listing + badge",
+                "Priority search ranking",
+                "WhatsApp lead alerts",
+                "Analytics dashboard",
+                "Social media promo"
             ],
             notIncluded: [
-                "Category page #1 placement",
-                "Exclusive leads",
-                "Monthly performance report"
+                "Top placement always",
+                "Homepage featured slot",
+                "Brand ambassador ready"
             ],
-            extraLeads: "Extra leads: ₹150 per additional lead"
+            extraLeads: "Includes priority WhatsApp lead alerts"
         },
         {
-            name: "Elite",
+            name: "Premium",
+            badge: "BEST VALUE",
             verifiedBadge: true,
             originalPrice: null,
-            price: "₹4,999",
+            price: "₹1,999",
             period: "/ month",
-            leads: "75 leads / month",
+            leads: "Unlimited Leads",
             features: [
-                "75 leads forwarded to your WhatsApp every month",
-                "Full lead details — name, phone, event type, budget, guest count",
-                "Verified badge shown on your listing page",
-                "Exclusive leads — same lead not sent to any competitor",
-                "Category page #1 placement",
-                "Top-up extra leads at ₹100/lead (best rate)",
-                "Monthly performance report",
-                "Dedicated account manager"
+                "Top placement always",
+                "Homepage featured slot",
+                "Dedicated account manager",
+                "Brand ambassador ready",
+                "Bulk WhatsApp campaigns"
             ],
             notIncluded: [],
-            extraLeads: "Extra leads: ₹100 per additional lead"
+            extraLeads: "Maximum visibility & unlimited potential"
         }
     ];
 
@@ -101,8 +96,10 @@ export default function PricingPackages({ onSelect, isLoading }: PricingPackages
                 <div 
                     key={pkg.name} 
                     className={`relative bg-white text-slate-900 rounded-2xl p-6 md:p-8 flex flex-col border ${
-                        pkg.name === 'Professional' 
-                            ? 'border-pink-500 shadow-lg shadow-pink-100 ring-2 ring-pink-500/20' 
+                        pkg.name === 'Growth' 
+                            ? 'border-pink-500 shadow-lg shadow-pink-100 ring-2 ring-pink-500/20 scale-105 z-10' 
+                            : pkg.name === 'Premium'
+                            ? 'border-amber-400 shadow-lg shadow-amber-50 ring-2 ring-amber-500/10'
                             : 'border-slate-200 shadow-sm'
                     }`}
                 >
@@ -169,8 +166,10 @@ export default function PricingPackages({ onSelect, isLoading }: PricingPackages
                             onClick={() => onSelect(pkg.name)}
                             disabled={isLoading}
                             className={`w-full h-12 rounded-xl font-bold text-base transition-all border ${
-                                pkg.name === 'Professional' 
+                                pkg.name === 'Growth' 
                                     ? 'bg-pink-600 text-white border-transparent hover:bg-pink-700 shadow-md shadow-pink-200' 
+                                    : pkg.name === 'Premium'
+                                    ? 'bg-amber-500 text-white border-transparent hover:bg-amber-600 shadow-md shadow-amber-200'
                                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
                             }`}
                         >

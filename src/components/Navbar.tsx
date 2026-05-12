@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X, User, Search, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { gujaratCities } from "@/lib/cities";
@@ -89,12 +90,15 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
-      <div className="container flex items-center justify-between h-14 px-3 lg:px-6 relative">
+      <div className="container flex items-center justify-between h-20 px-3 lg:px-6 relative">
         <Link href="/" className="hidden lg:flex items-center hover:opacity-80 transition-opacity">
-          <img
+          <Image
             src="/venue-connect.png"
             alt="VenueConnect"
-            className="h-6 lg:h-9 w-auto"
+            width={200}
+            height={50}
+            className="h-14 w-auto"
+            priority
           />
         </Link>
 
@@ -190,10 +194,17 @@ const Navbar = () => {
         </div>
 
          {/* ── MOBILE HEADER: Logo LEFT | WhatsApp + Hamburger RIGHT ── */}
-         <div className="lg:hidden absolute inset-0 h-14 flex items-center px-3 justify-between gap-2">
+         <div className="lg:hidden absolute inset-0 h-20 flex items-center px-3 justify-between gap-2">
             {/* Left: Logo - Bigger */}
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity flex-shrink-0" onClick={() => setOpen(false)}>
-              <img src="/venue-connect.png" alt="VenueConnect" className="h-10 w-auto" />
+              <Image 
+                src="/venue-connect.png" 
+                alt="VenueConnect" 
+                width={180} 
+                height={50} 
+                className="h-14 w-auto" 
+                priority
+              />
             </Link>
 
             {/* Right: WhatsApp + Hamburger */}
@@ -224,7 +235,7 @@ const Navbar = () => {
 
       {/* Improved Mobile Menu Overlay */}
       {open && (
-        <div className="lg:hidden fixed inset-0 top-12 lg:top-16 z-40 bg-white/95 backdrop-blur-md overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 top-20 z-40 bg-white/95 backdrop-blur-md overflow-y-auto">
           <div className="container py-8 px-6 space-y-6">
             <nav className="space-y-1">
               <Link href="/" className="flex items-center justify-between text-lg font-bold py-4 border-b border-slate-100 hover:text-primary transition-colors" onClick={() => setOpen(false)}>

@@ -24,24 +24,32 @@ export default function LeadsTab() {
             const { data, error } = await supabase
                 .from('leads')
                 .select('*')
-                .ilike('customer_email', 'PENDING_ADMIN_%')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
             
-            // Fetch venue names manually for the leads found
             const venueIds = Array.from(new Set(data.map((l: any) => l.listing_id))).filter(Boolean);
             if (venueIds.length > 0) {
-                const { data: venuesData } = await supabase
-                    .from('venues')
-                    .select('id, name')
-                    .in('id', venueIds);
-                
-                const venueMap = Object.fromEntries(venuesData?.map((v: any) => [v.id, v.name]) || []);
-                const enrichedLeads = data.map((l: any) => ({
-                    ...l,
-                    venue_name: venueMap[l.listing_id] || 'Unknown Venue'
-                }));
+                const [venuesRes, vendorsRes] = await Promise.all([
+                    supabase.from('venues').select('id, name, selected_plan, leads_used, leads_quota').in('id', venueIds),
+                    supabase.from('vendors').select('id, name, selected_plan, leads_used, leads_quota').in('id', venueIds)
+                ]);
+
+                const infoMap = new Map();
+                venuesRes.data?.forEach(v => infoMap.set(v.id, { ...v, type: 'venue' }));
+                vendorsRes.data?.forEach(v => infoMap.set(v.id, { ...v, type: 'vendor' }));
+
+                const enrichedLeads = data.map((l: any) => {
+                    const info = infoMap.get(l.listing_id) || {};
+                    return {
+                        ...l,
+                        venue_name: info.name || 'Unknown Listing',
+                        selected_plan: info.selected_plan || 'Starter',
+                        leads_used: info.leads_used || 0,
+                        leads_quota: info.leads_quota || 50,
+                        listing_type: info.type
+                    };
+                });
                 setLeads(enrichedLeads);
             } else {
                 setLeads(data || []);
@@ -56,16 +64,30 @@ export default function LeadsTab() {
 
     const handleApprove = async (lead: any) => {
         try {
+            // 1. Approve the lead
             const cleanEmail = lead.customer_email.replace('PENDING_ADMIN_', '');
-            const { error } = await supabase
+            const { error: leadErr } = await supabase
                 .from('leads')
                 .update({ customer_email: cleanEmail })
                 .eq('id', lead.id);
 
-            if (error) throw error;
+            if (leadErr) throw leadErr;
+
+            // 2. Increment lead count for the listing
+            if (lead.listing_id) {
+                const { error: rpcError } = await supabase.rpc('increment_leads', { 
+                    l_id: lead.listing_id, 
+                    l_type: lead.listing_type || 'venue' 
+                });
+                if (rpcError) console.error("Quota update error:", rpcError);
+            }
+
             toast.success("Lead approved and sent to venue owner");
-            setLeads(leads.filter(l => l.id !== lead.id));
+            
+            // Refresh leads to show updated stats
+            fetchLeads();
         } catch (error) {
+            console.error("Approval error:", error);
             toast.error("Approval failed");
         }
     };
@@ -101,7 +123,8 @@ export default function LeadsTab() {
                     <TableHeader className="bg-slate-50/50">
                         <TableRow>
                             <TableHead className="font-black uppercase tracking-widest text-[10px]">Customer</TableHead>
-                            <TableHead className="font-black uppercase tracking-widest text-[10px]">Venue</TableHead>
+                            <TableHead className="font-black uppercase tracking-widest text-[10px]">Target Listing</TableHead>
+                            <TableHead className="font-black uppercase tracking-widest text-[10px]">Plan / Quota</TableHead>
                             <TableHead className="font-black uppercase tracking-widest text-[10px]">Event Details</TableHead>
                             <TableHead className="font-black uppercase tracking-widest text-[10px]">Status</TableHead>
                             <TableHead className="font-black uppercase tracking-widest text-[10px] text-right">Actions</TableHead>
@@ -122,9 +145,39 @@ export default function LeadsTab() {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="flex items-center gap-2 font-bold text-slate-700">
-                                        <Building size={16} className="text-primary" />
-                                        {lead.venue_name || "Unknown Venue"}
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center gap-2 font-bold text-slate-700">
+                                            <Building size={14} className="text-primary shrink-0" />
+                                            <span className="truncate max-w-[150px]">{lead.venue_name}</span>
+                                        </div>
+                                        <Badge variant="outline" className="w-fit text-[9px] h-4 px-1.5 font-bold uppercase opacity-60">
+                                            {lead.listing_type || 'Listing'}
+                                        </Badge>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex flex-col gap-1.5">
+                                        <Badge 
+                                            className={`w-fit text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg border ${
+                                                lead.selected_plan?.toLowerCase() === 'premium' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+                                                lead.selected_plan?.toLowerCase() === 'growth' ? 'bg-green-100 text-green-700 border-green-200' :
+                                                'bg-slate-100 text-slate-600 border-slate-200'
+                                            }`}
+                                        >
+                                            {lead.selected_plan?.toUpperCase() || 'STARTER'}
+                                        </Badge>
+                                        <div className="flex flex-col gap-0.5">
+                                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-500">
+                                                <span>Used: {lead.leads_used}</span>
+                                                <span className="text-primary">Left: {Math.max(0, (lead.leads_quota || 0) - (lead.leads_used || 0))}</span>
+                                            </div>
+                                            <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+                                                <div 
+                                                    className="bg-primary h-full transition-all" 
+                                                    style={{ width: `${Math.min(100, ((lead.leads_used || 0) / (lead.leads_quota || 1)) * 100)}%` }}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </TableCell>
                                 <TableCell>
