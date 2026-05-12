@@ -300,7 +300,7 @@ function EditListingModal({ data, onClose, onSave }: { data: any, onClose: () =>
                             <div>
                                 <label className={labelCls}>District & City *</label>
                                 <DistrictCitySelect 
-                                    onSelect={(val) => setFormData(prev => ({ ...prev, city: val, area: "" }))}
+                                    onSelect={(val) => setFormData((prev: any) => ({ ...prev, city: val, area: "" }))}
                                     initialValue={formData.city}
                                 />
                             </div>
