@@ -74,7 +74,7 @@ export default function ListingsTab() {
         if (cityFilter !== 'all') q = q.eq('city', cityFilter);
         if (statusFilter !== 'all') q = q.eq('is_approved', statusFilter === 'approved');
         if (search) q = q.ilike('name', `%${search}%`);
-        venuePromise = q.range(from, to).order('created_at', { ascending: false }).then(res => ({
+        venuePromise = q.range(from, to).order('created_at', { ascending: false }).then((res: any) => ({
             data: (res.data || []).map((v: any) => ({ ...v, type: 'venue' })),
             count: res.count || 0
         }));
@@ -85,7 +85,7 @@ export default function ListingsTab() {
         if (cityFilter !== 'all') q = q.eq('city', cityFilter);
         if (statusFilter !== 'all') q = q.eq('is_approved', statusFilter === 'approved');
         if (search) q = q.ilike('name', `%${search}%`);
-        vendorPromise = q.range(from, to).order('created_at', { ascending: false }).then(res => ({
+        vendorPromise = q.range(from, to).order('created_at', { ascending: false }).then((res: any) => ({
             data: (res.data || []).map((v: any) => ({ ...v, type: 'vendor' })),
             count: res.count || 0
         }));

@@ -36,8 +36,8 @@ export default function LeadsTab() {
                 ]);
 
                 const infoMap = new Map();
-                venuesRes.data?.forEach(v => infoMap.set(v.id, { ...v, type: 'venue' }));
-                vendorsRes.data?.forEach(v => infoMap.set(v.id, { ...v, type: 'vendor' }));
+                venuesRes.data?.forEach((v: any) => infoMap.set(v.id, { ...v, type: 'venue' }));
+                vendorsRes.data?.forEach((v: any) => infoMap.set(v.id, { ...v, type: 'vendor' }));
 
                 const enrichedLeads = data.map((l: any) => {
                     const info = infoMap.get(l.listing_id) || {};
