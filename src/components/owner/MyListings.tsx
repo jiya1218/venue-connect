@@ -245,7 +245,7 @@ function EditListingModal({ data, onClose, onSave }: { data: any, onClose: () =>
     const labelCls = "text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-2";
 
     const handleAmenityToggle = (item: string) => {
-        setFormData(prev => ({
+        setFormData((prev: any) => ({
             ...prev,
             amenities: prev.amenities.includes(item) 
                 ? prev.amenities.filter((a: string) => a !== item) 
@@ -470,7 +470,7 @@ function EditListingModal({ data, onClose, onSave }: { data: any, onClose: () =>
                         </h4>
                         <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200">
                             <MultiImageUpload 
-                                onImagesChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))} 
+                                onImagesChange={(urls) => setFormData((prev: any) => ({ ...prev, images: urls }))} 
                                 maxImages={15} 
                                 initialImages={formData.images}
                             />
