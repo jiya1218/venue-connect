@@ -61,7 +61,11 @@ export default function VenueSearchBar() {
         setIsOpen(false);
         const rawCity = (venue.city || "ahmedabad").split(/[-,]/)[0].trim();
         const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
-        router.push(`/${citySlug}/${venue.slug}`);
+        
+        const { buildListingSlug } = require('@/lib/seo/slugify');
+        const finalSlug = buildListingSlug(venue.slug, venue.location || venue.area);
+
+        router.push(`/${citySlug}/${finalSlug}`);
     };
 
     return (

@@ -44,3 +44,18 @@ export function unslugify(slug: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+/**
+ * Ensures a listing slug includes the area if one is provided.
+ * e.g. ("rajat-hotel", "navrangpura") → "rajat-hotel-in-navrangpura"
+ */
+export function buildListingSlug(slug: string, areaOrLocation?: string | null): string {
+    if (!areaOrLocation || slug.includes('-in-')) return slug;
+    
+    // Ensure the area isn't an entire long address
+    if (areaOrLocation.length > 30) return slug;
+    
+    // Extract the primary area name
+    const cleanArea = areaOrLocation.split(',')[0].trim();
+    return `${slug}-in-${slugify(cleanArea)}`;
+}

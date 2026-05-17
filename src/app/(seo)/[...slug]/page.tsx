@@ -54,11 +54,21 @@ import { enrichListings, getEnrichedImage, cleanName, enrichGallery } from '@/li
 const cachedGetSEOPageBySlug = cache(getSEOPageBySlug);
 const cachedGetVenueBySlug = cache(async (slug: string) => {
     const supabase = await createClient();
-    return supabase.from('venues').select('*').ilike('slug', slug).maybeSingle();
+    let res = await supabase.from('venues').select('*').ilike('slug', slug).maybeSingle();
+    if (!res.data && slug.includes('-in-')) {
+        const baseSlug = slug.split('-in-')[0];
+        res = await supabase.from('venues').select('*').ilike('slug', baseSlug).maybeSingle();
+    }
+    return res;
 });
 const cachedGetVendorBySlug = cache(async (slug: string) => {
     const supabase = await createClient();
-    return supabase.from('vendors').select('*').ilike('slug', slug).maybeSingle();
+    let res = await supabase.from('vendors').select('*').ilike('slug', slug).maybeSingle();
+    if (!res.data && slug.includes('-in-')) {
+        const baseSlug = slug.split('-in-')[0];
+        res = await supabase.from('vendors').select('*').ilike('slug', baseSlug).maybeSingle();
+    }
+    return res;
 });
 
 export const revalidate = 3600;

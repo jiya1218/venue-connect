@@ -74,6 +74,7 @@ function unslugify(slug: string) {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 }
+import { buildListingSlug } from '@/lib/seo/slugify';
 
 const blogs = [
     { title: "Event Lighting Ideas That Completely...", text: "Lighting is one of the most powerful yet oft...", date: "Friday Mar 27, 2026", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80", slug: "event-lighting-ideas" },
@@ -283,7 +284,8 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                    {/* LISTING CARDS — uniform 2-col mobile grid with fixed aspect ratio image */}
                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
                        {listingsToDisplay.map((listing: any, i: number) => {
-                           const detailHref = `/${isNearMe ? (listing.city || citySlug).toLowerCase() : citySlug}${isVendorContext ? '/vendors' : ''}/${listing.slug}`;
+                           const finalSlug = buildListingSlug(listing.slug, listing.area || listing.location);
+                           const detailHref = `/${isNearMe ? (listing.city || citySlug).toLowerCase() : citySlug}${isVendorContext ? '/vendors' : ''}/${finalSlug}`;
                            return (
                            <div key={listing.id || i} className="bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-3xl transition-all duration-500 group flex flex-col hover:-translate-y-2 relative">
                                {/* Entire card is a link EXCEPT the Get Quote button */}
@@ -422,8 +424,10 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                {/* MOBILE: Single Line Horizontal Scroll (Only 2 items) */}
                {!isVendorContext && (
                  <div className="md:hidden grid grid-cols-2 gap-3 pb-4">
-                     {allListings.slice(0, 2).map((v: any) => (
-                         <Link key={`top-m-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${v.slug}`} 
+                     {allListings.slice(0, 2).map((v: any) => {
+                         const finalSlug = buildListingSlug(v.slug, v.area || v.location);
+                         return (
+                         <Link key={`top-m-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${finalSlug}`} 
                                className="group bg-slate-50/50 rounded-xl p-2 border border-slate-100 hover:bg-white transition-all duration-500">
                              <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-2">
                                  <img 
@@ -446,15 +450,18 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                              </p>
                              <p className="text-[10px] font-black text-slate-900">₹{v.veg_price_per_plate || v.starting_price || '750'}</p>
                          </Link>
-                     ))}
+                         );
+                     })}
                  </div>
                )}
 
                {/* DESKTOP GRID */}
                {!isVendorContext && (
                  <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-                     {allListings.slice(0, 4).map((v: any) => (
-                         <Link key={`top-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${v.slug}`} className="group bg-slate-50/50 rounded-2xl md:rounded-[2.5rem] p-3 md:p-6 border border-slate-100 hover:bg-white hover:shadow-2xl hover:border-primary/20 transition-all duration-500">
+                     {allListings.slice(0, 4).map((v: any) => {
+                         const finalSlug = buildListingSlug(v.slug, v.area || v.location);
+                         return (
+                         <Link key={`top-${v.id}`} href={`/${citySlug}${isVendorContext ? '/vendors' : ''}/${finalSlug}`} className="group bg-slate-50/50 rounded-2xl md:rounded-[2.5rem] p-3 md:p-6 border border-slate-100 hover:bg-white hover:shadow-2xl hover:border-primary/20 transition-all duration-500">
                              <div className="relative w-full aspect-[4/3] rounded-xl md:rounded-[2rem] overflow-hidden mb-2.5 md:mb-6">
                                  
                                   <img 
@@ -475,7 +482,8 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                              <p className="text-[9px] md:text-sm text-slate-400 font-bold flex items-center gap-0.5 md:gap-1 mt-0.5 md:mt-2 mb-1.5 md:mb-4"><MapPin size={9} className="md:w-3.5 md:h-3.5 shrink-0"/> <span className="truncate">{v.location || v.city}</span></p>
                              <p className="text-[10px] md:text-base font-black text-slate-900">₹{v.veg_price_per_plate || v.starting_price || '750'} <span className="text-[8px] md:text-[10px] text-slate-400 uppercase tracking-widest">/ plate</span></p>
                          </Link>
-                     ))}
+                         );
+                     })}
                  </div>
                )}
           </div>

@@ -103,10 +103,14 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
         setIsOpen(false);
         const rawCity = (item.city || "ahmedabad").split(/[-,]/)[0].trim();
         const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
+        
+        const { buildListingSlug } = require('@/lib/seo/slugify');
+        const finalSlug = buildListingSlug(item.slug, item.location || item.area);
+
         if (item._type === "vendor") {
-            router.push(`/${citySlug}/vendors/${item.slug}`);
+            router.push(`/${citySlug}/vendors/${finalSlug}`);
         } else {
-            router.push(`/${citySlug}/${item.slug}`);
+            router.push(`/${citySlug}/${finalSlug}`);
         }
     };
 
