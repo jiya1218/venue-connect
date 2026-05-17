@@ -61,6 +61,7 @@ const ReviewCarousel = () => {
 };
 import { Button } from '@/components/ui/button';
 import ListingFilter from '@/components/ListingFilter';
+import OmniSearchBar from '@/components/listing/OmniSearchBar';
 import { VENUE_TYPES, VENDOR_TYPES, GUJARAT_CITIES, OCCASIONS as OCCASIONS_DATA, EVENT_SUGGESTIONS } from "@/lib/constants";
 import { citiesData } from "@/lib/citiesData";
 import { getListingImage, getVarietyFallback } from "@/lib/imageUtils";
@@ -245,44 +246,11 @@ export default function SEOCollectionView({ seoPage, seoData, venues, vendors, c
                       </h1>
                   </div>
 
-                  {/* Wide-Format Search Bar (Desktop) | Compact Bar (Mobile) */}
-                    <div className="bg-white md:bg-white/10 backdrop-blur-xl rounded-full shadow-2xl flex flex-row items-center overflow-hidden w-full max-w-6xl border-2 md:border-4 border-white/10 group/searchbox transition-all duration-500 hover:border-white/20 h-11 md:h-20">
-                        {/* Category Selector */}
-                        <div className="flex-[5] flex items-center px-4 md:px-10 h-full border-r border-slate-100 md:border-white/10">
-                            <Search className="text-slate-400 md:text-white/60 w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-5 shrink-0" />
-                            <select 
-                                className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm appearance-none cursor-pointer"
-                                value={searchCategory}
-                                onChange={(e) => setSearchCategory(e.target.value)}
-                                suppressHydrationWarning
-                            >
-                                <option value="" className="text-slate-900">{isVendorContext ? "Search Vendors..." : "Search Venues..."}</option>
-                                {(isVendorContext ? VENDOR_TYPES : VENUE_TYPES).map((t: any) => (
-                                    <option key={t} value={t} className="text-slate-900">{t}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* City Selector */}
-                        <div className="flex-[4] flex items-center px-4 md:px-8 h-full border-r border-slate-100 md:border-white/10">
-                            <MapPin className="text-slate-400 md:text-white/60 w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-4 shrink-0" />
-                            <select 
-                                className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm appearance-none cursor-pointer"
-                                value={searchCity}
-                                onChange={(e) => setSearchCity(e.target.value)}
-                                suppressHydrationWarning
-                            >
-                                <option value="All Cities" className="text-slate-900">All Cities</option>
-                                {GUJARAT_CITIES.map((c: any) => (
-                                    <option key={c} value={c} className="text-slate-900">{c}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <button suppressHydrationWarning onClick={handleSearch} className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] md:text-xs h-full px-4 md:px-12 transition-all">
-                            Go
-                        </button>
-                    </div>
+                  {/* Interactive Omni Search Bar */}
+                  <OmniSearchBar 
+                      initialCity={citySlug === 'all' ? 'All Cities' : unslugify(citySlug)}
+                      isVendorContext={isVendorContext}
+                  />
               </div>
           </div>
       </section>
