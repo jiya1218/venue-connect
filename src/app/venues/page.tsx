@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ReviewCarousel, BlogsCarousel } from "@/components/seo/SEOCollectionViewParts";
 import { SafeImage } from "@/components/ui/SafeImage";
 import CitySelect from "@/components/CitySelect";
+import VenueSearchBar from "@/components/listing/VenueSearchBar";
 
 export const revalidate = 3600;
 
@@ -102,19 +103,8 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
                             </h1>
                         </div>
 
-                        {/* Compact Search Bar (Desktop) | Single Line Bar (Mobile) */}
-                        <div className="bg-white md:bg-white/10 backdrop-blur-xl rounded-full shadow-2xl flex flex-row items-center overflow-hidden w-full max-w-4xl border-2 md:border-4 border-white/10 group/searchbox transition-all duration-500 hover:border-white/20 h-11 md:h-16 px-1">
-                            <div className="flex-[8] flex items-center px-4 md:px-6 h-full border-r border-slate-100 md:border-white/10">
-                                <Search className="text-slate-400 md:text-white/60 w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 shrink-0" />
-                                <select className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm appearance-none cursor-pointer">
-                                    <option value="" className="text-slate-900">Search Venues...</option>
-                                    {OCCASIONS.map(o => <option key={o} value={o} className="text-slate-900">{o}</option>)}
-                                </select>
-                            </div>
-                            <button className="flex-[2] bg-[#EF3E36] hover:bg-[#D9362F] text-white font-black uppercase tracking-widest text-[10px] md:text-xs h-9 md:h-full px-4 md:px-8 transition-all rounded-full md:rounded-none">
-                                Go
-                            </button>
-                        </div>
+                        {/* Interactive Venue Search Bar */}
+                        <VenueSearchBar />
                     </div>
                 </div>
             </section>
