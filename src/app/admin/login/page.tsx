@@ -14,16 +14,17 @@ export default function AdminLoginPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const checkUser = async () => {
+      const response = await supabase.auth.getUser();
+      const user = response?.data?.user;
       if (user) {
-        // If user is already logged in, check their profile role
-        supabase.from('profiles').select('role').eq('id', user.id).single().then(({ data: profile }) => {
-          if (profile?.role === 'admin') {
-            router.push('/admin');
-          }
-        });
+        const profileResponse = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        if (profileResponse?.data?.role === 'admin') {
+          router.push('/admin');
+        }
       }
-    });
+    };
+    checkUser();
   }, [router, supabase]);
 
   const handleLogin = async (e: React.FormEvent) => {
