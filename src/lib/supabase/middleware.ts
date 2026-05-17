@@ -58,6 +58,9 @@ export async function updateSession(request: NextRequest) {
           })
         },
       },
+      auth: {
+        storageKey: 'venueconnect-auth-token'
+      }
     }
   )
 

@@ -37,6 +37,9 @@ export async function createClient() {
           }
         },
       },
+      auth: {
+        storageKey: 'venueconnect-auth-token'
+      }
     }
   )
 }

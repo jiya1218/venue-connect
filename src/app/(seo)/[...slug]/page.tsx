@@ -48,7 +48,7 @@ import {
 import { VendorQuickStats, VendorServices, VendorPortfolio, VendorServiceAreas } from "@/components/listing/VendorSections";
 import VendorEnquiryForm from "@/components/listing/VendorEnquiryForm";
 import SimilarVendors from "@/components/listing/SimilarVendors";
-import { enrichListings, getEnrichedImage, cleanName } from '@/lib/imageEnricher';
+import { enrichListings, getEnrichedImage, cleanName, enrichGallery } from '@/lib/imageEnricher';
 
 // Cache critical lookups to share across generateMetadata and the Page component
 const cachedGetSEOPageBySlug = cache(getSEOPageBySlug);
@@ -417,7 +417,7 @@ export default async function TopLevelRouter({ params, searchParams }: PageProps
 function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }) {
     const enrichedMainImage = getEnrichedImage(venue);
     const cleanedName = cleanName(venue.name);
-    const images = venue.images && venue.images.length > 0 ? venue.images : [enrichedMainImage].filter(Boolean);
+    const images = enrichGallery(venue.images, venue);
 
     return (
         <div className="min-h-screen bg-white">
@@ -545,7 +545,7 @@ function VenueDetailView({ venue, cityParam }: { venue: any, cityParam: string }
 function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: string }) {
     const enrichedMainImage = getEnrichedImage(vendor);
     const cleanedName = cleanName(vendor.name);
-    const images = vendor.images && vendor.images.length > 0 ? vendor.images : [enrichedMainImage].filter(Boolean);
+    const images = enrichGallery(vendor.images, vendor);
     const isApproved = vendor.is_approved === true || vendor.is_verified === true;
 
     return (
@@ -741,7 +741,7 @@ function VendorDetailView({ vendor, cityParam }: { vendor: any, cityParam: strin
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {[
-                            { t: 'Wedding Makeup Trends 2026', i: 'https://images.unsplash.com/photo-1487412947147-5cebf100d898?w=800&q=80' },
+                            { t: 'Wedding Makeup Trends 2026', i: 'https://images.unsplash.com/photo-1529316275402-0462fcc4abd6?w=800&q=80' },
                             { t: 'Top 10 Photographer Poses', i: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80' },
                             { t: 'Best Decor Themes for Outdoors', i: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' }
                         ].map((post, i) => (

@@ -25,7 +25,7 @@ const IMAGE_POOLS: Record<string, string[]> = {
     '1533174072545-7a4b6ad7a6c3', // Lighting
     '1501281668698-3d144ba4477d', // Celebration
     '1542314831-068cd1dbfeeb', // Luxury Interior
-    '1505373877841-825f7d46678', // Party Hall
+    '1464366400600-7168b8af9bc3', // Party Hall
     '1445019980597-93fa8acb246c'  // Hotel Hall
   ],
   'hotel': [
@@ -49,7 +49,7 @@ const IMAGE_POOLS: Record<string, string[]> = {
     '1544124499-536132dd3fdc'  // Resort Architecture
   ],
   'lawn': [
-    '1523585322415-3843e914364c', // Lawn
+    '1500382017468-9049fe74a44b', // Lawn
     '1529316275402-0462fcc4abd6', // Party Plot
     '1561593367-66c79c2294e6', // Garden
     '1511795409834-ef04bbd61622', // Farmhouse
@@ -59,8 +59,8 @@ const IMAGE_POOLS: Record<string, string[]> = {
     '1500382017468-9049fe74a44b'  // Garden Path
   ],
   'restaurant': [
-    '1517248135467-4c7ed9d42177', // Restaurant
-    '1552566629-99ed1f857f06', // Dining Room
+    '1514368533000', // Dining Room
+    '1514368533000-0e7ef000af46', // Restaurant
     '1514326640560-7d063ef2aed5', // Indian Dining
     '1555396273-547e1568203d', // Fine Dining
     '1414235077428-338989a2e8c0', // Gourmet Restaurant
@@ -156,7 +156,7 @@ const IMAGE_POOLS: Record<string, string[]> = {
   ],
   'generic': [
     '1519167758481-83f550bb49b3', // Party
-    '1505373877841-825f7d46678', // Event
+    '1511795409834', // Event
     '1566073771259-6a8506099945', // Venue
     '1511285560929-80b456fea0bc'  // Celebration
   ]
@@ -242,7 +242,8 @@ export function getEnrichedImage(listing: any): string {
     '1537633552985-df8429e8048b', '1511285560929-80b456fea0bc', '1505373877841-825f7d46678',
     '1487412720507-e7ab37603c6f', '1610173827002-62c0f1f05d04', '1516280440614-37939bbacd81',
     '1534180477871-5d6cc81f3920', '1478146059778-26028b07395a', '1603217192634-61068e4d4bf9',
-    '1536240478700-b869ad10e2af', '1617196034183-421b4040ed20'
+    '1536240478700-b869ad10e2af', '1617196034183-421b4040ed20', '1523585322415-3843e914364c',
+    '1501281668695-021443857e0e', '1505373877841-825f7d46678', '1552566629-99ed1f857f06'
   ];
 
   const isGeneric = !currentImage || 
@@ -267,6 +268,58 @@ export function getEnrichedImage(listing: any): string {
   const imageId = pool[index];
 
   return `https://images.unsplash.com/photo-${imageId}?auto=format&fit=crop&w=1200&h=800&q=80`;
+}
+
+/**
+ * Enriches an array of gallery images, filtering out broken placeholders
+ * and ensuring a minimum number of high-quality images.
+ */
+export function enrichGallery(images: string[], listing: any, minCount: number = 4): string[] {
+  if (!images || !Array.isArray(images)) images = [];
+  
+  // 1. Identify valid, non-placeholder images
+  const placeholderIds = [
+    '1519167758481-83f550bb49b3', '1555244162-803834f70033', '1519225421980-715bd0215aed',
+    '1537633552985-df8429e8048b', '1511285560929-80b456fea0bc', '1505373877841-825f7d46678',
+    '1487412720507-e7ab37603c6f', '1610173827002-62c0f1f05d04', '1516280440614-37939bbacd81',
+    '1534180477871-5d6cc81f3920', '1478146059778-26028b07395a', '1603217192634-61068e4d4bf9',
+    '1536240478700-b869ad10e2af', '1617196034183-421b4040ed20', '1523585322415-3843e914364c',
+    '1501281668695-021443857e0e', '1505373877841-825f7d46678', '1552566629-99ed1f857f06'
+  ];
+
+  const validImages = images.filter(img => {
+    if (!img || typeof img !== 'string') return false;
+    if (placeholderIds.some(id => img.includes(id))) return false;
+    if (img.includes('placeholder') || img.includes('default')) return false;
+    return img.startsWith('http');
+  });
+
+  // 2. If we have enough valid images, return them
+  if (validImages.length >= minCount) return validImages;
+
+  // 3. Otherwise, supplement from the variety pool
+  const poolKey = getPoolKey(listing.category || '', listing.type || listing.vendor_type || '', listing.name || '');
+  const pool = IMAGE_POOLS[poolKey] || IMAGE_POOLS.generic;
+  const salt = cleanName(listing.name || 'default');
+  
+  const supplemented = [...validImages];
+  const usedIds = new Set(validImages.map(img => {
+    const match = img.match(/photo-([^?]+)/);
+    return match ? match[1] : img;
+  }));
+
+  let attempts = 0;
+  while (supplemented.length < minCount && attempts < pool.length) {
+    const index = (getHash(salt) + attempts) % pool.length;
+    const imageId = pool[index];
+    if (!usedIds.has(imageId)) {
+      supplemented.push(`https://images.unsplash.com/photo-${imageId}?auto=format&fit=crop&w=1200&h=800&q=80`);
+      usedIds.add(imageId);
+    }
+    attempts++;
+  }
+
+  return supplemented;
 }
 
 /**

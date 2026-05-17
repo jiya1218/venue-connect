@@ -16,6 +16,8 @@ export default function RegisterPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [isRegistered, setIsRegistered] = useState(false);
+
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -27,22 +29,46 @@ export default function RegisterPage() {
                 options: {
                     data: {
                         full_name: fullName,
-                    }
+                    },
+                    emailRedirectTo: `${window.location.origin}/login`
                 }
             });
 
             if (error) throw error;
 
-            toast.success("Account created successfully!", {
-                description: "Please check your email to verify your account."
-            });
-            router.push("/login");
+            setIsRegistered(true);
+            toast.success("Account created!");
         } catch (error: any) {
             toast.error(error.message || "Failed to create account");
         } finally {
             setLoading(false);
         }
     };
+
+    if (isRegistered) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
+                <div className="w-full max-w-md text-center space-y-6">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Mail className="w-10 h-10 text-primary" />
+                    </div>
+                    <h1 className="text-3xl font-display font-bold">Check your email</h1>
+                    <p className="text-muted-foreground">
+                        We&apos;ve sent a verification link to <span className="font-semibold text-foreground">{email}</span>. 
+                        Please click the link to verify your account.
+                    </p>
+                    <div className="pt-6">
+                        <Button asChild className="w-full">
+                            <Link href="/login">Return to Login</Link>
+                        </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                        Didn&apos;t receive the email? Check your spam folder or contact support.
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">

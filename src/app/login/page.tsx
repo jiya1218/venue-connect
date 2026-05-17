@@ -20,12 +20,25 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
-            if (error) throw error;
+            if (error) {
+                if (error.message.toLowerCase().includes("email not confirmed")) {
+                    toast.error("Email not verified", {
+                        description: "Please check your inbox or spam folder to confirm your email.",
+                        action: {
+                            label: "Resend Email",
+                            onClick: () => handleResendEmail()
+                        },
+                        duration: 10000
+                    });
+                    return;
+                }
+                throw error;
+            }
 
             toast.success("Welcome back!");
             router.push("/");
@@ -33,6 +46,19 @@ export default function LoginPage() {
             toast.error(error.message || "Failed to sign in");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleResendEmail = async () => {
+        try {
+            const { error } = await supabase.auth.resend({
+                type: 'signup',
+                email: email,
+            });
+            if (error) throw error;
+            toast.success("Verification email resent!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to resend email");
         }
     };
 

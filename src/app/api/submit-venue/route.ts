@@ -70,7 +70,11 @@ export async function POST(req: NextRequest) {
   const areaRow = areaResult.data;
 
   // ── 5. Build venue slug ───────────────────────────────────────────────────
-  const venueSlug = slugify(data.name);
+  let slugBase = data.name;
+  if (areaRow?.area) {
+    slugBase = `${data.name} in ${areaRow.area}`;
+  }
+  const venueSlug = slugify(slugBase);
 
   const contact_json = {
     name: data.contact_name,

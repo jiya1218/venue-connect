@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Lock, Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -10,6 +11,20 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        // If user is already logged in, check their profile role
+        supabase.from('profiles').select('role').eq('id', user.id).single().then(({ data: profile }) => {
+          if (profile?.role === 'admin') {
+            router.push('/admin');
+          }
+        });
+      }
+    });
+  }, [router, supabase]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +32,18 @@ export default function AdminLoginPage() {
     setError('');
     const supabase = createClient();
     if (!supabase) { setError('DB not configured'); setLoading(false); return; }
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    if (err) { setError(err.message); setLoading(false); return; }
-    router.push('/admin/pending');
+    
+    // Attempt sign in
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
+    
+    if (err) { 
+      setError(err.message); 
+      setLoading(false); 
+      return; 
+    }
+    
+    // Success - redirect to dashboard
+    router.push('/admin');
   };
 
   return (

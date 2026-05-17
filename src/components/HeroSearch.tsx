@@ -222,6 +222,8 @@ const HeroSearch = () => {
                       alt="User" 
                       fill
                       className="object-cover"
+                      sizes="40px"
+                      unoptimized
                     />
                   </div>
                 ))}

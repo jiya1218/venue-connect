@@ -97,8 +97,9 @@ const Navbar = () => {
             alt="VenueConnect"
             width={200}
             height={50}
-            className="h-14 w-auto"
+            className="object-contain"
             priority
+            style={{ height: '72px', width: 'auto' }}
           />
         </Link>
 
@@ -202,8 +203,9 @@ const Navbar = () => {
                 alt="VenueConnect" 
                 width={180} 
                 height={50} 
-                className="h-14 w-auto" 
+                className="object-contain" 
                 priority
+                style={{ height: '64px', width: 'auto' }}
               />
             </Link>
 
