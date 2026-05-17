@@ -45,6 +45,25 @@ export default function RegisterPage() {
         }
     };
 
+    const handleResendEmail = async () => {
+        setLoading(true);
+        try {
+            const { error } = await supabase.auth.resend({
+                type: 'signup',
+                email: email,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/login`
+                }
+            });
+            if (error) throw error;
+            toast.success("Verification email resent!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to resend email");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (isRegistered) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
@@ -57,9 +76,17 @@ export default function RegisterPage() {
                         We&apos;ve sent a verification link to <span className="font-semibold text-foreground">{email}</span>. 
                         Please click the link to verify your account.
                     </p>
-                    <div className="pt-6">
+                    <div className="pt-6 space-y-3">
                         <Button asChild className="w-full">
                             <Link href="/login">Return to Login</Link>
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={handleResendEmail}
+                            disabled={loading}
+                        >
+                            {loading ? "Sending..." : "Resend Verification Link"}
                         </Button>
                     </div>
                     <p className="text-sm text-muted-foreground">
