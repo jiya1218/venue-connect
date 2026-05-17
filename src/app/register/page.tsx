@@ -23,7 +23,7 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -36,8 +36,15 @@ export default function RegisterPage() {
 
             if (error) throw error;
 
+            if (data?.session) {
+                toast.success("Account created successfully!");
+                router.push('/');
+                router.refresh();
+                return;
+            }
+
             setIsRegistered(true);
-            toast.success("Account created!");
+            toast.success("Account created! Please verify your email.");
         } catch (error: any) {
             toast.error(error.message || "Failed to create account");
         } finally {
