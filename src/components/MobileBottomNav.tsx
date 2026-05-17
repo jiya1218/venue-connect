@@ -1,12 +1,49 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Building2, Store, MapPin } from "lucide-react";
 
 const MobileBottomNav = () => {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const [venueHref, setVenueHref] = useState("/venues");
+
+  useEffect(() => {
+    const canonicalCities = [
+      'ahmedabad', 'surat', 'vadodara', 'rajkot', 'gandhinagar', 
+      'bhavnagar', 'jamnagar', 'anand', 'junagadh', 'gandhidham', 
+      'navsari', 'morbi', 'bhuj', 'valsad', 'palanpur', 'dahod'
+    ];
+
+    // 1. Get from current path first
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const potentialCity = pathSegments[0]?.toLowerCase();
+    
+    let citySlug = '';
+    if (potentialCity && canonicalCities.includes(potentialCity)) {
+      citySlug = potentialCity;
+    } else {
+      // 2. Get from localStorage
+      const cached = localStorage.getItem('vc_user_city');
+      if (cached && canonicalCities.includes(cached.toLowerCase())) {
+        citySlug = cached.toLowerCase();
+      }
+    }
+    
+    if (citySlug) {
+      setVenueHref(`/${citySlug}/`);
+    } else {
+      setVenueHref("/ahmedabad/"); // default to Ahmedabad venues page
+    }
+  }, [pathname]);
+
+  const isActive = (path: string) => {
+    if (path === '/venues') {
+      return pathname === '/venues' || pathname.startsWith('/ahmedabad') || pathname.startsWith('/surat') || pathname.startsWith('/vadodara') || pathname.startsWith('/rajkot') || pathname.startsWith('/gandhinagar');
+    }
+    return pathname === path;
+  };
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
@@ -18,8 +55,8 @@ const MobileBottomNav = () => {
         </Link>
 
         {/* Venue */}
-        <Link href="/venues" className={`flex flex-col items-center gap-0.5 flex-1 py-2 transition-colors ${isActive('/venues') ? 'text-primary' : 'text-slate-500'}`}>
-          <Building2 className={`w-5 h-5 ${isActive('/venues') ? 'text-primary' : ''}`} />
+        <Link href={venueHref} className={`flex flex-col items-center gap-0.5 flex-1 py-2 transition-colors ${pathname === venueHref || pathname.includes(venueHref) ? 'text-primary' : 'text-slate-500'}`}>
+          <Building2 className={`w-5 h-5 ${pathname === venueHref || pathname.includes(venueHref) ? 'text-primary' : ''}`} />
           <span className="text-[10px] font-semibold">Venue</span>
         </Link>
 

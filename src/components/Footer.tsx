@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Mail, Phone, Instagram, Facebook, Twitter, Linkedin,
   MessageCircle, ArrowUp, ChevronDown
@@ -23,6 +23,35 @@ const Accordion = ({ title, children }: { title: string; children: React.ReactNo
 };
 
 const Footer = () => {
+  const [venueHref, setVenueHref] = useState("/venues");
+
+  useEffect(() => {
+    const canonicalCities = [
+      'ahmedabad', 'surat', 'vadodara', 'rajkot', 'gandhinagar', 
+      'bhavnagar', 'jamnagar', 'anand', 'junagadh', 'gandhidham', 
+      'navsari', 'morbi', 'bhuj', 'valsad', 'palanpur', 'dahod'
+    ];
+
+    const pathSegments = typeof window !== 'undefined' ? window.location.pathname.split('/').filter(Boolean) : [];
+    const potentialCity = pathSegments[0]?.toLowerCase();
+    
+    let citySlug = '';
+    if (potentialCity && canonicalCities.includes(potentialCity)) {
+      citySlug = potentialCity;
+    } else {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem('vc_user_city') : null;
+      if (cached && canonicalCities.includes(cached.toLowerCase())) {
+        citySlug = cached.toLowerCase();
+      }
+    }
+    
+    if (citySlug) {
+      setVenueHref(`/${citySlug}/`);
+    } else {
+      setVenueHref("/ahmedabad/");
+    }
+  }, []);
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
@@ -75,14 +104,14 @@ const Footer = () => {
         {/* Quick nav button row */}
         <div className="flex flex-wrap gap-2 mb-4">
           {[
-            { label: "Venues / Vendors", href: "/venues" },
+            { label: "Venues / Vendors", href: venueHref },
             { label: "List Business",    href: "/list-business" },
             { label: "Refer & Earn",     href: "/refer-earn" },
             { label: "Home",             href: "/" },
             { label: "About",            href: "/about" },
             { label: "Contact",          href: "/contact" },
           ].map((btn) => (
-            <Link key={btn.href} href={btn.href}
+            <Link key={btn.label} href={btn.href}
               className="px-3 py-1.5 rounded-full border border-white/20 text-[10px] font-bold text-white/80 hover:bg-primary hover:border-primary hover:text-white transition-all">
               {btn.label}
             </Link>
@@ -228,7 +257,7 @@ const Footer = () => {
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <Link href="/about" className="hover:text-primary transition-colors">About us</Link>
           <Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
-          <Link href="/venues" className="hover:text-primary transition-colors">Find A Venue | Vendor</Link>
+          <Link href={venueHref} className="hover:text-primary transition-colors">Find A Venue | Vendor</Link>
           <Link href="/list-business" className="hover:text-primary transition-colors">List A Venue | Vendor</Link>
           <Link href="/refer-earn" className="hover:text-primary transition-colors">Refer &amp; Earn</Link>
         </div>
@@ -256,7 +285,7 @@ const Footer = () => {
           </div>
           <span className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Home</span>
         </Link>
-        <Link href="/venues" className="flex flex-col items-center justify-center gap-1">
+        <Link href={venueHref} className="flex flex-col items-center justify-center gap-1">
           <div className="text-slate-400 hover:text-primary transition-colors">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h18v18H3z"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
           </div>

@@ -15,11 +15,8 @@ export default function VenueSearchBar() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (query.trim().length > 1) {
+            if (isOpen || query.trim().length >= 0) {
                 fetchSuggestions(query);
-            } else {
-                setSuggestions([]);
-                setIsOpen(false);
             }
         }, 300);
         return () => clearTimeout(timer);
@@ -38,13 +35,22 @@ export default function VenueSearchBar() {
     const fetchSuggestions = async (search: string) => {
         const { data, error } = await supabase
             .from("venues")
-            .select("id, name, city, slug, location")
+            .select("id, name, city, slug, location, area")
             .eq("is_active", true)
             .ilike("name", `%${search}%`)
-            .limit(5);
+            .order('name', { ascending: true })
+            .limit(20);
 
         if (!error && data) {
-            setSuggestions(data);
+            const mapped = data;
+            let sorted = mapped;
+            if (search.trim()) {
+                const lowerSearch = search.toLowerCase();
+                const startsWith = mapped.filter((item: any) => item.name.toLowerCase().startsWith(lowerSearch));
+                const contains = mapped.filter((item: any) => !item.name.toLowerCase().startsWith(lowerSearch) && item.name.toLowerCase().includes(lowerSearch));
+                sorted = [...startsWith, ...contains];
+            }
+            setSuggestions(sorted);
             setIsOpen(true);
         }
     };
@@ -63,7 +69,7 @@ export default function VenueSearchBar() {
         const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
         
         const { buildListingSlug } = require('@/lib/seo/slugify');
-        const finalSlug = buildListingSlug(venue.slug, venue.location || venue.area);
+        const finalSlug = buildListingSlug(venue.slug, venue.area || venue.location);
 
         router.push(`/${citySlug}/${finalSlug}`);
     };
@@ -80,7 +86,7 @@ export default function VenueSearchBar() {
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        onFocus={() => { if(suggestions.length > 0) setIsOpen(true) }}
+                        onFocus={() => { setIsOpen(true); fetchSuggestions(query); }}
                         placeholder="Search venues by name..."
                         className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm placeholder:text-slate-500 md:placeholder:text-white/60 outline-none"
                         autoComplete="off"

@@ -926,7 +926,7 @@ async function fetchVenues(categorySlug: string, citySlug: string, sParams: any,
         data = cityData;
     }
 
-    return (data || []).map((v: any) => ({ ...v, locations: { city: v.city, area: v.location } }));
+    return (data || []).map((v: any) => ({ ...v, area: v.area, locations: { city: v.city, area: v.area || v.location } }));
 }
 
 async function fetchVendors(categorySlug: string, citySlug: string, sParams: any, categoryId?: string | null, areaSlug?: string) {

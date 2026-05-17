@@ -63,28 +63,50 @@ const Navbar = () => {
   // If we have a cached city, pass it as a query filter instead of navigating to /{city}.
   const navigateToVenues = async () => {
     try {
-      const cached = typeof window !== 'undefined' ? localStorage.getItem('vc_user_city') : null;
-      if (cached) {
-        router.push(`/${cached.toLowerCase().replace(/\s+/g, '-')}`);
+      const canonicalCities = [
+        'ahmedabad', 'surat', 'vadodara', 'rajkot', 'gandhinagar', 
+        'bhavnagar', 'jamnagar', 'anand', 'junagadh', 'gandhidham', 
+        'navsari', 'morbi', 'bhuj', 'valsad', 'palanpur', 'dahod'
+      ];
+
+      // 1. Try to extract city from current URL path
+      const pathSegments = typeof window !== 'undefined' ? window.location.pathname.split('/').filter(Boolean) : [];
+      const potentialCity = pathSegments[0]?.toLowerCase();
+      
+      let citySlug = '';
+      if (potentialCity && canonicalCities.includes(potentialCity)) {
+        citySlug = potentialCity;
+      } else {
+        // 2. Try to get from localStorage
+        const cached = typeof window !== 'undefined' ? localStorage.getItem('vc_user_city') : null;
+        if (cached && canonicalCities.includes(cached.toLowerCase())) {
+          citySlug = cached.toLowerCase();
+        }
+      }
+
+      if (citySlug) {
+        localStorage.setItem('vc_user_city', citySlug);
+        router.push(`/${citySlug}/`);
         return;
       }
       
+      // 3. Fallback: Geolocate
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
       
       const res = await fetch("https://ipapi.co/json/", { signal: controller.signal });
       clearTimeout(timeoutId);
       
       const data = await res.json();
       if (data.city && gujaratCities.some(c => c.toLowerCase() === data.city.toLowerCase())) {
-        const citySlug = data.city.toLowerCase();
-        localStorage.setItem('vc_user_city', citySlug);
-        router.push(`/${citySlug}`);
+        const detectedCity = data.city.toLowerCase();
+        localStorage.setItem('vc_user_city', detectedCity);
+        router.push(`/${detectedCity}/`);
       } else {
-        router.push("/venues");
+        router.push("/ahmedabad/");
       }
     } catch (err) {
-      router.push("/venues");
+      router.push("/ahmedabad/");
     }
   };
 

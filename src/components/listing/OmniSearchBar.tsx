@@ -18,11 +18,8 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (query.trim().length > 1) {
+            if (isOpen || query.trim().length >= 0) {
                 fetchSuggestions(query, city);
-            } else {
-                setSuggestions([]);
-                setIsOpen(false);
             }
         }, 300);
         return () => clearTimeout(timer);
@@ -42,9 +39,10 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
         // Fetch venues
         let venueQuery = supabase
             .from("venues")
-            .select("id, name, city, slug, location")
+            .select("id, name, city, slug, location, area")
             .eq("is_active", true)
-            .ilike("name", `%${search}%`);
+            .ilike("name", `%${search}%`)
+            .order('name', { ascending: true });
             
         if (searchCity !== "All Cities") {
             venueQuery = venueQuery.ilike("city", `%${searchCity}%`);
@@ -54,9 +52,10 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
         // Fetch vendors
         let vendorQuery = supabase
             .from("vendors")
-            .select("id, name, city, slug, location, vendor_type")
+            .select("id, name, city, slug, location, area, vendor_type")
             .eq("is_active", true)
-            .ilike("name", `%${search}%`);
+            .ilike("name", `%${search}%`)
+            .order('name', { ascending: true });
             
         if (searchCity !== "All Cities") {
             vendorQuery = vendorQuery.ilike("city", `%${searchCity}%`);
@@ -71,8 +70,16 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
         // Prioritize what we are currently looking at
         const combined = isVendorContext ? [...vendors, ...venues] : [...venues, ...vendors];
         
-        if (combined.length > 0) {
-            setSuggestions(combined);
+        let sorted = combined;
+        if (search.trim()) {
+            const lowerSearch = search.toLowerCase();
+            const startsWith = combined.filter(item => item.name.toLowerCase().startsWith(lowerSearch));
+            const contains = combined.filter(item => !item.name.toLowerCase().startsWith(lowerSearch) && item.name.toLowerCase().includes(lowerSearch));
+            sorted = [...startsWith, ...contains];
+        }
+        
+        if (sorted.length > 0) {
+            setSuggestions(sorted);
             setIsOpen(true);
         } else {
             setSuggestions([]);
@@ -105,7 +112,7 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
         const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
         
         const { buildListingSlug } = require('@/lib/seo/slugify');
-        const finalSlug = buildListingSlug(item.slug, item.location || item.area);
+        const finalSlug = buildListingSlug(item.slug, item.area || item.location);
 
         if (item._type === "vendor") {
             router.push(`/${citySlug}/vendors/${finalSlug}`);
@@ -126,7 +133,7 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        onFocus={() => { if(suggestions.length > 0) setIsOpen(true) }}
+                        onFocus={() => { setIsOpen(true); fetchSuggestions(query, city); }}
                         placeholder={isVendorContext ? "Search vendors by name..." : "Search venues by name..."}
                         className="w-full bg-transparent border-none focus:ring-0 text-slate-900 md:text-white font-bold text-[11px] md:text-sm placeholder:text-slate-500 md:placeholder:text-white/60 outline-none"
                         autoComplete="off"

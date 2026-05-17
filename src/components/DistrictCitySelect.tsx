@@ -2,7 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, MapPin, Building } from "lucide-react";
-import { gujaratDistricts } from "@/lib/gujaratDistricts";
+
+export const canonicalGujaratDistricts = [
+  { district: "Ahmedabad", cities: ["Ahmedabad"] },
+  { district: "Gandhinagar", cities: ["Gandhinagar"] },
+  { district: "Surat", cities: ["Surat"] },
+  { district: "Vadodara", cities: ["Vadodara"] },
+  { district: "Rajkot", cities: ["Rajkot"] },
+  { district: "Bhavnagar", cities: ["Bhavnagar"] },
+  { district: "Jamnagar", cities: ["Jamnagar"] },
+  { district: "Anand", cities: ["Anand"] },
+  { district: "Junagadh", cities: ["Junagadh"] },
+  { district: "Kutch", cities: ["Bhuj", "Gandhidham"] },
+  { district: "Navsari", cities: ["Navsari"] },
+  { district: "Morbi", cities: ["Morbi"] },
+  { district: "Valsad", cities: ["Valsad"] },
+  { district: "Banaskantha", cities: ["Palanpur"] },
+  { district: "Dahod", cities: ["Dahod"] }
+];
 
 interface DistrictCitySelectProps {
     onSelect: (combinedValue: string) => void;
@@ -13,7 +30,7 @@ export default function DistrictCitySelect({ onSelect, initialValue }: DistrictC
     const [selectedDistrict, setSelectedDistrict] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
 
-    // Parse initial value if present (e.g. "Ahmedabad - Sanand")
+    // Parse initial value if present (e.g. "Ahmedabad - Ahmedabad")
     useEffect(() => {
         if (initialValue && initialValue.includes(" - ")) {
             const [dist, city] = initialValue.split(" - ");
@@ -22,8 +39,8 @@ export default function DistrictCitySelect({ onSelect, initialValue }: DistrictC
         }
     }, [initialValue]);
 
-    const districts = gujaratDistricts.map(d => d.district).sort();
-    const availableCities = gujaratDistricts.find(d => d.district === selectedDistrict)?.cities || [];
+    const districts = canonicalGujaratDistricts.map(d => d.district).sort();
+    const availableCities = canonicalGujaratDistricts.find(d => d.district === selectedDistrict)?.cities || [];
 
     const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const district = e.target.value;

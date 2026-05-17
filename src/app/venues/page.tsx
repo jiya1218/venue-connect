@@ -15,6 +15,7 @@ import { ReviewCarousel, BlogsCarousel } from "@/components/seo/SEOCollectionVie
 import { SafeImage } from "@/components/ui/SafeImage";
 import CitySelect from "@/components/CitySelect";
 import VenueSearchBar from "@/components/listing/VenueSearchBar";
+import VenueRedirect from "@/components/listing/VenueRedirect";
 
 export const revalidate = 3600;
 
@@ -75,6 +76,7 @@ export default async function VenuesPage({ searchParams }: { searchParams: Promi
 
     return (
         <main className="min-h-screen bg-white">
+            <VenueRedirect />
             
             {/* 1. CINEMATIC HERO HEADER | Optimized for Mobile */}
             <section className="relative h-[180px] md:h-[320px] flex items-center overflow-hidden bg-slate-900 border-b border-white/5">
