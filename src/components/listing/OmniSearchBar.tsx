@@ -101,7 +101,8 @@ export default function OmniSearchBar({ initialCity, isVendorContext }: { initia
     const handleSelectSuggestion = (item: any) => {
         setQuery(item.name);
         setIsOpen(false);
-        const citySlug = (item.city || "ahmedabad").toLowerCase().replace(/\s+/g, "-");
+        const rawCity = (item.city || "ahmedabad").split(/[-,]/)[0].trim();
+        const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
         if (item._type === "vendor") {
             router.push(`/${citySlug}/vendors/${item.slug}`);
         } else {

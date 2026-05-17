@@ -59,7 +59,8 @@ export default function VenueSearchBar() {
     const handleSelectSuggestion = (venue: any) => {
         setQuery(venue.name);
         setIsOpen(false);
-        const citySlug = (venue.city || "ahmedabad").toLowerCase().replace(/\s+/g, "-");
+        const rawCity = (venue.city || "ahmedabad").split(/[-,]/)[0].trim();
+        const citySlug = rawCity.toLowerCase().replace(/\s+/g, "-");
         router.push(`/${citySlug}/${venue.slug}`);
     };
 
